@@ -61,7 +61,7 @@ window.HUB = {
       blurb:'Here you find out where you come from. Climb the tree of life from the first cells — perhaps at a vent like this one — to every kingdom alive today; see how one molecule, DNA, links all of it; then what we can do with that knowledge, from breeding crops to editing genes.',
       topics:[ {no:1,t:'Characteristics and classification'}, {no:17,t:'Inheritance'}, {no:18,t:'Variation and selection'},
                {no:19,t:'Organisms and their environment'}, {no:20,t:'Human influences on ecosystems'}, {no:21,t:'Biotechnology'} ],
-      status:'live', url:'https://mompel226.github.io/life-on-earth-hub/', detail:'The tree is open · 1 lab being built',
+      status:'live', url:'https://mompel226.github.io/life-on-earth-hub/', detail:'The tree is open · 1 lab open',
       accent:'#5EEAD4', tone:'dark', focus:'50% 58%',
       alt:'White smokers venting liquid carbon dioxide at NW Eifuku volcano, 1,600 metres down' },
 
@@ -112,6 +112,9 @@ window.HUB = {
     { title:'Life on Earth Hub',    kind:'hub',       shelf:'life-on-earth',
       sub:'Topics 1 and 17–21 on a tree of life, from the first cells — the map above',
       url:'https://mompel226.github.io/life-on-earth-hub/' },
+    { title:'Classification Lab',   kind:'lab',       shelf:'life-on-earth',
+      sub:'Topic 1 · Characteristics and classification · 10 stations, 61 questions',
+      url:'https://mompel226.github.io/classification-lab/' },
     { title:'Digestion Lab',        kind:'lab',       shelf:'human-body',
       sub:'Topic 7 · Human nutrition · 14 stations, 123 activities',
       url:'https://mompel226.github.io/digestion-lab/', progress:'digestion' },

@@ -68,8 +68,8 @@ window.HUB = {
 
     { id:'bioguardians', kind:'cca', eyebrow:'CCA · Beyond the syllabus',
       title:'<em>BioGuardians</em> — a living aquarium',
-      blurb:'A real aquarium at NLCS Jeju that students monitor, document and teach an AI to watch over. A live camera that knows what it sees, months of water data, a species encyclopedia they write, and Habitat Clash — the card game built from it.',
-      topics:[ {t:'Live camera'}, {t:'Water data'}, {t:'Encyclopedia'}, {t:'Habitat Clash'} ],
+      blurb:'Here you look after living things: a real aquarium at NLCS Jeju, kept healthy by the students who run it. BioCoders builds what helps — a camera that learns the fish, sensors on the water, lights on a timer — and every species they document becomes a card in Habitat Clash, because caring for nature should be fun too.',
+      topics:[ {t:'Fish, plants, water'}, {t:'Camera'}, {t:'Sensors'}, {t:'Habitat Clash'} ],
       status:'local', url:'http://bioguardians.local/', detail:'Opens on the school network',
       accent:'#2A8C7A', tone:'light', focus:'50% 50%',
       alt:'The BioGuardians banner: a koi, cattails, water lilies, a heron, a frog, lotus, an eel and beetles, one to each letter' }

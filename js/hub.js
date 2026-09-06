@@ -8,7 +8,7 @@
   'use strict';
 
   var H       = window.HUB || {};
-  var DOORS   = H.doors || [], PATHS = H.paths || [], OPEN = H.open || [], CREDITS = H.credits || [];
+  var DOORS   = H.doors || [], YEARS = H.years || [], OPEN = H.open || [], CREDITS = H.credits || [];
   var doorsEl = document.getElementById('doors');
   var wideEl  = document.getElementById('beyond');
   var toastEl = document.getElementById('toast');
@@ -121,7 +121,7 @@
   function restTour() {
     clearTimeout(resume);
     resume = setTimeout(function () {
-      if (!document.querySelector('.door:hover, .door:focus, .step:hover, .open__link:hover')) startTour();
+      if (!document.querySelector('.door:hover, .door:focus, .step:hover, .ytab:hover, .open__link:hover')) startTour();
     }, 12000);
   }
   document.addEventListener('visibilitychange', function () { if (document.hidden) stopTour(); else restTour(); });
@@ -135,25 +135,63 @@
     if (doorEls[id]) { stopTour(); on(id); }
   });
 
-  /* ---------- 3. the path — what the class is doing now ---------- */
-  var pathEl = document.getElementById('path');
-  if (pathEl && PATHS.length) {
-    var P = PATHS[0];
-    pathEl.innerHTML = '<span class="path__lbl">' + esc(P.label) + '</span>' + P.steps.map(function (s) {
-      return '<button type="button" class="step" data-shelf="' + esc(s.shelf) + '"><b>' + s.no + '</b>' + esc(s.t) + '</button>';
-    }).join('<span class="path__arrow" aria-hidden="true">→</span>');
-    Array.prototype.forEach.call(pathEl.querySelectorAll('.step'), function (b) {
-      var id = b.dataset.shelf;
-      var lit = function () { stopTour(); on(id); b.classList.add('is-on'); };
-      var dim = function () { off(id); b.classList.remove('is-on'); restTour(); };
-      b.addEventListener('pointerenter', lit); b.addEventListener('focus', lit);
-      b.addEventListener('pointerleave', dim); b.addEventListener('blur', dim);
-      b.addEventListener('click', function () {
-        var a = doorEls[id]; if (!a) return;
-        if (a.classList.contains('door--closed')) a.click();       /* the door explains itself */
-        else window.location.href = a.href;
+  /* ---------- 3. your year — which doors are yours ----------
+     Three tabs, the same split the student dashboard uses. Pick one and its
+     topics appear as pills; point at a pill and its door opens; point at the
+     tab itself and every door that year touches lights up. */
+  function mark(ids) {
+    Object.keys(doorEls).forEach(function (k) { doorEls[k].classList.toggle('is-year', ids.indexOf(k) >= 0); });
+  }
+  var yearsEl = document.getElementById('years');
+  var YKEY = 'biology-hub.year';
+  if (yearsEl && YEARS.length) {
+    var tabs = document.createElement('div'); tabs.className = 'ytabs';
+    var lbl = document.createElement('span'); lbl.className = 'path__lbl'; lbl.textContent = 'Your year';
+    tabs.appendChild(lbl);
+    var pills = document.createElement('div'); pills.className = 'path'; pills.id = 'path';
+    pills.setAttribute('aria-label', 'Your topics');
+    var choose = function (id, save) {
+      var y = YEARS.filter(function (v) { return v.id === id; })[0];
+      Array.prototype.forEach.call(tabs.querySelectorAll('.ytab'), function (b) {
+        b.setAttribute('aria-pressed', y && b.dataset.year === y.id ? 'true' : 'false');
       });
+      pills.innerHTML = '';
+      if (!y) return;
+      y.steps.forEach(function (s) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'step'; b.dataset.shelf = s.shelf;
+        b.innerHTML = '<b>' + esc(s.no) + '</b>' + esc(s.t);
+        var lit = function () { stopTour(); on(s.shelf); b.classList.add('is-on'); };
+        var dim = function () { off(s.shelf); b.classList.remove('is-on'); restTour(); };
+        b.addEventListener('pointerenter', lit); b.addEventListener('focus', lit);
+        b.addEventListener('pointerleave', dim); b.addEventListener('blur', dim);
+        b.addEventListener('click', function () {
+          var a = doorEls[s.shelf]; if (!a) return;
+          if (a.classList.contains('door--closed')) a.click();      /* the door explains itself */
+          else window.location.href = a.href;
+        });
+        pills.appendChild(b);
+      });
+      if (save) { try { localStorage.setItem(YKEY, y.id); } catch (e) {} }
+    };
+    YEARS.forEach(function (y) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'ytab'; b.dataset.year = y.id; b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = esc(y.label) + '<small>' + esc(y.sub) + '</small>';
+      var doors = y.steps.map(function (s) { return s.shelf; });
+      b.addEventListener('click', function () { choose(y.id, true); });
+      b.addEventListener('pointerenter', function () { stopTour(); mark(doors); });
+      b.addEventListener('focus',        function () { stopTour(); mark(doors); });
+      b.addEventListener('pointerleave', function () { mark([]); restTour(); });
+      b.addEventListener('blur',         function () { mark([]); restTour(); });
+      tabs.appendChild(b);
     });
+    yearsEl.appendChild(tabs); yearsEl.appendChild(pills);
+    var savedY = null; try { savedY = localStorage.getItem(YKEY); } catch (e) {}
+    choose(savedY, false);
+    /* /#y11 opens the hub on that year's topics — a link to give a class */
+    var hashY = (location.hash || '').replace(/^#/, '');
+    if (YEARS.some(function (y) { return y.id === hashY; })) choose(hashY, false);
   }
 
   /* ---------- 4. IB is a layer, not a shelf ---------- */

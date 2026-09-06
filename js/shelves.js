@@ -20,7 +20,7 @@
      tone     "dark" (default) | "light" — veil and type colour
      focus    object-position for the image, e.g. "50% 40%"
      alt      what the image shows, for readers who cannot see it
-   paths    what a class is doing now — topics in order, cutting across shelves
+   years    which topics each year group meets — the split the student dashboard uses
    open     everything that is live, for students who know where they are going
    credits  where each door's image came from — printed in the colophon
    ============================================================ */
@@ -32,8 +32,8 @@ window.HUB = {
       blurb:'Organism, organ, tissue, cell, organelle, molecule. The camera flies down the scale instead of between organs, so the map teaches Topic 2 by being it.',
       topics:[ {no:2,t:'Organisation of the organism'}, {no:3,t:'Movement in and out of cells'},
                {no:4,t:'Biological molecules'}, {no:5,t:'Enzymes'} ],
-      status:'build', url:null, detail:'Topics 1 and 2 first',
-      note:'Foundations is being built — Topic 2 first, as a zoom ladder from organism to molecule. Until it opens, the Protein & Enzyme Sim below covers topics 4 and 5.',
+      status:'build', url:null,
+      note:'Foundations is being built. Until it opens, the Protein & Enzyme Sim below covers topics 4 and 5.',
       accent:'#E879F9', tone:'dark', focus:'50% 50%',
       alt:'HeLa cells under a multiphoton microscope: microtubules in magenta, DNA in cyan' },
 
@@ -51,8 +51,8 @@ window.HUB = {
       title:'Root, stem, <em>leaf</em>, flower',
       blurb:'The same engine as the body, on a plant. This leaf is rolled up to keep its water in — which is Topic 8 before you have even opened the door.',
       topics:[ {no:6,t:'Plant nutrition'}, {no:8,t:'Transport in plants'}, {no:16,t:'Reproduction in plants'} ],
-      status:'planned', url:null, detail:'After Foundations',
-      note:'Plants is planned. The body engine carries straight over once Foundations is done.',
+      status:'planned', url:null,
+      note:'Plants is planned — the same engine as the body, on a plant.',
       accent:'#1C7442', tone:'light', focus:'50% 50%',
       alt:'Cross-section of a rolled marram-grass leaf at 100 times magnification' },
 
@@ -61,8 +61,8 @@ window.HUB = {
       blurb:'Life may have begun at a vent like this one. Fly the tree of life the way the body plate flies between organs; a dichotomous key becomes something you do, not something you read.',
       topics:[ {no:1,t:'Characteristics and classification'}, {no:17,t:'Inheritance'}, {no:18,t:'Variation and selection'},
                {no:19,t:'Organisms and their environment'}, {no:20,t:'Human influences on ecosystems'}, {no:21,t:'Biotechnology'} ],
-      status:'planned', url:null, detail:'Topic 1 first',
-      note:'Life on Earth is planned — Topic 1 first, as a tree of life with a dichotomous key you can actually use.',
+      status:'planned', url:null,
+      note:'Life on Earth is planned — a tree of life to fly through, with a dichotomous key you can actually use.',
       accent:'#5EEAD4', tone:'dark', focus:'50% 58%',
       alt:'White smokers venting liquid carbon dioxide at NW Eifuku volcano, 1,600 metres down' },
 
@@ -75,14 +75,34 @@ window.HUB = {
       alt:'The BioGuardians banner: a koi, cattails, water lilies, a heron, a frog, lotus, an eel and beetles, one to each letter' }
   ],
 
-  /* what a class is doing now — the first path is the one shown */
-  paths: [
-    { id:'y9-autumn', label:'Year 9 · Autumn', steps:[
-      { no:1, t:'Classification',        shelf:'life-on-earth' },
-      { no:2, t:'Cells',                 shelf:'foundations' },
-      { no:3, t:'In and out of cells',   shelf:'foundations' },
-      { no:4, t:'Biological molecules',  shelf:'foundations' },
-      { no:5, t:'Enzymes',               shelf:'foundations' } ] }
+  /* which topics each year group meets — the same split as the student dashboard */
+  years: [
+    { id:'y9',  label:'Year 9',  sub:'Topics 1–5', steps:[
+      { no:'1',  t:'Classification',        shelf:'life-on-earth' },
+      { no:'2',  t:'Cells',                 shelf:'foundations' },
+      { no:'3',  t:'In and out of cells',   shelf:'foundations' },
+      { no:'4',  t:'Biological molecules',  shelf:'foundations' },
+      { no:'5',  t:'Enzymes',               shelf:'foundations' } ] },
+    { id:'y10', label:'Year 10', sub:'Topics 7–16', steps:[
+      { no:'7',  t:'Human nutrition',       shelf:'human-body' },
+      { no:'9',  t:'Transport in animals',  shelf:'human-body' },
+      { no:'10', t:'Diseases and immunity', shelf:'human-body' },
+      { no:'11', t:'Gas exchange',          shelf:'human-body' },
+      { no:'12', t:'Respiration',           shelf:'human-body' },
+      { no:'13', t:'Excretion',             shelf:'human-body' },
+      { no:'14', t:'Coordination and response', shelf:'human-body' },
+      { no:'15', t:'Drugs',                 shelf:'human-body' },
+      { no:'16', t:'Reproduction',          shelf:'human-body' } ] },
+    { id:'y11', label:'Year 11', sub:'Topics 6, 8, 17–21', steps:[
+      { no:'6',    t:'Plant nutrition',       shelf:'plants' },
+      { no:'8',    t:'Transport in plants',   shelf:'plants' },
+      { no:'14.5', t:'Tropic responses',      shelf:'plants' },
+      { no:'16.3', t:'Plant reproduction',    shelf:'plants' },
+      { no:'17',   t:'Inheritance',           shelf:'life-on-earth' },
+      { no:'18',   t:'Variation and selection', shelf:'life-on-earth' },
+      { no:'19',   t:'Organisms and their environment', shelf:'life-on-earth' },
+      { no:'20',   t:'Human influences on ecosystems', shelf:'life-on-earth' },
+      { no:'21',   t:'Biotechnology',         shelf:'life-on-earth' } ] }
   ],
 
   /* everything that is live — for students who know where they are going */

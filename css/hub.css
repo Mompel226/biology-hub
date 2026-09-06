@@ -117,7 +117,7 @@ a{color:inherit;text-decoration:none}
 .door.is-on .door__img{transform:scale(1.1);filter:saturate(1.04) brightness(1)}
 .door__veil{
   position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(to top,rgba(7,15,21,.95) 0,rgba(7,15,21,.66) 30%,rgba(7,15,21,.14) 62%,rgba(7,15,21,0) 100%);
+  background:linear-gradient(to top,rgba(7,15,21,.9) 0,rgba(7,15,21,.5) 24%,rgba(7,15,21,.1) 50%,rgba(7,15,21,0) 100%);
   transition:opacity .6s
 }
 /* a soft light that follows the pointer across the open door */
@@ -127,8 +127,16 @@ a{color:inherit;text-decoration:none}
   transition:opacity .6s
 }
 .door.is-on .door__light{opacity:1}
-/* open, a dark door carries three or four lines of words, so its veil climbs a little higher */
-.door.is-on:not(.door--light) .door__veil{background:linear-gradient(to top,rgba(7,15,21,.96) 0,rgba(7,15,21,.78) 30%,rgba(7,15,21,.42) 58%,rgba(7,15,21,.1) 80%,rgba(7,15,21,0) 100%)}
+/* every shelf door: the words carry a feathered, lightly frosted panel of the door's own ground
+   (ink here, paper on a light door), so the picture stays visible beside and above them */
+.door:not(.door--wide) .door__body{right:auto;max-width:min(100%,54ch)}
+.door:not(.door--wide) .door__body::before{
+  content:"";position:absolute;z-index:-1;pointer-events:none;left:-70px;right:-110px;top:-80px;bottom:-40px;
+  background:radial-gradient(130% 130% at 0% 100%,rgba(7,15,21,.9) 0%,rgba(7,15,21,.82) 46%,rgba(7,15,21,.42) 68%,rgba(7,15,21,0) 100%);
+  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
+  -webkit-mask-image:radial-gradient(130% 130% at 0% 100%,#000 50%,transparent 100%);
+          mask-image:radial-gradient(130% 130% at 0% 100%,#000 50%,transparent 100%)
+}
 
 .door__body{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:clamp(14px,1.8vw,26px)}
 .door__no{display:block;font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--chalk-dim)}
@@ -175,15 +183,9 @@ a{color:inherit;text-decoration:none}
 /* a light door: the type goes to ink and the veil to paper */
 .door--light{color:var(--text)}
 .door--light .door__veil{background:linear-gradient(to top,rgba(243,241,235,.9) 0,rgba(243,241,235,.5) 22%,rgba(243,241,235,.1) 48%,rgba(243,241,235,0) 100%)}
-/* paper only where the words are: the text block carries its own feathered, lightly frosted
-   panel, so the picture stays visible to the right of the words and above them */
-.door--light:not(.door--wide) .door__body{right:auto;max-width:min(100%,54ch)}
+/* the light door's panel is paper */
 .door--light:not(.door--wide) .door__body::before{
-  content:"";position:absolute;z-index:-1;pointer-events:none;left:-70px;right:-110px;top:-80px;bottom:-40px;
-  background:radial-gradient(130% 130% at 0% 100%,rgba(243,241,235,.96) 0%,rgba(243,241,235,.9) 46%,rgba(243,241,235,.5) 68%,rgba(243,241,235,0) 100%);
-  -webkit-backdrop-filter:blur(9px);backdrop-filter:blur(9px);
-  -webkit-mask-image:radial-gradient(130% 130% at 0% 100%,#000 50%,transparent 100%);
-          mask-image:radial-gradient(130% 130% at 0% 100%,#000 50%,transparent 100%)
+  background:radial-gradient(130% 130% at 0% 100%,rgba(243,241,235,.96) 0%,rgba(243,241,235,.9) 46%,rgba(243,241,235,.5) 68%,rgba(243,241,235,0) 100%)
 }
 .door--light .door__img{filter:saturate(.92) brightness(.88)}
 .door--light.is-on .door__img{filter:saturate(1.02) brightness(1)}
@@ -197,14 +199,13 @@ a{color:inherit;text-decoration:none}
 
 /* the wide door beneath the shelves */
 .beyond{display:flex;flex-direction:column;gap:8px}
-.door--wide{flex:none;height:clamp(190px,26dvh,300px);cursor:pointer;transition:height .75s var(--ease);background:#F7EBD5}
-.door--wide.is-on{height:clamp(240px,34dvh,380px)}
-/* the banner is drawn whole, fitted into the right 56% on its own parchment, so however tall the door
-   grows it never reaches the words, which sit on plain paper at the left */
-.door--wide picture{left:44%;width:56%}
+.door--wide{flex:none;height:clamp(200px,20.5vw,330px);cursor:pointer;background:#F7EBD5}
+/* the banner is drawn whole in a box exactly its own shape, as tall as the door and against its right
+   edge, so it starts where the words end and runs the full stretch on its own parchment */
+.door--wide picture{left:auto;right:0;width:auto;height:100%;aspect-ratio:1800/628}
 .door--wide .door__img,.door--wide.is-on .door__img{object-fit:contain;object-position:100% 50%;transform:none;filter:none}
-.door--wide .door__body{right:auto;max-width:min(46%,640px)}
-.door--wide .door__veil{background:linear-gradient(to right,#F7EBD5 0,#F7EBD5 30%,rgba(243,241,235,0) 50%)}
+.door--wide .door__body{right:auto;max-width:min(40%,600px)}
+.door--wide .door__veil{background:linear-gradient(to right,#F7EBD5 0,#F7EBD5 26%,rgba(243,241,235,0) 40%)}
 .door--wide .door__title{font-size:clamp(20px,1.9vw,30px)}
 .door--wide .door__lede{max-width:60ch}
 
@@ -271,8 +272,8 @@ noscript p{padding:20px}
   .door--light .door__img{filter:none}
   .door__veil{background:linear-gradient(to top,rgba(7,15,21,.96) 0,rgba(7,15,21,.7) 40%,rgba(7,15,21,.2) 72%,rgba(7,15,21,0) 100%)}
   .door--light .door__veil{background:linear-gradient(to top,rgba(243,241,235,1) 0,rgba(243,241,235,.95) 42%,rgba(243,241,235,.35) 72%,rgba(243,241,235,0) 100%)}
-  .door--light:not(.door--wide) .door__body{max-width:none}
-  .door--light:not(.door--wide) .door__body::before{display:none}
+  .door:not(.door--wide) .door__body{max-width:none}
+  .door:not(.door--wide) .door__body::before{display:none}
   .door__lede,.door__chips{max-height:none;opacity:1}
   .door__lede{margin-top:6px} .door__chips{margin-top:10px}
   .door__go{opacity:1;transform:none}
@@ -280,7 +281,7 @@ noscript p{padding:20px}
   .door__title{font-size:clamp(22px,6vw,30px)}
   .door--wide,.door--wide.is-on{height:auto}
   .door--wide .door__body{padding-top:clamp(110px,30vw,150px)}
-  .door--wide picture{left:0;width:100%}
+  .door--wide picture{left:0;right:0;width:100%;height:100%;aspect-ratio:auto}
   .door--wide .door__img,.door--wide.is-on .door__img{object-position:50% 0}
   .door--wide .door__body{right:0;max-width:none}
   .door--wide .door__veil{background:linear-gradient(to top,#F7EBD5 0,#F7EBD5 40%,rgba(243,241,235,0) 62%)}

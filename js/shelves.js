@@ -44,8 +44,8 @@ window.HUB = {
                {no:11,t:'Gas exchange'}, {no:12,t:'Respiration'}, {no:13,t:'Excretion'},
                {no:14,t:'Coordination and response'}, {no:15,t:'Drugs'}, {no:16,t:'Reproduction'} ],
       status:'live', url:'https://mompel226.github.io/human-body-hub/', detail:'1 lab open · 8 being built',
-      accent:'#FF5C5C', tone:'dark', focus:'50% 42%',
-      alt:'Human blood under a scanning electron microscope: red cells, white cells and platelets' },
+      accent:'#FF5C5C', tone:'dark', focus:'50% 40%',
+      alt:'The heart and lungs with their vessels, from Bourgery and Jacob\'s anatomy of the 1830s, shown in red' },
 
     { id:'plants', kind:'shelf', eyebrow:'03 · Plants',
       title:'Root, stem, <em>leaf</em>, flower',
@@ -124,8 +124,8 @@ window.HUB = {
   credits: [
     { door:'Foundations',   text:'HeLa cells, NIGMS / NCMIR',                              licence:'CC BY-NC-SA 3.0',
       url:'https://nigms.nih.gov/image-gallery/3520' },
-    { door:'Human body',    text:'blood, Bruce Wetzel and Harry Schaefer, National Cancer Institute', licence:'public domain, shown as a duotone',
-      url:'https://commons.wikimedia.org/wiki/File:SEM_blood_cells.jpg' },
+    { door:'Human body',    text:'heart and lungs, Bourgery & Jacob, 1830s',                      licence:'public domain, shown as a duotone',
+      url:'https://commons.wikimedia.org/wiki/File:Bourgery_%26_Jacob.jpg' },
     { door:'Plants',        text:'marram-grass leaf, Berkshire Community College',        licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Ammophila_arenaria_leaf_cross_section.jpg' },
     { door:'Life on Earth', text:'Champagne vent, NW Eifuku — Submarine Ring of Fire 2014, NOAA/PMEL, NSF', licence:'public domain',

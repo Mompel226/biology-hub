@@ -1,0 +1,115 @@
+/* ============================================================
+   Biology Hub — the register
+   ------------------------------------------------------------
+   THIS IS THE ONLY FILE YOU EDIT WHEN SOMETHING CHANGES.
+   A shelf goes live: give it a url and set status to "live".
+   The term moves on: rewrite the path. A lab opens: add it to open.
+
+   doors    the doors, in the order they stand
+     id       unique key — also the image name in assets/doors/
+     kind     "shelf" | "cca"
+     eyebrow  the small line above the title
+     title    what the door says; <em> marks the word that takes the accent
+     blurb    one or two sentences, revealed when the door opens
+     topics   0610 topic chips, { no, t }
+     status   "live" | "build" | "planned" | "local"
+     url      where the door leads, or null
+     detail   a short fact shown beside the status
+     note     what the toast says when a closed door is pressed
+     accent   the colour that lights the door
+     tone     "dark" (default) | "light" — veil and type colour
+     focus    object-position for the image, e.g. "50% 40%"
+     alt      what the image shows, for readers who cannot see it
+   paths    what a class is doing now — topics in order, cutting across shelves
+   open     everything that is live, for students who know where they are going
+   credits  where each door's image came from — printed in the colophon
+   ============================================================ */
+window.HUB = {
+
+  doors: [
+    { id:'foundations', kind:'shelf', eyebrow:'01 · Foundations',
+      title:'The science <em>everything</em> leans on',
+      blurb:'Organism, organ, tissue, cell, organelle, molecule. The camera flies down the scale instead of between organs, so the map teaches Topic 2 by being it.',
+      topics:[ {no:2,t:'Organisation of the organism'}, {no:3,t:'Movement in and out of cells'},
+               {no:4,t:'Biological molecules'}, {no:5,t:'Enzymes'} ],
+      status:'build', url:null, detail:'Topics 1 and 2 first',
+      note:'Foundations is being built — Topic 2 first, as a zoom ladder from organism to molecule. Until it opens, the Protein & Enzyme Sim below covers topics 4 and 5.',
+      accent:'#E879F9', tone:'dark', focus:'50% 50%',
+      alt:'HeLa cells under a multiphoton microscope: microtubules in magenta, DNA in cyan' },
+
+    { id:'human-body', kind:'shelf', eyebrow:'02 · The human body',
+      title:'Nine topics, <em>one body</em>',
+      blurb:'A body reconstructed from MRI. Point at a lab and its organs light up where they really sit; open the lab and work through the topic with questions that mark themselves.',
+      topics:[ {no:7,t:'Human nutrition'}, {no:9,t:'Transport in animals'}, {no:10,t:'Diseases and immunity'},
+               {no:11,t:'Gas exchange'}, {no:12,t:'Respiration'}, {no:13,t:'Excretion'},
+               {no:14,t:'Coordination and response'}, {no:15,t:'Drugs'}, {no:16,t:'Reproduction'} ],
+      status:'live', url:'https://mompel226.github.io/human-body-hub/', detail:'1 lab open · 8 being built',
+      accent:'#FF5C5C', tone:'dark', focus:'50% 42%',
+      alt:'Human blood under a scanning electron microscope: red cells, white cells and platelets' },
+
+    { id:'plants', kind:'shelf', eyebrow:'03 · Plants',
+      title:'Root, stem, <em>leaf</em>, flower',
+      blurb:'The same engine as the body, on a plant. This leaf is rolled up to keep its water in — which is Topic 8 before you have even opened the door.',
+      topics:[ {no:6,t:'Plant nutrition'}, {no:8,t:'Transport in plants'}, {no:16,t:'Reproduction in plants'} ],
+      status:'planned', url:null, detail:'After Foundations',
+      note:'Plants is planned. The body engine carries straight over once Foundations is done.',
+      accent:'#1C7442', tone:'light', focus:'50% 50%',
+      alt:'Cross-section of a rolled marram-grass leaf at 100 times magnification' },
+
+    { id:'life-on-earth', kind:'shelf', eyebrow:'04 · Life on Earth',
+      title:'From the first cell to <em>every kingdom</em>',
+      blurb:'Life may have begun at a vent like this one. Fly the tree of life the way the body plate flies between organs; a dichotomous key becomes something you do, not something you read.',
+      topics:[ {no:1,t:'Characteristics and classification'}, {no:17,t:'Inheritance'}, {no:18,t:'Variation and selection'},
+               {no:19,t:'Organisms and their environment'}, {no:20,t:'Human influences on ecosystems'}, {no:21,t:'Biotechnology'} ],
+      status:'planned', url:null, detail:'Topic 1 first',
+      note:'Life on Earth is planned — Topic 1 first, as a tree of life with a dichotomous key you can actually use.',
+      accent:'#5EEAD4', tone:'dark', focus:'50% 58%',
+      alt:'White smokers venting liquid carbon dioxide at NW Eifuku volcano, 1,600 metres down' },
+
+    { id:'bioguardians', kind:'cca', eyebrow:'CCA · Beyond the syllabus',
+      title:'<em>BioGuardians</em> — a living aquarium',
+      blurb:'A real aquarium at NLCS Jeju that students monitor, document and teach an AI to watch over. A live camera that knows what it sees, months of water data, a species encyclopedia they write, and Habitat Clash — the card game built from it.',
+      topics:[ {t:'Live camera'}, {t:'Water data'}, {t:'Encyclopedia'}, {t:'Habitat Clash'} ],
+      status:'local', url:'http://bioguardians.local/', detail:'Opens on the school network',
+      accent:'#2A8C7A', tone:'light', focus:'50% 50%',
+      alt:'The BioGuardians banner: a koi, cattails, water lilies, a heron, a frog, lotus, an eel and beetles, one to each letter' }
+  ],
+
+  /* what a class is doing now — the first path is the one shown */
+  paths: [
+    { id:'y9-autumn', label:'Year 9 · Autumn', steps:[
+      { no:1, t:'Classification',        shelf:'life-on-earth' },
+      { no:2, t:'Cells',                 shelf:'foundations' },
+      { no:3, t:'In and out of cells',   shelf:'foundations' },
+      { no:4, t:'Biological molecules',  shelf:'foundations' },
+      { no:5, t:'Enzymes',               shelf:'foundations' } ] }
+  ],
+
+  /* everything that is live — for students who know where they are going */
+  open: [
+    { title:'Human Body Hub',       kind:'hub',       shelf:'human-body',
+      sub:'Nine topics on a body from MRI — the map above',
+      url:'https://mompel226.github.io/human-body-hub/' },
+    { title:'Digestion Lab',        kind:'lab',       shelf:'human-body',
+      sub:'Topic 7 · Human nutrition · 14 stations, 123 activities',
+      url:'https://mompel226.github.io/digestion-lab/', progress:'digestion' },
+    { title:'Protein & Enzyme Sim', kind:'sim',       shelf:'foundations',
+      sub:'Topics 4 and 5 · build a protein, then watch heat and pH take it apart',
+      url:'https://mompel226.github.io/protein-enzyme-sim/', ib:'also IB B1.2' },
+    { title:'Starch calibration curve', kind:'practical', shelf:'foundations',
+      sub:'IB B1.1 · worksheet, workbook and a guide to R',
+      url:'https://mompel226.github.io/B11-starch-calibration-curve-pract/', ibOnly:true }
+  ],
+
+  credits: [
+    { door:'Foundations',   text:'HeLa cells, NIGMS / NCMIR',                              licence:'CC BY-NC-SA 3.0',
+      url:'https://nigms.nih.gov/image-gallery/3520' },
+    { door:'Human body',    text:'blood, Bruce Wetzel and Harry Schaefer, National Cancer Institute', licence:'public domain, shown as a duotone',
+      url:'https://commons.wikimedia.org/wiki/File:SEM_blood_cells.jpg' },
+    { door:'Plants',        text:'marram-grass leaf, Berkshire Community College',        licence:'CC0',
+      url:'https://commons.wikimedia.org/wiki/File:Ammophila_arenaria_leaf_cross_section.jpg' },
+    { door:'Life on Earth', text:'Champagne vent, NW Eifuku — Submarine Ring of Fire 2014, NOAA/PMEL, NSF', licence:'public domain',
+      url:'https://archive.oceanexplorer.noaa.gov/explorations/14fire/background/missionplan/media/eifuku_champagne_vent.html' },
+    { door:'BioGuardians',  text:'banner by Daniel Mompel Riera for the BioGuardians CCA', licence:'', url:'' }
+  ]
+};

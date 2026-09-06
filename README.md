@@ -43,8 +43,9 @@ same labs; it never hides the IGCSE content.
 Three files, no build step, no framework. GitHub Pages serves it as it is.
 
 - **`js/shelves.js` — the register.** The only file you edit when something changes: a shelf
-  goes live, the term moves on, a lab opens. Every door, the course path, the "open now"
-  list and the image credits come from here.
+  goes live, a lab opens, a year group's topics change. Every door, the three year tabs
+  (the same split as the student dashboard), the "open now" list and the image credits come
+  from here.
 - `js/hub.js` stands the doors up and makes them answer the pointer: the accordion, the
   light that follows the cursor, the idle tour, the arrow keys, the toast on a closed door.
 - `css/hub.css` is the house style — Fraunces, IBM Plex Mono, Inter; ink and paper.

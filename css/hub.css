@@ -55,8 +55,21 @@ a{color:inherit;text-decoration:none}
 .maker::before{content:"";width:22px;height:1px;background:var(--cyan);opacity:.8;flex:none}
 .maker strong{font-weight:500;color:var(--chalk)}
 
-/* the course path — what the class is doing now */
-.path{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:5px;max-width:560px}
+/* your year — three tabs, then that year's topics */
+.years{display:flex;flex-direction:column;align-items:flex-end;gap:8px;max-width:600px}
+.ytabs{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:5px}
+.ytab{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:#D7E3EA;
+  border:1px solid rgba(150,190,215,.28);border-radius:3px;padding:6px 11px;background:rgba(7,15,21,.55);
+  display:flex;flex-direction:column;align-items:flex-start;gap:2px;line-height:1.2;
+  transition:border-color .2s,background .2s,color .2s
+}
+.ytab small{font-size:9px;font-weight:400;letter-spacing:.04em;text-transform:none;color:var(--chalk-mute)}
+.ytab:hover,.ytab:focus-visible{border-color:rgba(150,215,240,.7);color:#fff}
+.ytab[aria-pressed="true"]{background:rgba(120,200,230,.16);border-color:rgba(150,215,240,.75);color:#fff}
+.ytab[aria-pressed="true"] small{color:#BFE3F5}
+.path{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:5px}
+.path:empty{display:none}
 .path__lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--chalk-dim);margin-right:6px}
 .path__arrow{font-family:var(--mono);font-size:11px;color:var(--chalk-mute)}
 .step{
@@ -89,6 +102,7 @@ a{color:inherit;text-decoration:none}
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.07);transition:box-shadow .6s
 }
 .door.is-on{flex-grow:2.4}
+.door.is-year::after{box-shadow:inset 0 0 0 1px rgba(237,244,248,.5),0 0 30px rgba(237,244,248,.1)}
 .door.is-on::after{
   box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 65%,transparent),
              0 0 0 1px color-mix(in srgb,var(--accent) 22%,transparent),
@@ -212,7 +226,7 @@ body.ib .ib-note{display:inline}
 .byline{font-size:12.5px;color:var(--chalk)}
 .byline strong{font-weight:500}
 .byline a{color:var(--cyan);border-bottom:1px solid rgba(79,195,247,.4)}
-.colophon{font-family:var(--mono);font-size:10px;letter-spacing:.04em;line-height:1.9;color:var(--chalk-mute)}
+.colophon{font-family:var(--mono);font-size:9px;letter-spacing:.04em;line-height:1.9;color:var(--chalk-mute)}
 .colophon b{font-weight:500;color:var(--chalk-dim)}
 .colophon a{color:var(--chalk-dim);border-bottom:1px solid rgba(169,190,203,.35)}
 .colophon a:hover{color:var(--chalk)}
@@ -231,7 +245,8 @@ noscript p{padding:20px}
   .hub{gap:12px;padding-bottom:16px}
   .masthead{grid-template-columns:1fr;align-items:start;gap:12px;padding-top:16px}
   .masthead__r{align-items:flex-start}
-  .path{justify-content:flex-start;max-width:none}
+  .years{align-items:flex-start;max-width:none}
+  .ytabs,.path{justify-content:flex-start}
   .doors{flex-direction:column;flex:none;min-height:0;gap:10px}
   .door{flex:none;height:auto;min-height:0;transition:none}
   .door__body{position:relative;padding-top:clamp(120px,32vw,170px)}

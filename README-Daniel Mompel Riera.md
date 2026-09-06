@@ -32,7 +32,7 @@ questions live.
 | **Foundations** | 2 · 3 · 4 · 5 | being built — Topic 2 first |
 | **The human body** | 7 · 9–16 | [Human Body Hub](https://mompel226.github.io/human-body-hub/) 🟢 · [Digestion Lab](https://mompel226.github.io/digestion-lab/) 🟢 |
 | **Plants** | 6 · 8 · 16 | planned |
-| **Life on Earth** | 1 · 17–21 | [Life on Earth Hub](https://mompel226.github.io/life-on-earth-hub/) 🟢 · Classification Lab being built |
+| **Life on Earth** | 1 · 17–21 | planned |
 | **BioGuardians** (CCA) | — | the living aquarium, on the school network |
 
 **IB is a layer, not a fifth door.** The toggle in the masthead reveals IB material on the
@@ -72,19 +72,6 @@ in the colophon on the page. Sources, licences and how to swap one:
 
 ## The rest of the estate
 
-The front door is one repository among several. Each is its own repo with its own README,
-and the name says what kind of thing it is: `-hub` is a map, `-lab` has stations and marks,
-`-sim` is a sandbox, `-pract` hands out the documents for a practical.
-
-| Repository | What it is | Live |
-|---|---|---|
-| [`biology-hub`](https://github.com/Mompel226/biology-hub) | the front door — this | <https://mompel226.github.io/biology-hub/> |
-| [`human-body-hub`](https://github.com/Mompel226/human-body-hub) | the human body shelf: nine topics on a body from MRI | <https://mompel226.github.io/human-body-hub/> |
-| [`digestion-lab`](https://github.com/Mompel226/digestion-lab) | Topic 7 lab, behind the human body shelf | <https://mompel226.github.io/digestion-lab/> |
-| [`life-on-earth-hub`](https://github.com/Mompel226/life-on-earth-hub) | the Life on Earth shelf: a tree of life on water, topics 1 and 17–21 | <https://mompel226.github.io/life-on-earth-hub/> |
-| [`protein-enzyme-sim`](https://github.com/Mompel226/protein-enzyme-sim) | simulation: proteins and enzymes, topics 4–5 and IB B1.2 | <https://mompel226.github.io/protein-enzyme-sim/> |
-| [`B11-starch-calibration-curve-pract`](https://github.com/Mompel226/B11-starch-calibration-curve-pract) | IB B1.1 practical: worksheet, workbook, R guide | <https://mompel226.github.io/B11-starch-calibration-curve-pract/> |
-
-Foundations and Plants are doors without a shelf behind them yet; each will be its own
-`-hub` repository when it is built. The BioGuardians aquarium runs on a Raspberry Pi on
-the school network and has [its own repository](https://github.com/Mompel226/BioGuardiansApp).
+This is one repository among several. Where everything lives, the naming rule and the two
+path couplings that will bite you: the `Biology Hub` workspace README, next to this repo on
+Dr Mompel's machine.

@@ -29,7 +29,7 @@ window.HUB = {
   doors: [
     { id:'foundations', kind:'shelf', eyebrow:'01 · Foundations',
       title:'The science <em>everything</em> leans on',
-      blurb:'Organism, organ, tissue, cell, organelle, molecule. The camera flies down the scale instead of between organs, so the map teaches Topic 2 by being it.',
+      blurb:'Here you do not move across a body — you move down into one. Start with a whole organism and step inside: an organ, then a tissue, then a cell, then an organelle, and finally the molecules that do the work. Topics 2 to 5 sit at each step on the way down.',
       topics:[ {no:2,t:'Organisation of the organism'}, {no:3,t:'Movement in and out of cells'},
                {no:4,t:'Biological molecules'}, {no:5,t:'Enzymes'} ],
       status:'build', url:null,
@@ -39,7 +39,7 @@ window.HUB = {
 
     { id:'human-body', kind:'shelf', eyebrow:'02 · The human body',
       title:'Nine topics, <em>one body</em>',
-      blurb:'A body reconstructed from MRI. Point at a lab and its organs light up where they really sit; open the lab and work through the topic with questions that mark themselves.',
+      blurb:'Here you move through a body, reconstructed from a real MRI scan. Point at a system and its organs light up where they really sit; open the one you are studying and work through it with questions that mark themselves.',
       topics:[ {no:7,t:'Human nutrition'}, {no:9,t:'Transport in animals'}, {no:10,t:'Diseases and immunity'},
                {no:11,t:'Gas exchange'}, {no:12,t:'Respiration'}, {no:13,t:'Excretion'},
                {no:14,t:'Coordination and response'}, {no:15,t:'Drugs'}, {no:16,t:'Reproduction'} ],
@@ -49,7 +49,7 @@ window.HUB = {
 
     { id:'plants', kind:'shelf', eyebrow:'03 · Plants',
       title:'Root, stem, <em>leaf</em>, flower',
-      blurb:'The same engine as the body, on a plant. This leaf is rolled up to keep its water in — which is Topic 8 before you have even opened the door.',
+      blurb:'Here you move through a plant the way you move through the body: root, stem, leaf, flower. How a plant makes its own food, moves water up from the ground, and grows the next generation. The leaf behind this door is rolled up to keep its water in.',
       topics:[ {no:6,t:'Plant nutrition'}, {no:8,t:'Transport in plants'}, {no:16,t:'Reproduction in plants'} ],
       status:'planned', url:null,
       note:'Plants is planned — the same engine as the body, on a plant.',
@@ -58,7 +58,7 @@ window.HUB = {
 
     { id:'life-on-earth', kind:'shelf', eyebrow:'04 · Life on Earth',
       title:'From the first cell to <em>every kingdom</em>',
-      blurb:'Life may have begun at a vent like this one. Fly the tree of life the way the body plate flies between organs; a dichotomous key becomes something you do, not something you read.',
+      blurb:'Here you find out where you come from. Climb the tree of life from the first cells — perhaps at a vent like this one — to every kingdom alive today; see how one molecule, DNA, links all of it; then what we can do with that knowledge, from breeding crops to editing genes.',
       topics:[ {no:1,t:'Characteristics and classification'}, {no:17,t:'Inheritance'}, {no:18,t:'Variation and selection'},
                {no:19,t:'Organisms and their environment'}, {no:20,t:'Human influences on ecosystems'}, {no:21,t:'Biotechnology'} ],
       status:'planned', url:null,

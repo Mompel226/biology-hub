@@ -172,14 +172,16 @@ a{color:inherit;text-decoration:none}
 
 /* a light door: the type goes to ink and the veil to paper */
 .door--light{color:var(--text)}
-.door--light .door__veil{background:linear-gradient(to top,rgba(247,246,242,.97) 0,rgba(247,246,242,.74) 30%,rgba(247,246,242,.14) 62%,rgba(247,246,242,0) 100%)}
-.door--light .door__img{filter:saturate(.9) brightness(.92)}
+.door--light .door__veil{background:linear-gradient(to top,rgba(243,241,235,1) 0,rgba(243,241,235,.94) 26%,rgba(243,241,235,.6) 50%,rgba(243,241,235,.12) 72%,rgba(243,241,235,0) 100%)}
+/* open, the light door's words reach two-thirds of the way up, so the paper must too */
+.door--light.is-on .door__veil{background:linear-gradient(to top,rgba(243,241,235,1) 0,rgba(243,241,235,.97) 44%,rgba(243,241,235,.8) 62%,rgba(243,241,235,.32) 80%,rgba(243,241,235,0) 100%)}
+.door--light .door__img{filter:saturate(.92) brightness(.88)}
 .door--light.is-on .door__img{filter:saturate(1.02) brightness(1)}
 .door--light .door__light{mix-blend-mode:multiply;background:radial-gradient(360px circle at var(--mx,50%) var(--my,40%),color-mix(in srgb,var(--accent) 14%,transparent),transparent 62%)}
-.door--light .door__no,.door--light .door__detail{color:#3B4650;text-shadow:0 0 10px rgba(247,246,242,.95),0 0 3px rgba(247,246,242,.95)}
-.door--light .door__lede{color:#3B4650}
-.door--light .chip{color:var(--text);border-color:rgba(27,34,38,.24);background:rgba(255,255,255,.62)}
-.door--light .door__status{color:#4A5661;border-color:rgba(27,34,38,.28)}
+.door--light .door__no,.door--light .door__detail{color:#2A343C;text-shadow:0 0 10px rgba(243,241,235,1),0 0 3px rgba(243,241,235,1)}
+.door--light .door__lede{color:#2A343C}
+.door--light .chip{color:var(--text);border-color:rgba(27,34,38,.3);background:rgba(255,255,255,.82)}
+.door--light .door__status{color:#2A343C;border-color:rgba(27,34,38,.45);background:rgba(255,255,255,.6)}
 .door--light .door__status--local{color:#0B6A8C;border-color:rgba(11,106,140,.45);background:rgba(11,106,140,.08)}
 .door--light.is-on .door__title{text-shadow:0 0 28px rgba(247,246,242,.9)}
 
@@ -189,7 +191,7 @@ a{color:inherit;text-decoration:none}
 .door--wide.is-on{height:clamp(200px,30dvh,340px)}
 .door--wide .door__img{object-position:var(--focus,50% 50%)}
 .door--wide .door__body{right:auto;max-width:min(62%,720px)}
-.door--wide .door__veil{background:linear-gradient(to right,rgba(247,246,242,.97) 0,rgba(247,246,242,.9) 34%,rgba(247,246,242,.3) 62%,rgba(247,246,242,0) 100%)}
+.door--wide .door__veil{background:linear-gradient(to right,rgba(243,241,235,1) 0,rgba(243,241,235,.96) 34%,rgba(243,241,235,.4) 62%,rgba(243,241,235,0) 100%)}
 .door--wide .door__title{font-size:clamp(20px,1.9vw,30px)}
 .door--wide .door__lede{max-width:60ch}
 
@@ -255,7 +257,7 @@ noscript p{padding:20px}
   .door__img,.door.is-on .door__img{transform:none;filter:saturate(1) brightness(.9)}
   .door--light .door__img{filter:none}
   .door__veil{background:linear-gradient(to top,rgba(7,15,21,.96) 0,rgba(7,15,21,.7) 40%,rgba(7,15,21,.2) 72%,rgba(7,15,21,0) 100%)}
-  .door--light .door__veil{background:linear-gradient(to top,rgba(247,246,242,.97) 0,rgba(247,246,242,.8) 40%,rgba(247,246,242,.2) 72%,rgba(247,246,242,0) 100%)}
+  .door--light .door__veil{background:linear-gradient(to top,rgba(243,241,235,1) 0,rgba(243,241,235,.95) 42%,rgba(243,241,235,.35) 72%,rgba(243,241,235,0) 100%)}
   .door__lede,.door__chips{max-height:none;opacity:1}
   .door__lede{margin-top:6px} .door__chips{margin-top:10px}
   .door__go{opacity:1;transform:none}
@@ -264,7 +266,7 @@ noscript p{padding:20px}
   .door--wide,.door--wide.is-on{height:auto}
   .door--wide .door__body{padding-top:clamp(90px,24vw,130px)}
   .door--wide .door__body{right:0;max-width:none}
-  .door--wide .door__veil{background:linear-gradient(to top,rgba(247,246,242,.97) 0,rgba(247,246,242,.82) 46%,rgba(247,246,242,.25) 76%,rgba(247,246,242,0) 100%)}
+  .door--wide .door__veil{background:linear-gradient(to top,rgba(243,241,235,1) 0,rgba(243,241,235,.95) 46%,rgba(243,241,235,.35) 76%,rgba(243,241,235,0) 100%)}
   .open__list{grid-template-columns:1fr}
   .cr{white-space:normal}
 }

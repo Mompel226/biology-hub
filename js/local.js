@@ -22,6 +22,11 @@
    ============================================================ */
 window.HUB_LOCAL = {
 
+  /* Where a hand-in goes. The same deployed Apps Script every lab posts to — see the
+     README, "Would you like to see how your students are doing?". This is a school's own
+     address, so it lives here and not in the shared register. */
+  submitUrl:'https://script.google.com/macros/s/AKfycbzwjMHaa88OL_GzR8wZ2mV6a8rs1CKYahbW5iOTQPyzWzCGIrAZPApGsP2oujK34tRc/exec',
+
   site: {
     title:'Biology Hub — NLCS Jeju',
     description:'Every interactive Biology app at NLCS Jeju behind four doors — Foundations, the human body, Plants, Life on Earth — and one more for the BioGuardians aquarium. Cambridge IGCSE 0610, with IB as a layer.',

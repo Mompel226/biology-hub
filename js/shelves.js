@@ -2,6 +2,12 @@
    Biology Hub — the register
    ------------------------------------------------------------
    THIS IS THE ONLY FILE YOU EDIT WHEN SOMETHING CHANGES.
+
+   It is SHARED BY BOTH EDITIONS — the NLCS one (repo biology-hub) and the
+   open one every other school can use (repo igcse-biology-hub). Anything
+   that belongs to one school alone goes in js/local.js instead, which is
+   the only file the two editions do not share. After editing this file,
+   run `node tools/sync-edition.mjs` to carry it across.
    A shelf goes live: give it a url and set status to "live".
    The term moves on: rewrite the path. A lab opens: add it to open.
 
@@ -63,15 +69,7 @@ window.HUB = {
                {no:19,t:'Organisms and their environment'}, {no:20,t:'Human influences on ecosystems'}, {no:21,t:'Biotechnology'} ],
       status:'live', url:'https://mompel226.github.io/life-on-earth-hub/', detail:'The tree is open · 1 lab open',
       accent:'#5EEAD4', tone:'dark', focus:'50% 58%',
-      alt:'White smokers venting liquid carbon dioxide at NW Eifuku volcano, 1,600 metres down' },
-
-    { id:'bioguardians', kind:'cca', eyebrow:'CCA · Beyond the syllabus',
-      title:'<em>BioGuardians</em> — a living aquarium',
-      blurb:'Here you look after living things: a real aquarium at NLCS Jeju, kept healthy by the students who run it. BioCoders builds what helps — a camera that learns the fish, sensors on the water, lights on a timer — and every species they document becomes a card in Habitat Clash, because caring for nature should be fun too.',
-      topics:[ {t:'Fish, plants, water'}, {t:'Camera'}, {t:'Sensors'}, {t:'Habitat Clash'} ],
-      status:'local', url:'http://bioguardians.local/', detail:'Opens on the school network',
-      accent:'#2A8C7A', tone:'light', focus:'50% 50%',
-      alt:'The BioGuardians banner: a koi, cattails, water lilies, a heron, a frog, lotus, an eel and beetles, one to each letter' }
+      alt:'White smokers venting liquid carbon dioxide at NW Eifuku volcano, 1,600 metres down' }
   ],
 
   /* which topics each year group meets — the same split as the student dashboard */
@@ -134,7 +132,6 @@ window.HUB = {
     { door:'Plants',        text:'marram-grass leaf, Berkshire Community College',        licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Ammophila_arenaria_leaf_cross_section.jpg' },
     { door:'Life on Earth', text:'Champagne vent, NW Eifuku — Submarine Ring of Fire 2014, NOAA/PMEL, NSF', licence:'public domain',
-      url:'https://archive.oceanexplorer.noaa.gov/explorations/14fire/background/missionplan/media/eifuku_champagne_vent.html' },
-    { door:'BioGuardians',  text:'banner by Daniel Mompel Riera for the BioGuardians CCA', licence:'', url:'' }
+      url:'https://archive.oceanexplorer.noaa.gov/explorations/14fire/background/missionplan/media/eifuku_champagne_vent.html' }
   ]
 };

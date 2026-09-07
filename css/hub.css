@@ -199,6 +199,7 @@ a{color:inherit;text-decoration:none}
 
 /* the wide door beneath the shelves */
 .beyond{display:flex;flex-direction:column;gap:8px}
+.beyond:empty{display:none}   /* the open edition has no CCA door */
 /* idle: a short door, the banner running underneath the words at full width.
    open: the door grows and the banner slides right into a box of exactly its own shape —
    --bw is that box's width, the open height × the banner's 1800/628 — so it sits whole, just

@@ -50,6 +50,8 @@ files; only `js/local.js` differs.
 
 ---
 
+<div align="center">
+
 ## 📊 Would you like to see how your students are doing?
 
 **You can — every score, every class, in one Google Sheet of your own.**
@@ -388,8 +390,6 @@ They are in this repository — open, select all, copy:
 |---|---|
 | **[`apps-script/Code.gs`](apps-script/Code.gs)** | the whole script: receiving a hand-in, the roster, the tabs, Classroom import, and giving a student their own scores back |
 | **[`apps-script/ClassroomImport.html`](apps-script/ClassroomImport.html)** | the little window that imports your classes |
-
-</details>
 
 ---
 

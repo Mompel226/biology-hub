@@ -31,7 +31,9 @@ const LOCAL_DOORS = (readFileSync(resolve(FROM, 'js/local.js'), 'utf8')
   .match(/id:'([a-z0-9-]+)'/g) || []).map(m => m.slice(4, -1));
 
 const FILES = ['index.html', 'css/hub.css', 'js/hub.js', 'js/shelves.js',
-               'tools/stamp.mjs', '.nojekyll', '.gitignore'];
+               'tools/stamp.mjs', '.nojekyll', '.gitignore',
+               /* the marks system: every school that uses a lab needs it */
+               'apps-script/Code.gs', 'apps-script/ClassroomImport.html', 'tools/gastest.js'];
 for (const f of readdirSync(resolve(FROM, 'assets/doors'))) {
   if (LOCAL_DOORS.some(id => f.startsWith(id + '-'))) continue;
   FILES.push('assets/doors/' + f);

@@ -18,6 +18,8 @@ by **Dr Daniel Mompel Riera** · NLCS Jeju
 
 </div>
 
+![The Biology Hub: four doors, with the human body open](docs/img/screen.jpg)
+
 ---
 
 ## Where everything is

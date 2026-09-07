@@ -7,8 +7,29 @@
 (function () {
   'use strict';
 
+  /* The shared register, plus whatever the local layer adds. js/local.js is the only
+     file that differs between the NLCS edition and the open one; in the open edition it
+     is a stub, so everything below simply sees four doors and no school in the name. */
   var H       = window.HUB || {};
-  var DOORS   = H.doors || [], YEARS = H.years || [], OPEN = H.open || [], CREDITS = H.credits || [];
+  var L       = window.HUB_LOCAL || {};
+  var DOORS   = (H.doors || []).concat(L.doors || []);
+  var YEARS   = H.years || [];
+  var OPEN    = (H.open || []).concat(L.open || []);
+  var CREDITS = (H.credits || []).concat(L.credits || []);
+
+  /* the strings that name the school, if this edition has one */
+  (function (site) {
+    if (!site) return;
+    if (site.title) document.title = site.title;
+    if (site.description) {
+      var m = document.querySelector('meta[name="description"]');
+      if (m) m.setAttribute('content', site.description);
+    }
+    [['siteEyebrow', 'eyebrow'], ['siteMaker', 'maker'], ['siteByline', 'byline']].forEach(function (pair) {
+      var el = document.getElementById(pair[0]);
+      if (el && site[pair[1]]) el.innerHTML = site[pair[1]];
+    });
+  })(L.site);
   var doorsEl = document.getElementById('doors');
   var wideEl  = document.getElementById('beyond');
   var toastEl = document.getElementById('toast');
@@ -262,14 +283,23 @@
   var pe = document.getElementById('prog-digestion');
   if (pe) { var t = digestionProgress(); if (t) pe.textContent = t; else pe.parentNode.removeChild(pe); }
 
-  /* ---------- 6. credits ---------- */
+  /* ---------- 6. credits ----------
+     Both editions ship this file, so the link to the full credits works out which
+     repository it is in from the address rather than being told: a GitHub Pages URL
+     is <user>.github.io/<repo>/. Off Pages, fall back to the file beside the page. */
+  function creditsHref() {
+    var m = /^https?:\/\/([^.]+)\.github\.io\/([^/]+)/.exec(location.href);
+    return m ? 'https://github.com/' + m[1] + '/' + m[2] + '/blob/main/assets/doors/CREDITS.md'
+             : 'assets/doors/CREDITS.md';
+  }
+
   var cr = document.getElementById('credits');
   if (cr && CREDITS.length) {
     cr.innerHTML = 'Doors: ' + CREDITS.map(function (c) {
       var t = c.url ? '<a href="' + c.url + '" target="_blank" rel="noopener">' + esc(c.text) + '</a>' : esc(c.text);
       return '<span class="cr"><b>' + esc(c.door) + '</b> — ' + t + (c.licence ? ' (' + esc(c.licence) + ')' : '') + '</span>';
     }).join(' · ') +
-    '. <a href="https://github.com/Mompel226/biology-hub/blob/main/assets/doors/CREDITS.md" target="_blank" rel="noopener">Full credits</a>.';
+    '. <a href="' + creditsHref() + '" target="_blank" rel="noopener">Full credits</a>.';
   }
 
   /* ---------- 7. toast ---------- */

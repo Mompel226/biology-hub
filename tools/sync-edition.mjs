@@ -37,7 +37,11 @@ for (const f of readdirSync(resolve(FROM, 'assets/doors'))) {
   FILES.push('assets/doors/' + f);
 }
 
-const sum = b => createHash('sha256').update(b).digest('hex').slice(0, 12);
+/* Each edition carries its own cache stamp, so ?v=<n> is not drift: normalise it
+   away before comparing, or --check would report index.html every single time and
+   stop being worth reading. */
+const norm = b => Buffer.from(String(b).replace(/\?v=\d+/g, '?v='));
+const sum = b => createHash('sha256').update(norm(b)).digest('hex').slice(0, 12);
 let changed = 0, same = 0;
 
 for (const rel of FILES) {

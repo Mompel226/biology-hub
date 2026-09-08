@@ -24,6 +24,11 @@
            society here is all it takes for it to appear.
            `ground` is the flat colour at the banner's left edge — the
            words fade out of it, so it must match the image.
+           `motion` is the moving part of the banner, given as the
+           geometry of what is printed on it, in the banner's own
+           1800x614 coordinates. js/hub.js draws it live on top, so it
+           lands on the printed art at every size. Change the banner and
+           these numbers change with it.
    open    extra entries in "Open now"
    credits extra image credits
    ============================================================ */
@@ -57,6 +62,12 @@ window.HUB_LOCAL = {
       topics:[ {t:'Reading the literature'}, {t:'Writing a review'}, {t:'The forum'}, {t:'The journal'} ],
       status:'live', url:'https://medicalreviewkorea.org/', detail:'Years 10 to 12 · through a teacher',
       accent:'#5FA5FF', focus:'50% 50%', ground:'#02265C',
+      /* the trace printed on the plate, so a beat can run along it into the wordmark.
+         fadeIn is where the printed line itself comes up out of the ground — past the
+         words a shut door lays over its left third. */
+      motion:{ fadeIn:[470, 720], trace:{ colour:'#FFE2E4', width:5.2, seconds:2.1,
+        d:'M470 307 H700 L716 291 L734 323 L750 299 L766 307 H840 L856 285 L872 307 L886 243 ' +
+          'L904 371 L920 271 L936 307 H1000 L1014 295 L1028 319 L1042 303 L1056 307 H1136' } },
       alt:'The Medical Review banner: the wordmark in white on royal blue, the red pulse from its own logo carried across the plate' },
 
     { id:'snhs', kind:'society', eyebrow:'Society · Student research',
@@ -65,7 +76,12 @@ window.HUB_LOCAL = {
       topics:[ {t:'A question of your own'}, {t:'Method and evidence'}, {t:'Peer review'}, {t:'The journal'} ],
       status:'live', url:'https://nlcsjejusnhs.org/', detail:'Open access · student-led',
       accent:'#22C3B0', focus:'50% 50%', ground:'#08101D',
-      alt:'The Science National Honor Society banner: the society crest in gold and purple on navy, standing on the orbits of the atom it carries' }
+      /* the three rings printed on the plate — one electron runs each, going out where
+         the rings themselves pass behind the society's name */
+      motion:{ fadeOut:[930, 1035],
+               orbits:{ cx:690, cy:307, rx:452, ry:170, r:6.5, seconds:7.4,
+                        colour:'#FFF0C2', glow:'#E3B93C' } },
+      alt:'The Science National Honor Society banner: the society crest in gold and purple on navy, standing on the orbits of the atom it carries, with an electron running each ring' }
   ],
 
   open: [],

@@ -81,6 +81,79 @@
       (eager ? ' fetchpriority="high"' : '') + ' decoding="async" draggable="false">' +
       '</picture>';
   }
+  /* ---------- a banner that moves ----------
+     A picture cannot beat, so a banner may hand over the geometry of what is printed on it
+     and the page draws the moving part live on top. The overlay is an SVG cropped exactly
+     the way the picture is — "slice" is what object-fit: cover does — so it lands on the
+     printed art at every width, in the shut strip and the open plate alike. Only the banner
+     knows its own coordinates, which is why they sit in the register beside it.
+
+       motion.trace   a light runs along a line: the pulse on the Medical Review plate
+       motion.orbits  electrons run round an atom: the three rings on the Science NHS plate
+
+     The overlay sits above the picture, so it has to stop where the printed art does.
+     `fadeIn` and `fadeOut` are pairs of banner x-coordinates that fade the whole overlay
+     up and away again: the Medical Review pulse rises out of nothing where the shut door's
+     own words end, exactly as the printed line does, and the Science NHS electrons go out
+     behind the society's name, exactly as its printed rings do.
+
+     Nothing is drawn at all for a reader who has asked for less movement. */
+  function tracePart(t, id) {
+    if (!t || !t.d) return '';
+    return '<path class="mo-trace" pathLength="1000" d="' + esc(t.d) + '" ' +
+      'stroke="' + esc(t.colour || '#fff') + '" stroke-width="' + (t.width || 5) + '" ' +
+      'style="--beat:' + (t.seconds || 2) + 's"/>';
+  }
+  function orbitPart(o, id) {
+    if (!o || !o.rx) return '';
+    var secs = o.seconds || 7, dot = o.r || 6, out = '';
+    /* the same three rings the crest carries, and one electron on each, evenly spread */
+    [0, 60, 120].forEach(function (deg, i) {
+      var ref = 'o-' + id + '-' + i;
+      out += '<g transform="translate(' + o.cx + ' ' + o.cy + ') rotate(' + deg + ')">' +
+        '<path id="' + ref + '" fill="none" d="M' + (-o.rx) + ' 0' +
+          'a' + o.rx + ' ' + o.ry + ' 0 1 0 ' + (2 * o.rx) + ' 0' +
+          'a' + o.rx + ' ' + o.ry + ' 0 1 0 ' + (-2 * o.rx) + ' 0"/>' +
+        '<g class="mo-e">' +
+          '<circle r="' + (dot * 3.4) + '" fill="' + esc(o.glow || o.colour) + '" opacity=".16"/>' +
+          '<circle r="' + (dot * 1.9) + '" fill="' + esc(o.glow || o.colour) + '" opacity=".24"/>' +
+          '<circle r="' + dot + '" fill="' + esc(o.colour) + '"/>' +
+          '<animateMotion dur="' + secs + 's" repeatCount="indefinite" ' +
+            'begin="-' + (secs / 3 * i).toFixed(2) + 's">' +
+            '<mpath href="#' + ref + '" xlink:href="#' + ref + '"/>' +
+          '</animateMotion>' +
+        '</g></g>';
+    });
+    return out;
+  }
+  /* one gradient mask across the plate, from the fades the banner asked for */
+  function fadeMask(m, id) {
+    if (!m.fadeIn && !m.fadeOut) return ['', ''];
+    var stops = [];
+    if (m.fadeIn)  stops.push([m.fadeIn[0], '#000'], [m.fadeIn[1], '#fff']);
+    else           stops.push([0, '#fff']);
+    if (m.fadeOut) stops.push([m.fadeOut[0], '#fff'], [m.fadeOut[1], '#000']);
+    else           stops.push([m.w || 1800, '#fff']);
+    var w = m.w || 1800;
+    return ['<defs><linearGradient id="g-' + id + '" gradientUnits="userSpaceOnUse" ' +
+      'x1="0" x2="' + w + '" y1="0" y2="0">' +
+      stops.map(function (st) {
+        return '<stop offset="' + (st[0] / w).toFixed(4) + '" stop-color="' + st[1] + '"/>';
+      }).join('') +
+      '</linearGradient><mask id="mk-' + id + '"><rect width="100%" height="100%" ' +
+      'fill="url(#g-' + id + ')"/></mask></defs>', ' mask="url(#mk-' + id + ')"'];
+  }
+  function motion(d) {
+    var m = d.motion;
+    if (!m || still) return '';
+    var body = tracePart(m.trace, d.id) + orbitPart(m.orbits, d.id);
+    if (!body) return '';
+    var mk = fadeMask(m, d.id);
+    return '<svg class="door__motion" viewBox="0 0 ' + (m.w || 1800) + ' ' + (m.h || 614) + '" ' +
+      'preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" ' +
+      'xmlns:xlink="http://www.w3.org/1999/xlink">' +
+      mk[0] + '<g' + mk[1] + '>' + body + '</g></svg>';
+  }
   function chips(d) {
     if (!d.topics || !d.topics.length) return '';
     return '<ul class="door__chips" aria-label="Topics">' + d.topics.map(function (t) {
@@ -103,7 +176,7 @@
     if (rgbOf(d.ground)) a.style.setProperty('--ground-rgb', rgbOf(d.ground));
     if (d.status === 'local') { a.target = '_blank'; a.rel = 'noopener'; }
     a.setAttribute('aria-label', plain(d.title) + ' — ' + STATUS[d.status]);
-    a.innerHTML = picture(d, eager) +
+    a.innerHTML = picture(d, eager) + motion(d) +
       '<span class="door__veil" aria-hidden="true"></span><span class="door__light" aria-hidden="true"></span>' +
       '<div class="door__body">' +
         '<span class="door__no">' + esc(d.eyebrow) + '</span>' +

@@ -17,6 +17,27 @@
   var OPEN    = (H.open || []).concat(L.open || []);
   var CREDITS = (H.credits || []).concat(L.credits || []);
 
+  /* Under the shelves stand the wide doors — the school's own clubs and societies, each
+     with a website of its own. js/local.js names them and tags each one with a kind; this
+     says which kinds there are, what each band is called, and the order they stand in.
+     A school with none of a kind simply gets no band. Adding a band is one line here;
+     adding a club or a society is one entry in js/local.js. */
+  var BANDS = [
+    { kind:'cca',     label:'Co-curricular activities' },
+    { kind:'society', label:'Societies' }
+  ];
+  function isWide(d) {
+    return BANDS.some(function (b) { return b.kind === d.kind; });
+  }
+  /* "#F7EBD5" → "247 235 213", so a gradient can fade a banner's own ground away to
+     nothing instead of drifting through grey on the way out. */
+  function rgbOf(hex) {
+    var h = String(hex || '').replace('#', '');
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    if (h.length !== 6) return null;
+    return [0, 2, 4].map(function (i) { return parseInt(h.substr(i, 2), 16); }).join(' ');
+  }
+
   /* the strings that name the school, if this edition has one */
   (function (site) {
     if (!site) return;
@@ -51,7 +72,7 @@
 
   function picture(d, eager) {
     var b = 'assets/doors/' + d.id;
-    var sizes = d.kind === 'cca' ? '100vw' : '(max-width:900px) 100vw, 45vw';
+    var sizes = isWide(d) ? '100vw' : '(max-width:900px) 100vw, 45vw';
     var set = function (ext) { return [900, 1400, 1800].map(function (w) { return b + '-' + w + '.' + ext + ' ' + w + 'w'; }).join(', '); };
     return '<picture>' +
       '<source type="image/webp" srcset="' + set('webp') + '" sizes="' + sizes + '">' +
@@ -66,20 +87,23 @@
       return '<li class="chip">' + (t.no != null ? '<b>' + t.no + '</b>' : '') + esc(t.t) + '</li>';
     }).join('') + '</ul>';
   }
-  function build(d, i) {
+  function build(d, eager) {
     var a = document.createElement('a');
     var closed = !(d.url && (d.status === 'live' || d.status === 'local'));
     a.className = 'door door--' + d.id +
       (d.tone === 'light' ? ' door--light' : '') +
-      (d.kind === 'cca' ? ' door--wide' : '') +
+      (isWide(d) ? ' door--wide' : '') +
       (closed ? ' door--closed' : '');
     a.href = d.url || '#';
     a.dataset.id = d.id;
     a.style.setProperty('--accent', d.accent);
     a.style.setProperty('--focus', d.focus || '50% 50%');
+    /* a wide door's words sit on a fade of the banner's own ground, so each banner brings
+       the colour its fade is made of */
+    if (rgbOf(d.ground)) a.style.setProperty('--ground-rgb', rgbOf(d.ground));
     if (d.status === 'local') { a.target = '_blank'; a.rel = 'noopener'; }
     a.setAttribute('aria-label', plain(d.title) + ' — ' + STATUS[d.status]);
-    a.innerHTML = picture(d, i < 2) +
+    a.innerHTML = picture(d, eager) +
       '<span class="door__veil" aria-hidden="true"></span><span class="door__light" aria-hidden="true"></span>' +
       '<div class="door__body">' +
         '<span class="door__no">' + esc(d.eyebrow) + '</span>' +
@@ -89,7 +113,7 @@
         '<div class="door__foot">' +
           '<span class="door__status door__status--' + d.status + '">' + STATUS[d.status] + '</span>' +
           (d.detail ? '<span class="door__detail">' + esc(d.detail) + '</span>' : '') +
-          '<span class="door__go">' + (closed ? 'Not yet' : (d.kind === 'cca' ? 'Visit' : 'Enter')) + '</span>' +
+          '<span class="door__go">' + (closed ? 'Not yet' : (isWide(d) ? 'Visit' : 'Enter')) + '</span>' +
         '</div>' +
       '</div>';
     wire(a, d);
@@ -122,9 +146,19 @@
   function on(id)  { Object.keys(doorEls).forEach(function (k) { doorEls[k].classList.toggle('is-on', k === id); }); }
   function off(id) { if (doorEls[id]) doorEls[id].classList.remove('is-on'); }
 
-  DOORS.forEach(function (d, i) {
-    var a = build(d, i);
-    (d.kind === 'cca' && wideEl ? wideEl : doorsEl).appendChild(a);
+  DOORS.filter(function (d) { return !isWide(d); })
+       .forEach(function (d, i) { doorsEl.appendChild(build(d, i < 2)); });
+
+  /* each band, in the order declared, with its own doors beneath it. Nothing is written
+     when a band has no doors, so the open edition's section stays empty and hides itself. */
+  if (wideEl) BANDS.forEach(function (b) {
+    var mine = DOORS.filter(function (d) { return d.kind === b.kind; });
+    if (!mine.length) return;
+    var band = document.createElement('div');
+    band.className = 'band';
+    band.innerHTML = '<h2 class="eyebrow">' + esc(b.label) + '</h2>';
+    wideEl.appendChild(band);
+    mine.forEach(function (d) { wideEl.appendChild(build(d, false)); });
   });
 
   /* ---------- 2. the idle tour ----------
@@ -133,7 +167,7 @@
      picks up again after a long pause. Not on a phone, where every
      door already stands open. */
   var tour = null, resume = null, i = 0;
-  var TOURABLE = DOORS.filter(function (d) { return d.kind !== 'cca'; });
+  var TOURABLE = DOORS.filter(function (d) { return !isWide(d); });
   var TOUR_MS = 5200;
   function canTour() { return !still && !narrow.matches && TOURABLE.length > 1; }   /* an iPad in landscape gets the tour too */
   function startTour() { if (tour || !canTour()) return; step(); tour = setInterval(step, TOUR_MS); }

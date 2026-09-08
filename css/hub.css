@@ -197,9 +197,11 @@ a{color:inherit;text-decoration:none}
 .door--light .door__status--local{color:#0B6A8C;border-color:rgba(11,106,140,.45);background:rgba(11,106,140,.08)}
 .door--light.is-on .door__title{text-shadow:0 0 28px rgba(247,246,242,.9)}
 
-/* the wide door beneath the shelves */
+/* the wide doors beneath the shelves, in bands — the clubs, then the societies */
 .beyond{display:flex;flex-direction:column;gap:8px}
-.beyond:empty{display:none}   /* the open edition has no CCA door */
+.beyond:empty{display:none}   /* the open edition has no doors of its own */
+.beyond .band{margin-top:10px}
+.beyond .band:first-child{margin-top:2px}
 /* idle: a short door, the banner running underneath the words at full width.
    open: the door grows and the banner slides right into a box of exactly its own shape —
    --bw is that box's width, the open height × the banner's 1800/628 — so it sits whole, just
@@ -210,7 +212,10 @@ a{color:inherit;text-decoration:none}
      --bw is always that height × the banner's 1800/614. */
   --bh:clamp(240px,min(calc(34vw - 180px),42dvh),560px);
   --bw:clamp(704px,min(calc(99.7vw - 528px),123.1dvh),1642px);
-  flex:none;height:clamp(120px,9.5vw,190px);cursor:pointer;background:#F7EBD5;
+  /* the banner's own ground, as channels so a gradient can fade it to nothing without
+     drifting through grey. js/hub.js sets it per door from the register's `ground`. */
+  --ground-rgb:247 235 213;
+  flex:none;height:clamp(120px,9.5vw,190px);cursor:pointer;background:rgb(var(--ground-rgb));
   transition:height .75s var(--ease)
 }
 /* open, the door is as tall as the words need or the banner needs, whichever is more */
@@ -221,7 +226,7 @@ a{color:inherit;text-decoration:none}
 .door--wide .door__body{right:auto;max-width:min(60%,700px)}
 .door--wide.is-on .door__body{max-width:calc(100% - var(--bw) - 10px)}
 .door--wide .door__lede{font-size:13px;line-height:1.5;max-width:none}
-.door--wide .door__veil{background:linear-gradient(to right,#F7EBD5 0,#F7EBD5 24%,rgba(247,235,213,.55) 33%,rgba(243,241,235,0) 42%)}
+.door--wide .door__veil{background:linear-gradient(to right,rgb(var(--ground-rgb)) 0,rgb(var(--ground-rgb)) 24%,rgb(var(--ground-rgb)/.55) 33%,rgb(var(--ground-rgb)/0) 42%)}
 .door--wide.is-on .door__veil{background:none}
 .door--wide .door__title{font-size:clamp(19px,1.7vw,27px)}
 
@@ -333,7 +338,7 @@ noscript p{padding:20px}
   .door--wide .door__body,.door--wide.is-on .door__body{max-width:none}
   .door--wide .door__img,.door--wide.is-on .door__img{object-position:50% 0}
   .door--wide .door__body{right:0;max-width:none}
-  .door--wide .door__veil{background:linear-gradient(to top,#F7EBD5 0,#F7EBD5 40%,rgba(243,241,235,0) 62%)}
+  .door--wide .door__veil{background:linear-gradient(to top,rgb(var(--ground-rgb)) 0,rgb(var(--ground-rgb)) 40%,rgb(var(--ground-rgb)/0) 62%)}
   .open__list{grid-template-columns:1fr}
   .cr{white-space:normal}
 }

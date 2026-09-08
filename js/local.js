@@ -24,11 +24,19 @@
            society here is all it takes for it to appear.
            `ground` is the flat colour at the banner's left edge — the
            words fade out of it, so it must match the image.
+           `plate` is the banner's own pixel size, [w,h] — the door's
+           box is cut to that shape, so a banner drawn short is not
+           given a deep box with the picture adrift in it. Default
+           [1800,614].
+           `bleed` says the banner is drawn to be cut at the sides. The
+           open door then fills its height with it instead of fitting it
+           whole, which shows it half as large again — only set it if
+           nothing that must be read comes near either end.
            `motion` is the moving part of the banner, given as the
-           geometry of what is printed on it, in the banner's own
-           1800x614 coordinates. js/hub.js draws it live on top, so it
-           lands on the printed art at every size. Change the banner and
-           these numbers change with it.
+           geometry of what is printed on it, in the plate's own
+           coordinates. js/hub.js draws it live on top, so it lands on
+           the printed art at every size. Change the banner and these
+           numbers change with it.
    open    extra entries in "Open now"
    credits extra image credits
    ============================================================ */
@@ -61,13 +69,19 @@ window.HUB_LOCAL = {
       blurb:'Here you take a question in medicine and follow it the way a researcher would: you read what has already been published, weigh it, write it up, and then stand in front of a panel and say what you found. A teacher registers you in the summer, the research runs through the autumn, the forum is held in the spring, and the strongest reviews are published in the journal that follows.',
       topics:[ {t:'Reading the literature'}, {t:'Writing a review'}, {t:'The forum'}, {t:'The journal'} ],
       status:'live', url:'https://medicalreviewkorea.org/', detail:'Years 10 to 12 · through a teacher',
-      accent:'#5FA5FF', focus:'50% 50%', ground:'#02265C',
+      accent:'#5FA5FF', focus:'50% 50%', ground:'#00265C',
+      /* Shorter than the other two, and cut at both ends: the wordmark is very wide for its
+         height, so on a deep plate it sat in a sea of blue and shrank again when the door
+         opened. The trace runs off the left and the rule off the right — those ends are
+         meant to go. The wordmark itself keeps to 760-1319, which survives the cut at every
+         width the page is used at. */
+      plate:[1800, 420], bleed:true,
       /* the trace printed on the plate, so a beat can run along it into the wordmark.
-         fadeIn is where the printed line itself comes up out of the ground — past the
-         words a shut door lays over its left third. */
-      motion:{ fadeIn:[470, 720], trace:{ colour:'#FFE2E4', width:5.2, seconds:2.1,
-        d:'M470 307 H700 L716 291 L734 323 L750 299 L766 307 H840 L856 285 L872 307 L886 243 ' +
-          'L904 371 L920 271 L936 307 H1000 L1014 295 L1028 319 L1042 303 L1056 307 H1136' } },
+         underWords is where a shut door lays its own words over the plate: the light holds
+         off until past them, so it never reads as a line struck through the title. */
+      motion:{ underWords:[640, 790], trace:{ colour:'#FFE2E4', width:4.8, seconds:2.1,
+        d:'M0 210 H300 L316 198 L332 222 L348 204 L364 210 H470 L488 190 L504 210 L518 132 ' +
+          'L538 292 L556 172 L572 210 H766' } },
       alt:'The Medical Review banner: the wordmark in white on royal blue, the red pulse from its own logo carried across the plate' },
 
     { id:'snhs', kind:'society', eyebrow:'Society · Student research',

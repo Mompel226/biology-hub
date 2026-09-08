@@ -91,11 +91,13 @@
        motion.trace   a light runs along a line: the pulse on the Medical Review plate
        motion.orbits  electrons run round an atom: the three rings on the Science NHS plate
 
-     The overlay sits above the picture, so it has to stop where the printed art does.
-     `fadeIn` and `fadeOut` are pairs of banner x-coordinates that fade the whole overlay
-     up and away again: the Medical Review pulse rises out of nothing where the shut door's
-     own words end, exactly as the printed line does, and the Science NHS electrons go out
-     behind the society's name, exactly as its printed rings do.
+     The overlay sits above the picture, so it has to stop where the printed art does, and
+     two different things stop it. `fadeOut` is a pair of banner x-coordinates where the
+     printed art itself goes behind something — the Science NHS rings pass behind the
+     society's name — so it holds in both states. `underWords` is where a *shut* door lays
+     its own words over the plate, and a light at full strength there would read as a line
+     struck through them; that one is lifted the moment the door opens and the words move
+     off the banner.
 
      Nothing is drawn at all for a reader who has asked for less movement. */
   function tracePart(t, id) {
@@ -103,6 +105,13 @@
     return '<path class="mo-trace" pathLength="1000" d="' + esc(t.d) + '" ' +
       'stroke="' + esc(t.colour || '#fff') + '" stroke-width="' + (t.width || 5) + '" ' +
       'style="--beat:' + (t.seconds || 2) + 's"/>';
+  }
+  /* the shut door's words lie over the left of the plate. In that state the picture is
+     width-bound, so a percentage across the door is a percentage across the banner. */
+  function underWordsMask(m, w) {
+    if (!m.underWords) return null;
+    return 'linear-gradient(to right,transparent ' + (100 * m.underWords[0] / w).toFixed(2) +
+           '%,#000 ' + (100 * m.underWords[1] / w).toFixed(2) + '%)';
   }
   function orbitPart(o, id) {
     if (!o || !o.rx) return '';
@@ -126,15 +135,14 @@
     });
     return out;
   }
+  /* the banner's own pixel size — everything the register says about a banner, the path it
+     hands over included, is in these coordinates */
+  function plateOf(d) { return d.plate || [1800, 614]; }
+
   /* one gradient mask across the plate, from the fades the banner asked for */
-  function fadeMask(m, id) {
-    if (!m.fadeIn && !m.fadeOut) return ['', ''];
-    var stops = [];
-    if (m.fadeIn)  stops.push([m.fadeIn[0], '#000'], [m.fadeIn[1], '#fff']);
-    else           stops.push([0, '#fff']);
-    if (m.fadeOut) stops.push([m.fadeOut[0], '#fff'], [m.fadeOut[1], '#000']);
-    else           stops.push([m.w || 1800, '#fff']);
-    var w = m.w || 1800;
+  function fadeMask(m, w, id) {
+    if (!m.fadeOut) return ['', ''];
+    var stops = [[0, '#fff'], [m.fadeOut[0], '#fff'], [m.fadeOut[1], '#000']];
     return ['<defs><linearGradient id="g-' + id + '" gradientUnits="userSpaceOnUse" ' +
       'x1="0" x2="' + w + '" y1="0" y2="0">' +
       stops.map(function (st) {
@@ -148,8 +156,8 @@
     if (!m || still) return '';
     var body = tracePart(m.trace, d.id) + orbitPart(m.orbits, d.id);
     if (!body) return '';
-    var mk = fadeMask(m, d.id);
-    return '<svg class="door__motion" viewBox="0 0 ' + (m.w || 1800) + ' ' + (m.h || 614) + '" ' +
+    var p = plateOf(d), mk = fadeMask(m, p[0], d.id);
+    return '<svg class="door__motion" viewBox="0 0 ' + p[0] + ' ' + p[1] + '" ' +
       'preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false" ' +
       'xmlns:xlink="http://www.w3.org/1999/xlink">' +
       mk[0] + '<g' + mk[1] + '>' + body + '</g></svg>';
@@ -166,11 +174,19 @@
     a.className = 'door door--' + d.id +
       (d.tone === 'light' ? ' door--light' : '') +
       (isWide(d) ? ' door--wide' : '') +
+      (d.bleed ? ' door--bleed' : '') +
       (closed ? ' door--closed' : '');
     a.href = d.url || '#';
     a.dataset.id = d.id;
     a.style.setProperty('--accent', d.accent);
     a.style.setProperty('--focus', d.focus || '50% 50%');
+    /* a wide door's box is cut to its banner's own shape, so a short banner is not given a
+       deep box with the picture floating in the middle of it */
+    if (isWide(d)) a.style.setProperty('--ar', (plateOf(d)[0] / plateOf(d)[1]).toFixed(5));
+    if (d.motion) {
+      var mask = underWordsMask(d.motion, plateOf(d)[0]);
+      if (mask) a.style.setProperty('--mo-mask', mask);
+    }
     /* a wide door's words sit on a fade of the banner's own ground, so each banner brings
        the colour its fade is made of */
     if (rgbOf(d.ground)) a.style.setProperty('--ground-rgb', rgbOf(d.ground));

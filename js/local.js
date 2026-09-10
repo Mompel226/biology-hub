@@ -105,8 +105,8 @@ window.HUB_LOCAL = {
         alt:'Charles Darwin\u2019s notebook page of 1837: the first sketch of a tree of life, under the words I think' },
 
       { id:'bryant', view:'bryant', eyebrow:'04 · The activity programme',
-        title:'Bryant', sub:'what Saturdays are for',
-        blurb:'Here you spend a Saturday going beyond the timetable, in a programme named after a climber: Sophie Bryant, mathematician, headmistress of North London Collegiate, the first woman in England to hold a Doctor of Science, and twice up the Matterhorn.',
+        title:'Bryant', sub:'on Saturday mornings',
+        blurb:'Here you spend a Saturday morning going beyond the timetable, in a programme named after a climber: Sophie Bryant, mathematician, headmistress of North London Collegiate, the first woman in England to hold a Doctor of Science, and twice up the Matterhorn.',
         topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
         /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
            top third: the picture is pushed up until it does */
@@ -130,7 +130,7 @@ window.HUB_LOCAL = {
       lede:'Run by students, for students. Each door leads to the society\u2019s own site.' },
     { id:'bryant', kind:'bryant', label:'Bryant',
       eyebrow:'NLCS Jeju · Bryant', title:'<em>Bryant</em>',
-      lede:'The co-curricular and activity programme, on Saturdays, named after the second headmistress of North London Collegiate. Its doors will stand here as they open; hers is up already.' },
+      lede:'The co-curricular and activity programme, on Saturday mornings, named after the second headmistress of North London Collegiate. Its doors will stand here as they open; hers is up already.' },
     { id:'enterprises', kind:'enterprise', label:'Enterprises',
       eyebrow:'NLCS Jeju · Enterprises', title:'Community <em>enterprises</em>',
       lede:'Student projects for the people around us, on Jeju and across Korea. An enterprise here is measured by who it helps, not by what it makes. This section is being set up; its doors will stand here.' }

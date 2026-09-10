@@ -17,7 +17,20 @@
    the shared files across.
 
    site    strings that name the school
-   doors   extra doors, standing full width beneath the four shelves.
+   entry   THE FRONT OF THE BUILDING. Present, it stands a page of doors in
+           front of the revision hub: the first (`hero`, view "revision")
+           leads into the hub, the rest into a section each. The open
+           edition has no entry, so its index.html is the revision hub
+           itself, as it always was, with no way back to a school it does
+           not belong to. Each entry door needs an image at
+           assets/doors/<id>-900|1400|1800, like a shelf.
+   sections
+           the pages behind the entry doors. Each is a masthead and the
+           wide banner doors below that carry its `kind`. Adding a club or
+           a society is still one entry in `doors`; it lands on the page
+           whose kind it names, and its name appears on that page's entry
+           door by itself.
+   doors   the wide doors, one per club, society or activity.
            `kind` decides the band a door falls under: "cca" for a
            co-curricular activity, "society" for a society. js/hub.js
            declares the bands and their order; adding another club or
@@ -49,11 +62,77 @@ window.HUB_LOCAL = {
 
   site: {
     title:'Biology Hub — NLCS Jeju',
-    description:'Every interactive Biology app at NLCS Jeju behind four doors — Foundations, the human body, Plants, Life on Earth — and beneath them the school\'s own clubs and societies: BioGuardians, Medical Review and the Science National Honor Society. Cambridge IGCSE 0610, with IB as a layer.',
+    description:'Biology at NLCS Jeju behind five doors: IGCSE revision — Foundations, the human body, Plants, Life on Earth — then the school\'s co-curricular activities, its student societies, Bryant, and student enterprises. Cambridge IGCSE 0610, with IB as a layer.',
     eyebrow:'Cambridge IGCSE Biology 0610 · NLCS Jeju',
     maker:'Made by <strong>Dr Daniel Mompel Riera</strong> · Biology, NLCS Jeju',
     byline:'Made by <strong>Dr Daniel Mompel Riera</strong> · NLCS Jeju · <a href="mailto:dmompelriera@nlcsjeju.kr">dmompelriera@nlcsjeju.kr</a>'
   },
+
+  /* ── the front of the building ─────────────────────────────
+     One movement per door, in the second person. The section doors take their chips and
+     their "n doors" line from the doors below by themselves, so a club added there appears
+     on its entry door without another edit. */
+  entry: {
+    crumb:'Biology Hub',
+    eyebrow:'NLCS Jeju · Biology',
+    title:'Biology <em>Hub</em>',
+    lede:'Five doors. The first is your revision for the exam; the other four are what Biology at NLCS Jeju does beyond it.',
+    docTitle:'Biology Hub — NLCS Jeju',
+    /* what the revision page calls itself once you are through the first door */
+    revisionTitle:'IGCSE <em>Revision</em>',
+    revisionDocTitle:'IGCSE Revision — Biology Hub, NLCS Jeju',
+
+    doors: [
+      { id:'revision', hero:true, view:'revision', eyebrow:'01 · IGCSE revision',
+        title:'Revise the <em>whole subject</em>',
+        blurb:'Here you go in to revise. Four shelves, one for each part of the subject: behind each is a map you point at, and behind the map are the labs, where the questions mark themselves.',
+        topics:[ {t:'Foundations'}, {t:'The human body'}, {t:'Plants'}, {t:'Life on Earth'} ],
+        status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
+        alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
+
+      { id:'ccas', view:'ccas', eyebrow:'02 · CCAs',
+        title:'Beyond the <em>syllabus</em>',
+        blurb:'Here you do biology with your hands, after lessons: an aquarium to keep alive, a forum to stand up in, a journal to write for.',
+        status:'live', accent:'#2DD4BF', tone:'dark', focus:'55% 50%',
+        alt:'Koi in a pond, seen from above, with lotus leaves at the edge' },
+
+      { id:'societies', view:'societies', eyebrow:'03 · Societies',
+        title:'Run by <em>students</em>',
+        blurb:'Here you do science the way it is really done, and then publish it: a question of your own, evidence, a paper your peers read before anyone else does.',
+        status:'live', accent:'#B8860B', tone:'light', focus:'50% 14%',
+        alt:'Charles Darwin\u2019s notebook page of 1837: the first sketch of a tree of life, under the words I think' },
+
+      { id:'bryant', view:'bryant', eyebrow:'04 · Bryant',
+        title:'Named after a <em>climber</em>',
+        blurb:'Here you go beyond the timetable, in the spirit of Sophie Bryant: mathematician, headmistress of North London Collegiate, the first woman in England to hold a Doctor of Science, and twice up the Matterhorn.',
+        topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
+        /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
+           top third: the picture is pushed up until it does */
+        status:'live', detail:'Who she was', accent:'#C9A227', tone:'dark', focus:'50% 100%',
+        alt:'Sophie Bryant, photographed in the 1880s or early 1890s: a woman in a dark high-collared dress, looking straight at the camera' },
+
+      { id:'enterprises', view:'enterprises', eyebrow:'05 · Enterprises',
+        title:'Made to <em>sell</em>',
+        blurb:'Here you take what you know and make something people want — grown, brewed, bottled or built — and run it as a business.',
+        status:'live', accent:'#D99A2B', tone:'light', focus:'50% 45%',
+        alt:'Honeycomb: capped cells of white wax above open cells full of honey' }
+    ]
+  },
+
+  sections: [
+    { id:'ccas', kind:'cca', label:'Co-curricular activities',
+      eyebrow:'NLCS Jeju · Co-curricular activities', title:'Co-curricular <em>activities</em>',
+      lede:'Biology after lessons. Each of these has a home of its own, and its door takes you there.' },
+    { id:'societies', kind:'society', label:'Societies',
+      eyebrow:'NLCS Jeju · Societies', title:'Student <em>societies</em>',
+      lede:'Run by students, for students. Each door leads to the society\u2019s own site.' },
+    { id:'bryant', kind:'bryant', label:'Bryant',
+      eyebrow:'NLCS Jeju · Bryant', title:'<em>Bryant</em>',
+      lede:'The co-curricular and activity programme, named after the second headmistress of North London Collegiate. Its doors will stand here as they open; hers is up already.' },
+    { id:'enterprises', kind:'enterprise', label:'Enterprises',
+      eyebrow:'NLCS Jeju · Enterprises', title:'Student <em>enterprises</em>',
+      lede:'Ideas that became businesses. This section is being set up; its doors will stand here.' }
+  ],
 
   doors: [
     { id:'bioguardians', kind:'cca', eyebrow:'CCA · Beyond the syllabus',
@@ -95,7 +174,31 @@ window.HUB_LOCAL = {
       motion:{ fadeOut:[930, 1035],
                orbits:{ cx:690, cy:307, rx:452, ry:170, r:6.5, seconds:7.4,
                         colour:'#FFF0C2', glow:'#E3B93C' } },
-      alt:'The Science National Honor Society banner: the society crest in gold and purple on navy, standing on the orbits of the atom it carries, with an electron running each ring' }
+      alt:'The Science National Honor Society banner: the society crest in gold and purple on navy, standing on the orbits of the atom it carries, with an electron running each ring' },
+
+    /* A section with nothing in it yet still needs to say what it is for. These two doors
+       wear their section\u2019s own picture (`img`) and stay shut. Replace each with the real
+       doors when there is something to open — one entry per activity, as above. */
+    /* The Bryant page opens with the woman it is named after. `hero` makes this a full-width
+       door like the one on the front, words always out, rather than a banner. */
+    { id:'sophie-bryant', kind:'bryant', hero:true, name:'Sophie Bryant',
+      eyebrow:'Dr Sophie Bryant \u00B7 1850\u20131922',
+      title:'The woman it is <em>named after</em>',
+      blurb:'Sophie Bryant taught mathematics at North London Collegiate from 1875 and led the school from 1895 to 1918. In 1884 she became the first woman in England to be awarded a Doctor of Science. She rowed, swam and cycled, twice climbed the Matterhorn, and died in the Alps at 72, walking near Chamonix. The programme that carries her name takes you out beyond the timetable in her spirit.',
+      topics:[ {t:'Dublin, 1850'}, {t:'DSc, 1884'}, {t:'Headmistress, 1895\u20131918'}, {t:'Royal Commission, 1894'}, {t:'Matterhorn, twice'} ],
+      status:'live', url:'https://en.wikipedia.org/wiki/Sophie_Bryant', detail:'Her life, in full', go:'Read more',
+      accent:'#C9A227', tone:'dark', focus:'100% 50%',
+      alt:'Sophie Bryant, photographed in the 1880s or early 1890s, at the right of a dark plate: a woman in a dark high-collared dress, looking straight at the camera' },
+
+    /* A section with nothing in it yet still needs to say what it is for: one shut door, full
+       width like a hero, wearing the section\u2019s own picture (`img`). Replace it with the real
+       doors when there is something to open \u2014 one entry per enterprise, like the clubs above. */
+    { id:'enterprises-soon', kind:'enterprise', hero:true, img:'enterprises', eyebrow:'Enterprises \u00B7 Coming',
+      title:'The doors are <em>not up yet</em>',
+      blurb:'When this section opens, each student enterprise will have a door here that takes you to it. Nothing to open for now.',
+      status:'planned', url:null, note:'Enterprises is not open yet. Nothing here to click, for now.',
+      accent:'#B8860B', tone:'light', focus:'50% 55%',
+      alt:'Honeycomb: capped cells of white wax above open cells full of honey' }
   ],
 
   open: [],
@@ -103,6 +206,16 @@ window.HUB_LOCAL = {
   credits: [
     { door:'BioGuardians', text:'banner by Daniel Mompel Riera for the BioGuardians CCA', licence:'', url:'' },
     { door:'Medical Review', text:'banner set from the Medical Review wordmark, used with permission', licence:'', url:'https://medicalreviewkorea.org/' },
-    { door:'Science NHS', text:'banner set from the society crest, used with permission', licence:'', url:'https://nlcsjejusnhs.org/' }
+    { door:'Science NHS', text:'banner set from the society crest, used with permission', licence:'', url:'https://nlcsjejusnhs.org/' },
+    { door:'Revision',    text:'sea anemones, Ernst Haeckel, Kunstformen der Natur (1904), plate 49', licence:'public domain',
+      url:'https://commons.wikimedia.org/wiki/File:Haeckel_Actiniae.jpg' },
+    { door:'CCAs',        text:'koi pond, GeorgeTan#5', licence:'CC0',
+      url:'https://commons.wikimedia.org/wiki/File:Koi_pond_-_Flickr_-_GeorgeTan%5E5.jpg' },
+    { door:'Societies',   text:'Darwin\u2019s notebook B, 1837 \u2014 the first tree', licence:'public domain',
+      url:'https://commons.wikimedia.org/wiki/File:Darwin_Tree_1837.png' },
+    { door:'Bryant',      text:'Sophie Bryant, photomechanical print, Rijksmuseum', licence:'CC0',
+      url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
+    { door:'Enterprises', text:'honeycomb, Einebillion', licence:'CC BY 4.0',
+      url:'https://commons.wikimedia.org/wiki/File:Honey_comb_with_capped_honey.jpg' }
   ]
 };

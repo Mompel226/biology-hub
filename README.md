@@ -2,10 +2,11 @@
 
 <h1>🧬 &nbsp;Biology Hub</h1>
 
-**The front door to every interactive Biology app at NLCS Jeju.**
+**The front door to everything Biology does at NLCS Jeju.**
 
-Four doors — Foundations, the human body, Plants, Life on Earth — and one more, beyond the
-syllabus, for the BioGuardians aquarium.
+Five doors. The first is IGCSE revision — Foundations, the human body, Plants, Life on Earth.
+The other four are what the department does beyond the exam: the co-curricular activities, the
+student societies, Bryant, and student enterprises.
 
 [![Open the site](https://img.shields.io/badge/▶_Open_the_site-0969DA?style=for-the-badge&logoColor=white)](https://mompel226.github.io/biology-hub/)
 
@@ -18,14 +19,17 @@ by **Dr Daniel Mompel Riera** · NLCS Jeju
 
 </div>
 
-![The Biology Hub: four doors, with the human body open](docs/img/screen.jpg)
+![The Biology Hub's front: revision across the top, and four doors beneath](docs/img/screen.jpg)
 
 ---
 
 ## Where everything is
 
-A student goes **front door → a shelf → a lab**. Each shelf is a map you point at; behind it
-are the labs, where the questions are and where they mark themselves.
+A student goes **front door → IGCSE Revision → a shelf → a lab**. Each shelf is a map you point
+at; behind it are the labs, where the questions are and where they mark themselves. The other
+four doors on the front lead to a page each: `…/#ccas`, `…/#societies`, `…/#bryant` and
+`…/#enterprises`. `…/#revision` opens the revision hub directly, and the older links still
+work — `…/#plants` opens that shelf and `…/#y10` opens a year.
 
 | Door | Topics (0610) | Behind it |
 |---|---|---|

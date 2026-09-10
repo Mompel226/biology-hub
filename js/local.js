@@ -181,6 +181,23 @@ window.HUB_LOCAL = {
     /* A section with nothing in it yet still needs to say what it is for. These two doors
        wear their section\u2019s own picture (`img`) and stay shut. Replace each with the real
        doors when there is something to open — one entry per activity, as above. */
+    /* The Veterinary Society has no site of its own, so its door leads to a page inside this
+       hub: vetsoc/index.html, with the magazine, the people who made it, and the address to
+       write to. The plate is a flat ground; the mark is drawn by the page (`motion.draw`), so
+       it draws itself when the door opens and stands finished when it is shut. The numbers come
+       from the script that drew it, and the page carries the same mark inline. */
+    { id:'vetsoc', kind:'society', name:'Veterinary Society', eyebrow:'Society \u00B7 Animals and disease',
+      title:'<em>Veterinary Society</em> \u2014 a magazine about Jeju\u2019s animals',
+      blurb:'Here you read what the society found out about the animals of Jeju and what makes them ill: the pigs, the cattle, the chickens and the horses, each written up by a student. Issue 1 of Island Immunity is behind this door, with the names of those who wrote it, and the address to write to if you want to join.',
+      topics:[ {t:'Island Immunity, issue 1'}, {t:'Pigs \u00B7 cattle \u00B7 chickens \u00B7 horses'}, {t:'Join: write to the chair'} ],
+      status:'live', url:'vetsoc/', detail:'Chair: Henry Yuan', go:'Visit',
+      accent:'#F5A623', ground:'#12262B', plate:[1800, 614],
+      motion:{ draw:{
+        paths:[{"d": "M 1178 74 C 1164 112 1188 142 1224 150", "width": 10, "colour": "#F3E7C9", "seconds": 0.45}, {"d": "M 1302 76 C 1310 116 1286 144 1252 150", "width": 10, "colour": "#F3E7C9", "seconds": 0.45}, {"d": "M 1238 150 C 1228 186 1188 226 1150 268 C 1118 304 1084 332 1056 360 C 1034 382 1028 408 1046 422 C 1066 436 1094 430 1114 416 C 1140 408 1186 416 1230 412 C 1280 408 1316 374 1312 324 C 1308 288 1278 256 1236 242", "width": 10, "colour": "#F3E7C9", "seconds": 2.4}, {"d": "M 1290 144 C 1340 180 1374 264 1378 378", "width": 7, "colour": "#9DB7AE", "seconds": 0.6}, {"d": "M 1304 168 C 1328 212 1336 274 1332 340", "width": 6, "colour": "#9DB7AE", "seconds": 0.5}, {"d": "M 1320 196 C 1344 240 1352 294 1350 356", "width": 6, "colour": "#9DB7AE", "seconds": 0.5}, {"d": "M 1290 404 C 1310 430 1326 462 1336 498", "width": 7, "colour": "#9DB7AE", "seconds": 0.5}, {"d": "M 1054 376 C 1064 370 1074 372 1080 380", "width": 7, "colour": "#F3E7C9", "seconds": 0.3}, {"d": "M 1060 410 C 1074 414 1088 414 1100 408", "width": 6, "colour": "#F3E7C9", "seconds": 0.3}],
+        marks:[{"cx": 1212, "cy": 234, "r": 27, "colour": "#F3E7C9", "width": 9, "fill": "none"}, {"cx": 1212, "cy": 234, "r": 12, "fill": "#F5A623"}],
+        text:[{"x": 1420, "y": 268, "text": "Veterinary", "size": 76, "family": "Fraunces, Georgia, serif", "style": "italic", "weight": 400, "fill": "#F3E7C9"}, {"x": 1420, "y": 344, "text": "Society", "size": 76, "family": "Fraunces, Georgia, serif", "style": "normal", "weight": 400, "fill": "#F3E7C9"}, {"x": 1424, "y": 386, "text": "NLCS JEJU", "size": 20, "family": "'IBM Plex Mono', monospace", "spacing": 5, "fill": "#9DB7AE"}] } },
+      alt:'The Veterinary Society mark: a stethoscope drawn as a horse\u2019s head, the chest piece its eye, beside the words Veterinary Society, NLCS Jeju' },
+
     /* The Bryant page opens with the woman it is named after. `hero` makes this a full-width
        door like the one on the front, words always out, rather than a banner. */
     { id:'sophie-bryant', kind:'bryant', hero:true, name:'Sophie Bryant',
@@ -209,6 +226,7 @@ window.HUB_LOCAL = {
     { door:'BioGuardians', text:'banner by Daniel Mompel Riera for the BioGuardians CCA', licence:'', url:'' },
     { door:'Medical Review', text:'banner set from the Medical Review wordmark, used with permission', licence:'', url:'https://medicalreviewkorea.org/' },
     { door:'Science NHS', text:'banner set from the society crest, used with permission', licence:'', url:'https://nlcsjejusnhs.org/' },
+    { door:'Veterinary Society', text:'mark drawn for the society by Daniel Mompel Riera: a stethoscope that is a horse\u2019s head', licence:'', url:'vetsoc/' },
     { door:'Revision',    text:'sea anemones, Ernst Haeckel, Kunstformen der Natur (1904), plate 49', licence:'public domain',
       url:'https://commons.wikimedia.org/wiki/File:Haeckel_Actiniae.jpg' },
     { door:'CCAs',        text:'koi pond, GeorgeTan#5', licence:'CC0',

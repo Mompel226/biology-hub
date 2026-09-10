@@ -76,34 +76,36 @@ window.HUB_LOCAL = {
     crumb:'Biology Hub',
     eyebrow:'NLCS Jeju · Biology',
     title:'Biology <em>Hub</em>',
-    lede:'Five doors. The first is your revision for the exam; the other four are what Biology at NLCS Jeju does beyond it.',
+    lede:'Five doors. The first is where you revise: to learn, and to be ready for the IGCSE. The other four are what Biology at NLCS Jeju offers beyond the curriculum.',
+    /* said once over the row of four, so no door has to say it for itself */
+    rowLabel:'Beyond the curriculum',
     docTitle:'Biology Hub — NLCS Jeju',
     /* what the revision page calls itself once you are through the first door */
     revisionTitle:'IGCSE <em>Revision</em>',
     revisionDocTitle:'IGCSE Revision — Biology Hub, NLCS Jeju',
 
     doors: [
-      { id:'revision', hero:true, view:'revision', eyebrow:'01 · IGCSE revision',
-        title:'Revise the <em>whole subject</em>',
-        blurb:'Here you go in to revise. Four shelves, one for each part of the subject: behind each is a map you point at, and behind the map are the labs, where the questions mark themselves.',
+      { id:'revision', hero:true, view:'revision', eyebrow:'01 · Revision',
+        title:'IGCSE <em>Revision</em>', sub:'the whole subject, shelf by shelf',
+        blurb:'Here you go in to revise: to learn it properly, and to be ready when the IGCSE comes. Four shelves, one for each part of the subject: behind each is a map you point at, and behind the map are the labs, where the questions mark themselves.',
         topics:[ {t:'Foundations'}, {t:'The human body'}, {t:'Plants'}, {t:'Life on Earth'} ],
         status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
         alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
 
-      { id:'ccas', view:'ccas', eyebrow:'02 · CCAs',
-        title:'Beyond the <em>syllabus</em>',
-        blurb:'Here you do biology with your hands, after lessons: an aquarium to keep alive, a forum to stand up in, a journal to write for.',
+      { id:'ccas', view:'ccas', eyebrow:'02 · Co-curricular activities',
+        title:'CCAs', sub:'after lessons',
+        blurb:'Here you do biology with your hands after lessons: an aquarium to keep alive, a forum to stand up in, a journal to write for.',
         status:'live', accent:'#2DD4BF', tone:'dark', focus:'55% 50%',
         alt:'Koi in a pond, seen from above, with lotus leaves at the edge' },
 
-      { id:'societies', view:'societies', eyebrow:'03 · Societies',
-        title:'Run by <em>students</em>',
+      { id:'societies', view:'societies', eyebrow:'03 · Student societies',
+        title:'Societies', sub:'run by students',
         blurb:'Here you do science the way it is really done, and then publish it: a question of your own, evidence, a paper your peers read before anyone else does.',
         status:'live', accent:'#B8860B', tone:'light', focus:'50% 14%',
         alt:'Charles Darwin\u2019s notebook page of 1837: the first sketch of a tree of life, under the words I think' },
 
-      { id:'bryant', view:'bryant', eyebrow:'04 · Bryant',
-        title:'Named after a <em>climber</em>',
+      { id:'bryant', view:'bryant', eyebrow:'04 · The activity programme',
+        title:'Bryant', sub:'named after a climber',
         blurb:'Here you go beyond the timetable, in the spirit of Sophie Bryant: mathematician, headmistress of North London Collegiate, the first woman in England to hold a Doctor of Science, and twice up the Matterhorn.',
         topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
         /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
@@ -111,11 +113,11 @@ window.HUB_LOCAL = {
         status:'live', detail:'Who she was', accent:'#C9A227', tone:'dark', focus:'50% 100%',
         alt:'Sophie Bryant, photographed in the 1880s or early 1890s: a woman in a dark high-collared dress, looking straight at the camera' },
 
-      { id:'enterprises', view:'enterprises', eyebrow:'05 · Enterprises',
-        title:'Made to <em>sell</em>',
-        blurb:'Here you take what you know and make something people want — grown, brewed, bottled or built — and run it as a business.',
-        status:'live', accent:'#D99A2B', tone:'light', focus:'50% 45%',
-        alt:'Honeycomb: capped cells of white wax above open cells full of honey' }
+      { id:'enterprises', view:'enterprises', eyebrow:'05 · Community enterprises',
+        title:'Enterprises', sub:'for the community',
+        blurb:'Here you give something back. An enterprise here is a project for the people around us, on Jeju and across Korea, and it is measured by who it helps, not by what it makes. A blood donation drive is one of them.',
+        status:'live', accent:'#FF6B6B', tone:'dark', focus:'50% 50%',
+        alt:'Human blood under a scanning electron microscope: red blood cells, a white blood cell and a platelet' }
     ]
   },
 
@@ -130,8 +132,8 @@ window.HUB_LOCAL = {
       eyebrow:'NLCS Jeju · Bryant', title:'<em>Bryant</em>',
       lede:'The co-curricular and activity programme, named after the second headmistress of North London Collegiate. Its doors will stand here as they open; hers is up already.' },
     { id:'enterprises', kind:'enterprise', label:'Enterprises',
-      eyebrow:'NLCS Jeju · Enterprises', title:'Student <em>enterprises</em>',
-      lede:'Ideas that became businesses. This section is being set up; its doors will stand here.' }
+      eyebrow:'NLCS Jeju · Enterprises', title:'Community <em>enterprises</em>',
+      lede:'Student projects for the people around us, on Jeju and across Korea. An enterprise here is measured by who it helps, not by what it makes. This section is being set up; its doors will stand here.' }
   ],
 
   doors: [
@@ -195,10 +197,10 @@ window.HUB_LOCAL = {
        doors when there is something to open \u2014 one entry per enterprise, like the clubs above. */
     { id:'enterprises-soon', kind:'enterprise', hero:true, img:'enterprises', eyebrow:'Enterprises \u00B7 Coming',
       title:'The doors are <em>not up yet</em>',
-      blurb:'When this section opens, each student enterprise will have a door here that takes you to it. Nothing to open for now.',
+      blurb:'When this section opens, each enterprise will have a door here: what it does, who it helps, and how you join. A blood donation drive is one of them. Nothing to open for now.',
       status:'planned', url:null, note:'Enterprises is not open yet. Nothing here to click, for now.',
-      accent:'#B8860B', tone:'light', focus:'50% 55%',
-      alt:'Honeycomb: capped cells of white wax above open cells full of honey' }
+      accent:'#FF6B6B', tone:'dark', focus:'50% 50%',
+      alt:'Human blood under a scanning electron microscope: red blood cells, a white blood cell and a platelet' }
   ],
 
   open: [],
@@ -215,7 +217,7 @@ window.HUB_LOCAL = {
       url:'https://commons.wikimedia.org/wiki/File:Darwin_Tree_1837.png' },
     { door:'Bryant',      text:'Sophie Bryant, photomechanical print, Rijksmuseum', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
-    { door:'Enterprises', text:'honeycomb, Einebillion', licence:'CC BY 4.0',
-      url:'https://commons.wikimedia.org/wiki/File:Honey_comb_with_capped_honey.jpg' }
+    { door:'Enterprises', text:'human blood, SEM, Bruce Wetzel and Harry Schaefer, NCI', licence:'public domain, shown as a duotone',
+      url:'https://commons.wikimedia.org/wiki/File:SEM_blood_cells.jpg' }
   ]
 };

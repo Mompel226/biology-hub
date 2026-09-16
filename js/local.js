@@ -137,6 +137,18 @@ window.HUB_LOCAL = {
         detail:'Your record',   /* replaced by the counts once the tracker answers */
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 
+      /* The same place for a teacher in teacher mode: the assessment system itself — every
+         assessment's spreadsheet and the test copies — instead of their own record. There is NO
+         address here, on purpose: this file is public. The labs script gives it only to a
+         signed-in teacher on its private list, and the page behind it checks again with the
+         school's own Google sign-in before it shows a single link. `img:'mine'`: the same gel. */
+      { id:'system', personal:true, teacher:true, img:'mine', eyebrow:'Teachers only',
+        title:'Assessment <em>system</em>', sub:'every assessment spreadsheet',
+        blurb:'Here you open the Assessment Reflection System itself: each assessment’s spreadsheet, the test copies, and the tracker they all write to.',
+        status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
+        detail:'Teacher mode',
+        alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
+
       { id:'ccas', view:'ccas', eyebrow:'02 · Co-curricular activities',
         title:'CCAs', sub:'after lessons',
         blurb:'Here you do biology with your hands after lessons: an aquarium to keep alive, a forum to stand up in, a journal to write for.',

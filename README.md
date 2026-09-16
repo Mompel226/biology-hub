@@ -261,6 +261,83 @@ much is in there.
 
 ---
 
+## 🎓 The record card, top right
+
+<details>
+<summary><b>Sending a student to their own reflection page — and why it reads the tracker, not an assessment</b></summary>
+
+<br>
+
+The Assessment Reflection System builds every student a page of their own after each test:
+their scores, the topics they were weak on, what to revise next. The card top right takes
+them to it.
+
+**Two things decide the shape of this, and both are easy to get wrong.**
+
+**One — there is no per-student link.** The page works out which student to show from the
+Google account that opens it, checked at the far end, and its deployment is restricted to
+the school's own domain, so Google refuses anyone else before a line of script runs. A
+student who opens the bare address gets their own page and nobody else's. Nothing to look
+up, nothing to hand out, nothing that could carry one student's address into another's
+browser.
+
+**Two — there is no single assessment spreadsheet either.** Each assessment gets its own
+spreadsheet, its own copy of the reflection script, its own deployment and so its own
+address, and a fresh one is made for the next test. But every one of them writes into the
+**same** workbook: *Student Progress Tracker*, in the *Master Tracker* folder, which keeps
+**one row per student per assessment**. That workbook is what the student's page actually
+renders from — which is why all those different addresses show a student the same page.
+They are windows onto one thing.
+
+So the card asks the **tracker**. Point it at one assessment's spreadsheet and it would
+know about that test and no other, and would go stale the day you make the next one. Pointed
+at the tracker there is nothing to re-point, ever.
+
+| What comes back | What the card says |
+|---|---|
+| on the list, has reflected | their name, and **My record — *n* assessments →** (a true count, one row per assessment) |
+| has an unfinished reflection | **… · *n* unfinished** — counted separately, never added in. The card still links through, because the record page says what is missing and why |
+| only unfinished reflections | **My record — *n* unfinished →** — the page they land on explains there is no analysis until they finish |
+| on the list, never reflected | their name, and *your record starts at your first reflection* — no link to an empty page |
+| a teacher who has only used the TEST class | **My test record — *n* assessments →** |
+| signed in with a personal account | *sign in with your @school account* |
+| not signed in | *sign in to see your record* |
+| the check cannot be reached | *could not check just now — try again* |
+
+Matching is on the **email**, never the name — the same rule as the class list. The `TEST`
+tab is **included**: students never have rows there, so it changes nothing for them, and it is
+what lets you test the reflection form as yourself and see the card behave as a student's would.
+A row with no AssessmentID is ignored — older copies of the reflection script could append those.
+
+**Unfinished reflections** are read from their own tab in the tracker, *Unfinished reflections*,
+which the updated reflection script writes when a student submits incomplete. They are counted
+apart from finished assessments, and a paper that also has a finished row counts as finished.
+That tab's email column is headed **Student Email** on purpose: older copies of the reflection
+script look for a column called *Email*, so they never see these rows and can never show one to a
+student as a 0% result.
+
+**To switch it on** — three things, and it stays off until all three are done:
+
+1. `TRACKER_ID` and `SCHOOL_DOMAIN` at the top of `apps-script/Code.gs`. `TRACKER_ID` is the
+   long string in the **Student Progress Tracker**'s address, between `/d/` and `/edit` —
+   *not* an assessment's spreadsheet. Both are remembered in Script Properties, so pasting
+   a fresh copy of the script over the top never wipes them.
+2. **Deploy ▸ Manage deployments ▸ ✏️ ▸ Version: New version ▸ Deploy.** Editing alone
+   changes nothing, and until you do this the card says *could not check just now*.
+3. The `record` block and `googleClientId` in `js/local.js`. `record.url` is the address of
+   the student page — any deployment's will do, with `?page=student` on the end. Without
+   that suffix the address opens the reflection **form** instead of the record.
+
+Then **🧪 Biology Labs ▸ 🩺 Check the set-up** names the tracker back to you, lists its
+cohort tabs and counts the rows in them. If you have pasted an assessment's spreadsheet by
+mistake it says so — that sheet has no *Class of ____* tabs, which is how it can tell.
+
+Leave any of it empty and no card appears; nothing else on the page changes.
+
+</details>
+
+---
+
 ## 🗂️ Once it is running — what you actually do
 
 <details>

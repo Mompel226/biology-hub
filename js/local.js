@@ -60,6 +60,39 @@ window.HUB_LOCAL = {
      address, so it lives here and not in the shared register. */
   submitUrl:'https://script.google.com/macros/s/AKfycbzwjMHaa88OL_GzR8wZ2mV6a8rs1CKYahbW5iOTQPyzWzCGIrAZPApGsP2oujK34tRc/exec',
 
+  /* The same name-tag the labs sign in with — one Client ID for the whole site, authorised
+     for https://nlcsbiology.com. Sign in inside a lab and the hub already knows you; sign in
+     here and the labs do. */
+  googleClientId:'749068441640-jgh9s0rbg8ed9hl14mtv6kdhg5jg6ddf.apps.googleusercontent.com',
+
+  /* ── your record, top right ─────────────────────────────────
+     After every test the Assessment Reflection System builds each student a page of their
+     own — their scores, the topics they were weak on, what to revise next. That page sits
+     behind the school's own Google gate, and which student it shows is decided by who signs
+     in to open it, checked at the far end. There is no personal link, so there is nothing
+     here to keep in step with anybody's.
+
+     `url` is the address of that page. Every assessment gets its own spreadsheet and so its
+     own deployment, which means there are SEVERAL addresses that all work — each one a
+     window onto the same Student Progress Tracker, so they all show a student the same
+     page. Any of them can go here. Prefer the one whose spreadsheet you are least likely
+     to archive, and put `?page=student` on the end: without it the address opens the
+     reflection FORM instead of the record.
+
+     What the rest of this block does is let the hub ASK, before it offers: is this person
+     on the list, and have they got anything recorded yet? The asking is done by the same
+     Apps Script the labs hand in to — see its `record` action, which reads the tracker
+     rather than any one assessment's spreadsheet. Delete this block and the card never
+     appears; nothing else on the page changes.
+
+     `label` is who it is for, said out loud, because this hub is public and most people
+     who read it are not at this school. */
+  record: {
+    label:'For NLCS Jeju students',
+    domain:'nlcsjeju.kr',
+    url:'https://script.google.com/a/macros/nlcsjeju.kr/s/AKfycbwAAX9kcTatrOrUcKF3uvhYHrTULe4xQvQ4oE7nAzKW5L-7-Z7A1mQ8Tt3LWap3ONic/exec?page=student'
+  },
+
   site: {
     title:'Biology Hub — NLCS Jeju',
     description:'Biology at NLCS Jeju behind five doors: IGCSE revision — Foundations, the human body, Plants, Life on Earth — then the school\'s co-curricular activities, its student societies, Bryant, and student enterprises. Cambridge IGCSE 0610, with IB as a layer.',
@@ -91,6 +124,18 @@ window.HUB_LOCAL = {
         topics:[ {t:'Foundations'}, {t:'The human body'}, {t:'Plants'}, {t:'Life on Earth'} ],
         status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
         alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
+
+      /* A student's own door. It stands beside the hero only once they are signed in AND the
+         tracker holds something of theirs — until then it is not on the page at all, and the
+         hero keeps the whole row. It takes no number: it is not one of the five, and a number
+         that appears for some readers would renumber the rest. Its address is `record.url`
+         below, so there is one place to change it. */
+      { id:'mine', personal:true, eyebrow:'Only you see this',
+        title:'My <em>assessments</em>', sub:'how you did, and what next',
+        blurb:'Here you look back at every assessment you have reflected on: how you did, what it showed you, and what to revise next.',
+        status:'live', accent:'#A78BFA', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
+        detail:'Your record',   /* replaced by the counts once the tracker answers */
+        alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 
       { id:'ccas', view:'ccas', eyebrow:'02 · Co-curricular activities',
         title:'CCAs', sub:'after lessons',
@@ -232,6 +277,8 @@ window.HUB_LOCAL = {
       url:'https://commons.wikimedia.org/wiki/File:Darwin_Tree_1837.png' },
     { door:'Bryant',      text:'Sophie Bryant, photomechanical print, Rijksmuseum', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
+    { door:'My assessments', text:'DNA in an agarose gel under UV light, School of Natural Resources, Ann Arbor', licence:'CC BY 2.0',
+      url:'https://commons.wikimedia.org/wiki/File:Agarose_gel_with_UV_illumination_-_Ethidium_bromide_stained_DNA_glows_orange_(close-up).jpg' },
     { door:'Enterprises', text:'human blood, SEM, Bruce Wetzel and Harry Schaefer, NCI', licence:'public domain, shown as a duotone',
       url:'https://commons.wikimedia.org/wiki/File:SEM_blood_cells.jpg' }
   ]

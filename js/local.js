@@ -97,8 +97,14 @@ window.HUB_LOCAL = {
     title:'Biology Hub — NLCS Jeju',
     description:'Biology at NLCS Jeju behind five doors: IGCSE revision — Foundations, the human body, Plants, Life on Earth — then the school\'s co-curricular activities, its student societies, Bryant, and student enterprises. Cambridge IGCSE 0610, with IB as a layer.',
     eyebrow:'Cambridge IGCSE Biology 0610 · NLCS Jeju',
-    maker:'Made by <strong>Dr Daniel Mompel Riera</strong> · Biology, NLCS Jeju',
-    byline:'Made by <strong>Dr Daniel Mompel Riera</strong> · NLCS Jeju · <a href="mailto:dmompelriera@nlcsjeju.kr">dmompelriera@nlcsjeju.kr</a>'
+    /* The name at the top is a way in, not just a credit: it opens the profile that says who
+       made this and what else is on the shelf. The line at the foot used to repeat the same
+       name and address, which told a reader nothing twice — it now asks them for something
+       instead, which is the more useful thing to put at the end of a page. */
+    maker:'Made by <a class="maker__me" href="https://github.com/Mompel226" target="_blank" rel="noopener">'
+         +'<strong>Dr Daniel Mompel Riera</strong></a> · Biology, NLCS Jeju',
+    byline:'Something wrong, or an idea that would make this better? '
+          +'<a href="mailto:dmompelriera@nlcsjeju.kr">Tell me</a> — I teach with it too, so it gets fixed.'
   },
 
   /* ── the front of the building ─────────────────────────────

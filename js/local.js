@@ -166,7 +166,11 @@ window.HUB_LOCAL = {
 
       { id:'bryant', view:'bryant', eyebrow:'04 · The activity programme',
         title:'Bryant', sub:'on Saturday mornings',
-        blurb:'Here you spend a Saturday morning going beyond the timetable, in a programme named after a climber: Sophie Bryant, mathematician, headmistress of North London Collegiate, the first woman in England to hold a Doctor of Science, and twice up the Matterhorn.',
+        /* Kept to the length of its neighbours on purpose: this is the teaser, and the whole of
+           Sophie Bryant's life — Dublin, the doctorate, the Matterhorn — is on the door it opens.
+           At 255 characters it needed half as much height again as any other card, which is what
+           forced the row so tall that the others could not be read. */
+        blurb:'Here you spend a Saturday morning beyond the timetable, in a programme named after Sophie Bryant \u2014 mathematician, headmistress, and twice up the Matterhorn.',
         topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
         /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
            top third: the picture is pushed up until it does */

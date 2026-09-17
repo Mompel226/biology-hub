@@ -31,6 +31,10 @@ const LOCAL_DOORS = (readFileSync(resolve(FROM, 'js/local.js'), 'utf8')
   .match(/id:'([a-z0-9-]+)'/g) || []).map(m => m.slice(4, -1));
 
 const FILES = ['index.html', 'css/hub.css', 'js/hub.js', 'js/shelves.js',
+               /* index.html links to this page from the masthead, and index.html is shared —
+                  leave it behind and the open edition ships a link to a 404. The two apps are
+                  useful to any school, which is the whole reason they are open source. */
+               'applications.html', 'assets/apps/seating-plan.jpg', 'assets/apps/birthday-calendar.jpg',
                'tools/stamp.mjs', '.nojekyll', '.gitignore',
                /* the marks system: every school that uses a lab needs it */
                'apps-script/Code.gs', 'apps-script/ClassroomImport.html', 'apps-script/TeacherPage.html',

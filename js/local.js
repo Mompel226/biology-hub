@@ -137,14 +137,17 @@ window.HUB_LOCAL = {
         detail:'Your record',   /* replaced by the counts once the tracker answers */
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 
-      /* The same place for a teacher in teacher mode: the assessment system itself — every
-         assessment's spreadsheet and the test copies — instead of their own record. There is NO
-         address here, on purpose: this file is public. The labs script gives it only to a
-         signed-in teacher on its private list, and the page behind it checks again with the
-         school's own Google sign-in before it shows a single link. `img:'mine'`: the same gel. */
+      /* The same place for a teacher in teacher mode: the whole teacher side of the system, rather
+         than their own record. It began as the spreadsheet list alone and now opens on four tabs —
+         the spreadsheets, how each class is doing in the labs, any pupil's own tracker, and the
+         homework you set — so the wording below has to say so, or a teacher never finds the three
+         that were added. There is NO address here, on purpose: this file is public. The labs
+         script gives it only to a signed-in teacher on its private list, and the page behind it
+         checks again with the school's own Google sign-in before it shows a single link.
+         `img:'mine'`: the same gel. */
       { id:'system', personal:true, teacher:true, img:'mine', eyebrow:'Teachers only',
-        title:'Assessment <em>system</em>', sub:'every assessment spreadsheet',
-        blurb:'Here you open the Assessment Reflection System itself: each assessment’s spreadsheet, the test copies, and the tracker they all write to.',
+        title:'Assessment <em>system</em>', sub:'spreadsheets, progress, homework',
+        blurb:'Here you open the teacher side of the system: every assessment’s spreadsheet, how each class is getting on with the labs, any pupil’s own tracker, and the homework you have set them.',
         status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
         detail:'Teacher mode',
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },

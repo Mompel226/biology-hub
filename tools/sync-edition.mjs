@@ -32,13 +32,19 @@ const LOCAL_DOORS = (readFileSync(resolve(FROM, 'js/local.js'), 'utf8')
 
 const FILES = ['index.html', 'css/hub.css', 'js/hub.js', 'js/shelves.js',
                /* index.html links to this page from the masthead, and index.html is shared —
-                  leave it behind and the open edition ships a link to a 404. The two apps are
-                  useful to any school, which is the whole reason they are open source. */
-               'applications.html', 'assets/apps/seating-plan.jpg', 'assets/apps/birthday-calendar.jpg',
+                  leave it behind and the open edition ships a link to a 404. The apps are useful
+                  to any school, which is the whole reason they are open source. Their pictures
+                  are swept from the folder below rather than named here: naming them by hand
+                  already shipped one edition with two of the four missing. */
+               'applications.html',
                'tools/stamp.mjs', '.nojekyll', '.gitignore',
                /* the marks system: every school that uses a lab needs it */
                'apps-script/Code.gs', 'apps-script/ClassroomImport.html', 'apps-script/TeacherPage.html',
                'apps-script/Teacher.html', 'tools/gastest.js'];
+for (const f of readdirSync(resolve(FROM, 'assets/apps'))) {
+  if (f.startsWith('.')) continue;
+  FILES.push('assets/apps/' + f);
+}
 for (const f of readdirSync(resolve(FROM, 'assets/doors'))) {
   if (LOCAL_DOORS.some(id => f.startsWith(id + '-'))) continue;
   FILES.push('assets/doors/' + f);

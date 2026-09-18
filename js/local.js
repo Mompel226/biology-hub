@@ -88,7 +88,7 @@ window.HUB_LOCAL = {
      `label` is who it is for, said out loud, because this hub is public and most people
      who read it are not at this school. */
   record: {
-    label:'For NLCS Jeju students',
+    label:'For NLCS Jeju students and teachers',
     domain:'nlcsjeju.kr',
     url:'https://script.google.com/a/macros/nlcsjeju.kr/s/AKfycbwAAX9kcTatrOrUcKF3uvhYHrTULe4xQvQ4oE7nAzKW5L-7-Z7A1mQ8Tt3LWap3ONic/exec?page=student'
   },

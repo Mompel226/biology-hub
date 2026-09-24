@@ -26,3 +26,5 @@ below are the originals.
 
 To swap an image, drop new files with the same names into this folder (all three widths,
 both formats — `python3` with Pillow will make them from one original) and rewrite its row here.
+| Bio English Lab | `english-*` | **Robert Hooke, *Micrographia* (1665)**, page 112: the text of Observation XVIII, "Of the Schematisme or Texture of Cork", the first use of the word *cell* for what a microscope shows. Wellcome Collection, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Robert_Hooke,_Micrographia,_text,_obs.;_cork._Wellcome_L0013306.jpg). Shown with the ink softened so the door's words can be read over it. | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| Write-Up Lab | `writeup-*` | **Benedict's test**: three tubes in a rack, blue, orange with a brick-red precipitate, and purple. Photograph by HunterRSC, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Benedict_precipitate_20211012_093944.jpg). | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) |

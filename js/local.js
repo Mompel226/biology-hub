@@ -110,12 +110,16 @@ window.HUB_LOCAL = {
   /* ── the front of the building ─────────────────────────────
      One movement per door, in the second person. The section doors take their chips and
      their "n doors" line from the doors below by themselves, so a club added there appears
-     on its entry door without another edit. */
+     on its entry door without another edit.
+     Two rows. `hero` is the revision door, at half the front row; `top:true` puts a door
+     beside it (Bio English Lab, Write-Up Lab — sites of their own, so `url` + `newTab`);
+     `personal` doors join that row only for a signed-in student. Everything else goes in
+     the row of four beneath, under `rowLabel`. */
   entry: {
     crumb:'Biology Hub',
     eyebrow:'NLCS Jeju · Biology',
     title:'Biology <em>Hub</em>',
-    lede:'Five doors. The first is where you revise: to learn, and to be ready for the IGCSE. The other four are what Biology at NLCS Jeju offers beyond the curriculum.',
+    lede:'Three doors to learn behind: revise the subject, write answers that score, write up a practical. Then four doors to what Biology at NLCS Jeju offers beyond the curriculum.',
     /* said once over the row of four, so no door has to say it for itself */
     rowLabel:'Beyond the curriculum',
     docTitle:'Biology Hub — NLCS Jeju',
@@ -130,6 +134,29 @@ window.HUB_LOCAL = {
         topics:[ {t:'Foundations'}, {t:'The human body'}, {t:'Plants'}, {t:'Life on Earth'} ],
         status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
         alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
+
+      /* Two more ways to learn, beside the revision door: both are sites of their own, so they
+         open in a new tab. `top` puts a door on the front row with the hero rather than in the
+         row of four beneath; the hero keeps half the row and these share the rest. */
+      { id:'english', top:true, url:'https://nlcsbiology.com/bio-english-lab/', newTab:true,
+        eyebrow:'Writing answers',
+        title:'Bio English <em>Lab</em>', sub:'write less, score more',
+        blurb:'Here you learn to write the answer an examiner marks: the keyword, the direction, the comparison, the number — and nothing that scores nothing. Describe, explain and plan, topic by topic, marked as you go.',
+        topics:[ {t:'Describe'}, {t:'Explain'}, {t:'Plan'}, {t:'Keywords'} ],
+        status:'live', accent:'#62D38A', tone:'light', focus:'50% 78%', go:'Open',
+        detail:'1,770 questions',
+        alt:'A page of Robert Hooke\u2019s Micrographia (1665): the printed observation of the texture of cork, in which he first wrote the word cell' },
+
+      /* Write-Up Lab is built but not yet published (another session owns it): the door stands,
+         says so, and links nowhere. When the site is live: status:'live', url:'https://nlcsbiology.com/write-up-lab/', newTab:true, go:'Open'. */
+      { id:'writeup', top:true, url:'#', status:'build',
+        eyebrow:'Lab reports',
+        title:'Write-Up <em>Lab</em>', sub:'from IGCSE to the IB',
+        blurb:'Here you learn to write up a practical: one experiment written at three levels, from an IGCSE report to an IB investigation, with the tools and the checklist to write your own.',
+        topics:[ {t:'IGCSE report'}, {t:'IB IA'}, {t:'Extended essay'} ],
+        accent:'#F5A623', tone:'dark', focus:'50% 30%', go:'Opens soon',
+        detail:'Being built',
+        alt:'Three test tubes in a rack after Benedict\u2019s test: blue, orange with a brick-red precipitate, and purple' },
 
       /* A student's own door. It stands beside the hero only once they are signed in AND the
          tracker holds something of theirs — until then it is not on the page at all, and the
@@ -166,9 +193,9 @@ window.HUB_LOCAL = {
 
       { id:'societies', view:'societies', eyebrow:'03 · Student societies',
         title:'Societies', sub:'run by students',
-        blurb:'Here you do science the way it is really done, and then publish it: a question of your own, evidence, a paper your peers read before anyone else does.',
-        status:'live', accent:'#B8860B', tone:'light', focus:'50% 14%',
-        alt:'Charles Darwin\u2019s notebook page of 1837: the first sketch of a tree of life, under the words I think' },
+        blurb:'Here you explore a subject with other students who chose it too. A society picks its corner of biology \u2014 medicine, the mind, the sea \u2014 and follows it in talks, visits and experiments, and sometimes a paper of your own.',
+        status:'live', accent:'#B8860B', tone:'light', focus:'50% 40%',
+        alt:'Maria Sibylla Merian\u2019s plate from Metamorphosis insectorum Surinamensium (1705): moths, their caterpillars and the plant they feed on, painted from life in Suriname' },
 
       { id:'bryant', view:'bryant', eyebrow:'04 · The activity programme',
         title:'Bryant', sub:'on Saturday mornings',
@@ -294,12 +321,16 @@ window.HUB_LOCAL = {
     { door:'Medical Review', text:'banner set from the Medical Review wordmark, used with permission', licence:'', url:'https://medicalreviewkorea.org/' },
     { door:'Science NHS', text:'banner set from the society crest, used with permission', licence:'', url:'https://nlcsjejusnhs.org/' },
     { door:'Veterinary Society', text:'mark drawn for the society by Daniel Mompel Riera: a horse\u2019s head in one line', licence:'', url:'https://nlcsbiology.com/veterinary-society/' },
+    { door:'Bio English Lab', text:'Robert Hooke, Micrographia (1665), page 112, Wellcome Collection', licence:'CC BY 4.0',
+      url:'https://commons.wikimedia.org/wiki/File:Robert_Hooke,_Micrographia,_text,_obs.;_cork._Wellcome_L0013306.jpg' },
+    { door:'Write-Up Lab', text:'Benedict\u2019s test, three tubes in a rack \u2014 a photograph its maker released to the public domain', licence:'CC0',
+      url:'https://commons.wikimedia.org/wiki/File:Benedict_precipitate_20211012_093944.jpg' },
     { door:'Revision',    text:'sea anemones, Ernst Haeckel, Kunstformen der Natur (1904), plate 49', licence:'public domain',
       url:'https://commons.wikimedia.org/wiki/File:Haeckel_Actiniae.jpg' },
     { door:'CCAs',        text:'koi pond, GeorgeTan#5', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Koi_pond_-_Flickr_-_GeorgeTan%5E5.jpg' },
-    { door:'Societies',   text:'Darwin\u2019s notebook B, 1837 \u2014 the first tree', licence:'public domain',
-      url:'https://commons.wikimedia.org/wiki/File:Darwin_Tree_1837.png' },
+    { door:'Societies',   text:'Maria Sibylla Merian, Metamorphosis insectorum Surinamensium (1705), Minneapolis Institute of Art', licence:'public domain',
+      url:'https://commons.wikimedia.org/wiki/File:Maria_Merian_Metamorphosis_Insectorum_Surinamensium_MIA_P18717.jpg' },
     { door:'Bryant',      text:'Sophie Bryant, photomechanical print, Rijksmuseum', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
     { door:'My assessments', text:'DNA in an agarose gel under UV light, School of Natural Resources, Ann Arbor', licence:'CC BY 2.0',

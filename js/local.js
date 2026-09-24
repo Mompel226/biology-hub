@@ -112,7 +112,7 @@ window.HUB_LOCAL = {
      their "n doors" line from the doors below by themselves, so a club added there appears
      on its entry door without another edit.
      Two rows. `hero` is the revision door, at half the front row; `top:true` puts a door
-     beside it (Bio English Lab, Write-Up Lab — sites of their own, so `url` + `newTab`);
+     beside it (Bio English Lab, Write-Up Lab — `url`, same tab: they are pages of this website, like every lab);
      `personal` doors join that row only for a signed-in student. Everything else goes in
      the row of four beneath, under `rowLabel`. */
   entry: {
@@ -135,10 +135,12 @@ window.HUB_LOCAL = {
         status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
         alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
 
-      /* Two more ways to learn, beside the revision door: both are sites of their own, so they
-         open in a new tab. `top` puts a door on the front row with the hero rather than in the
-         row of four beneath; the hero keeps half the row and these share the rest. */
-      { id:'english', top:true, url:'https://nlcsbiology.com/bio-english-lab/', newTab:true,
+      /* Two more ways to learn, beside the revision door. They open in the SAME tab, like every
+         lab on nlcsbiology.com (Daniel, 24 Sep 2026: "why does it open in a different tab and not
+         on the same website?"). `newTab` is only for pages that are not this website (Google).
+         `top` puts a door on the front row with the hero rather than in the row of four beneath;
+         the hero keeps half the row and these share the rest. */
+      { id:'english', top:true, url:'https://nlcsbiology.com/bio-english-lab/',
         eyebrow:'Writing answers',
         title:'Bio English <em>Lab</em>', sub:'write less, score more',
         blurb:'Practice in writing short, exact exam answers: describe, explain and plan an investigation, for every topic, marked as you go. Plus keyword tests, with Korean and Chinese.',
@@ -147,15 +149,14 @@ window.HUB_LOCAL = {
         detail:'1,770 questions',
         alt:'A page of Robert Hooke\u2019s Micrographia (1665): the printed observation of the texture of cork, in which he first wrote the word cell' },
 
-      /* Write-Up Lab is built but not yet published (another session owns it): the door stands,
-         says so, and links nowhere. When the site is live: status:'live', url:'https://nlcsbiology.com/write-up-lab/', newTab:true, go:'Open'. */
-      { id:'writeup', top:true, url:'#', status:'build',
+      /* Write-Up Lab (labs/write-up-lab), live since 24 Sep 2026. Same tab, like every lab. */
+      { id:'writeup', top:true, url:'https://nlcsbiology.com/write-up-lab/', status:'live',
         eyebrow:'Lab reports',
         title:'<span class="nb">Write-Up</span> <em>Lab</em>', sub:'from IGCSE to the IB',
-        blurb:'How to write a lab report, from an IGCSE practical to an IB investigation: one experiment written up at three levels, with the tools and the checklist to write your own.',
+        blurb:'How to write a lab report, from an IGCSE practical to an IB investigation. Open a full report part by part, see what changes at IB, and practise with the tools and the checklist.',
         topics:[ {t:'IGCSE report'}, {t:'IB IA'}, {t:'Extended essay'} ],
-        accent:'#F5A623', tone:'dark', focus:'50% 30%', go:'Opens soon',
-        detail:'Being built',
+        accent:'#F5A623', tone:'dark', focus:'50% 30%', go:'Open',
+        detail:'23 parts · 10 tools',
         alt:'Three test tubes in a rack after Benedict\u2019s test: blue, orange with a brick-red precipitate, and purple' },
 
       /* A student's own door. It stands beside the hero only once they are signed in AND the

@@ -44,7 +44,7 @@ Also here: the [Protein & Enzyme Sim](https://nlcsbiology.com/protein-enzyme-sim
 `…/#y10` opens a year and `…/#plants` opens a door — both are useful links to hand a class.
 
 **Progress follows the student.** Each lab remembers what they have answered, and this page adds
-it up — a bar per shelf, and the same figure on each door. Signed in, what they have handed in
+it up — a bar per shelf, and the same figure on each door. Signed in, what the labs have saved
 comes back from the spreadsheet below, so a cleared browser does not start from nothing.
 
 ## Two editions
@@ -72,7 +72,7 @@ percentage, how many checks it took, how many they got right first time, how lon
 <table>
 <tr><td colspan="2" align="center">
 
-**🧑‍🎓 Your student works through a lab &nbsp;→&nbsp; presses Hand in &nbsp;→&nbsp; signs in with Google**
+**🧑‍🎓 Your student signs in with Google &nbsp;→&nbsp; works through a lab &nbsp;→&nbsp; the lab saves on its own**
 
 </td></tr>
 <tr>
@@ -94,7 +94,7 @@ Their row fills in on **your** Sheet — score, percentage, and the work behind 
 </table>
 
 > [!IMPORTANT]
-> **The labs stay open to everyone.** A hand-in is recorded **only** when the Google account
+> **The labs stay open to everyone.** Work is recorded **only** when the Google account
 > that signed in is on your class list. For everybody else nothing is written down at all —
 > no row, no name, no email. That decision is made on the server, so it holds.
 
@@ -118,7 +118,7 @@ You will need three things, all free:
 ### Step 1 · Make your own copy of a lab 🐙
 
 > ### ⚠️ &nbsp;The step people skip
-> **Nothing works without it.** If you share *my* links with your students, their hand-ins go
+> **Nothing works without it.** If you share *my* links with your students, their work goes
 > to *my* script — and since they are not on my class list, nothing is saved for anyone. You
 > need your own copy, at your own web address, pointing at your own spreadsheet.
 
@@ -225,7 +225,7 @@ secret — it sits in plain sight in the page. One long string ending
 | # | Do this |
 |:--:|---|
 | **17** | In your Sheet: **🧪 Biology Labs ▸ Import students from Classroom…** Tick your courses, check the class codes it guesses, **Import**. Every lab tab fills with names. |
-| **18** | Open **your** lab link, answer one question, press **Hand in**, and sign in as yourself. |
+| **18** | Open **your** lab link, sign in as yourself (the button at the top right) and answer one question. Within two minutes the lab saves it. |
 
 If you are on the Students tab, your row fills in. If you are not — you are the teacher, after
 all — nothing is saved, which is the system working. Add yourself to the **Students** tab by
@@ -444,9 +444,9 @@ Never a class's times, anyone else's, or a single question.
 |---|---|
 | 🟢 **Students** | the dashboard — every student, their class, and their best score in **every** lab, red through amber to green |
 | 🟢 **Digestion**, **Circulation**, … | one tab per lab, and each is your class list again: a row per student from the moment they are imported |
-| 🟡 **Labs** | one row per lab: how many questions it has, how many hand-ins it has had |
+| 🟡 **Labs** | one row per lab: how many questions it has, how many saves it has had |
 | 🟡 **Setup** | what everything is, your web app URL, and the tick-box buttons |
-| 🔴 **Rejected** | a hand-in from one of your students whose numbers did not add up, with the reason |
+| 🔴 **Rejected** | a save from one of your students whose numbers did not add up, with the reason |
 
 Every tab explains itself: hover a heading to see what the column is for. A **dark green
 heading** is filled in for you; an **amber heading with a ✎** is yours to change.
@@ -455,9 +455,12 @@ heading** is filled in for you; an **amber heading with a ✎** is yours to chan
 import again whenever somebody joins: students are keyed on their school email, so it adds
 the new ones, moves anyone whose class changed, and never duplicates.
 
-**Handing in twice is fine and does not make a second row.** *Hand-ins* counts the goes and
-*Last hand-in* always moves, but the score is replaced only when the new attempt **beat** the
-old one — a careless re-run cannot wipe out a good result.
+**Nothing is handed in.** Signed in, a lab sends the work on its own — two minutes after the
+last check, and at once when the lab is finished or the page is left — and every save updates
+the same row. *Saves* counts them and *Last saved* always moves, but the score is replaced only
+when the new attempt **beat** the old one, and the carried answers only ever grow — a careless
+re-run, or a second device that knows less, cannot wipe out a good result. Work done signed out
+stays in the browser and is sent the moment the student signs in.
 
 </details>
 
@@ -479,36 +482,15 @@ window, which a spreadsheet button is not allowed to do.
 </details>
 
 <details>
-<summary><b>Reading a completion code</b></summary>
+<summary><b>What happened to completion codes</b></summary>
 
 <br>
 
-Every hand-in shows the student a **completion code** — `DL-3CL9-Q3MP`. It is a checksum of
-their name, class, score and the lab, and **nothing about it is stored anywhere**. Paste one
-into the *Check a completion code* cell on the **Setup** tab and tick the box beside it.
-
-Clear that cell and the answer clears with it, ready for the next one — an answer belongs to
-the code that produced it, and a stale one you cannot tell is stale is worse than none.
-
-Because nothing is stored, the only way to read a code is to try the possibilities against a
-bounded list of names — and the only such list is your **Students** tab. So:
-
-* a code from **one of your students** resolves to their name, their score, and whether their
-  hand-in actually arrived;
-* a code from **anyone else in the world** cannot be resolved at all. Their name could be
-  anything, so it says so rather than guessing.
-
-It looks the code up first — every hand-in that arrived wrote its code into the lab's tab, so
-there is nothing to guess at. Only if it is not there does it start trying possibilities, which
-is the case it exists for: the hand-in that **did not** arrive (they were offline, closed the
-tab, or could not sign in but still have their code), and telling a real code from an invented
-one.
-
-> ⚠️ &nbsp;**A code is made from the name on the GOOGLE account**, not the name on your
-> Students tab. For a student imported from Classroom those are the same, so this never comes
-> up. But if you type a name in by hand — `Daniel` where Google says `Daniel Mompel Riera` —
-> a code that never reached the Sheet cannot be reconstructed. Once that student has handed in
-> once, the Google name is remembered and it works from then on.
+Until September 2026 every hand-in showed the student a code (`DL-3CL9-Q3MP`) and the Setup
+tab could read one back. It was a checksum the page itself computed, so it proved nothing a
+student could not simply tell you, and now that a lab saves on its own the case it existed for
+— the hand-in that never arrived — no longer happens. There is nothing to check: look at the
+lab's tab. The *Code* column is kept, hidden, for rows that carry old ones.
 
 </details>
 
@@ -519,20 +501,19 @@ one.
 
 It has to be *Anyone*, because the labs are ordinary web pages with no login: the student's
 browser posts to the script as a stranger. *Anyone with a Google Account* makes the browser
-follow a sign-in redirect instead, and the hand-in never arrives.
+follow a sign-in redirect instead, and the work never arrives.
 
 It does **not** share your spreadsheet. Nobody gets access to the Sheet, to Classroom or to
 your Drive. The URL exposes exactly two things: a **GET** that says the endpoint is running,
 and a **POST** that can fill in one row — and only for a signed-in account on your Students
 tab. A stranger with the URL cannot write anything, and cannot read a single mark.
 
-A hand-in from one of your own students that does not add up — a completion code that does not
-recompute, a score above the total — goes to the **Rejected** tab with the reason, never into
-a lab's tab. And a forged row usually looks forged: 113/113 in 113 checks, 0 right first time,
+A save from one of your own students that does not add up — a score above the total, an
+impossible total — goes to the **Rejected** tab with the reason, never into a lab's tab. And a forged row usually looks forged: 113/113 in 113 checks, 0 right first time,
 "0 min" since starting. Sort by *Checks* and it stands out.
 
-To collect nothing at all, leave `submitUrl` or `googleClientId` empty: everyone gets a
-completion code on screen and nothing is posted anywhere.
+To collect nothing at all, leave `submitUrl` or `googleClientId` empty: every student's work
+stays in their own browser and nothing is posted anywhere.
 
 </details>
 
@@ -542,8 +523,8 @@ completion code on screen and nothing is posted anywhere.
 <br>
 
 Classroom only lets a script grade work that **the same script created** — an assignment made
-by hand in the Classroom UI cannot be graded through the API. So either set an assignment
-asking for the completion code the lab shows (no setup), or let the script make it:
+by hand in the Classroom UI cannot be graded through the API. So let the script make the
+assignment, and it can grade it from the lab's tab:
 
 ```javascript
 createAssignmentFor('digestion-lab', 'YOUR_COURSE_ID')                 // once
@@ -551,7 +532,7 @@ pushGradesFor('digestion-lab', 'YOUR_COURSE_ID', 'THE_COURSEWORK_ID')  // after 
 ```
 
 `pushGradesFor` takes each student's best score and matches it to the Classroom roster on
-school email. Anyone who has not handed in is skipped rather than given a zero; anyone it
+school email. Anyone with nothing saved is skipped rather than given a zero; anyone it
 cannot match is left alone and named in the log.
 
 </details>
@@ -566,7 +547,7 @@ They are in this repository — open, select all, copy:
 
 | File | What it is |
 |---|---|
-| **[`apps-script/Code.gs`](apps-script/Code.gs)** | the whole script: receiving a hand-in, the roster, the tabs, Classroom import, and giving a student their own scores back |
+| **[`apps-script/Code.gs`](apps-script/Code.gs)** | the whole script: receiving each student's work, the roster, the tabs, Classroom import, and giving a student their own scores back |
 | **[`apps-script/ClassroomImport.html`](apps-script/ClassroomImport.html)** | the little window that imports your classes |
 
 ---

@@ -55,7 +55,7 @@
    ============================================================ */
 window.HUB_LOCAL = {
 
-  /* Where a hand-in goes. The same deployed Apps Script every lab posts to — see the
+  /* Where a lab's saves go. The same deployed Apps Script every lab posts to — see the
      README, "Would you like to see how your students are doing?". This is a school's own
      address, so it lives here and not in the shared register. */
   submitUrl:'https://script.google.com/macros/s/AKfycbzwjMHaa88OL_GzR8wZ2mV6a8rs1CKYahbW5iOTQPyzWzCGIrAZPApGsP2oujK34tRc/exec',
@@ -81,7 +81,7 @@ window.HUB_LOCAL = {
 
      What the rest of this block does is let the hub ASK, before it offers: is this person
      on the list, and have they got anything recorded yet? The asking is done by the same
-     Apps Script the labs hand in to — see its `record` action, which reads the tracker
+     Apps Script the labs save to — see its `record` action, which reads the tracker
      rather than any one assessment's spreadsheet. Delete this block and the card never
      appears; nothing else on the page changes.
 

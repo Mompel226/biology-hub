@@ -119,7 +119,7 @@ window.HUB_LOCAL = {
     crumb:'Biology Hub',
     eyebrow:'NLCS Jeju · Biology',
     title:'Biology <em>Hub</em>',
-    lede:'Three doors to learn behind: revise the subject, write answers that score, write up a practical. Then four doors to what Biology at NLCS Jeju offers beyond the curriculum.',
+    lede:'Revise the course, learn to write answers that score, and learn to write up a practical. Then four doors to what Biology at NLCS Jeju offers beyond the curriculum.',
     /* said once over the row of four, so no door has to say it for itself */
     rowLabel:'Beyond the curriculum',
     docTitle:'Biology Hub — NLCS Jeju',
@@ -129,8 +129,8 @@ window.HUB_LOCAL = {
 
     doors: [
       { id:'revision', hero:true, view:'revision', eyebrow:'01 · Revision',
-        title:'IGCSE <em>Revision</em>', sub:'the whole subject, shelf by shelf',
-        blurb:'Here you go in to revise: to learn it properly, and to be ready when the IGCSE comes. Four shelves, one for each part of the subject: behind each is a map you point at, and behind the map are the labs, where the questions mark themselves.',
+        title:'IGCSE <em>Revision</em>', sub:'the whole course, topic by topic',
+        blurb:'Revision for Cambridge IGCSE Biology, in four parts. Each part has an interactive map of its topics, and behind every topic a lab of questions that mark themselves.',
         topics:[ {t:'Foundations'}, {t:'The human body'}, {t:'Plants'}, {t:'Life on Earth'} ],
         status:'live', accent:'#4FC3F7', tone:'dark', focus:'50% 50%',
         alt:'Sea anemones from Ernst Haeckel\u2019s Kunstformen der Natur, 1904: a plate crowded with anemones in yellow, pink and violet on a dark sea floor' },
@@ -141,7 +141,7 @@ window.HUB_LOCAL = {
       { id:'english', top:true, url:'https://nlcsbiology.com/bio-english-lab/', newTab:true,
         eyebrow:'Writing answers',
         title:'Bio English <em>Lab</em>', sub:'write less, score more',
-        blurb:'Here you learn to write the answer an examiner marks: the keyword, the direction, the comparison, the number — and nothing that scores nothing. Describe, explain and plan, topic by topic, marked as you go.',
+        blurb:'Practice in writing short, exact exam answers: describe, explain and plan an investigation, for every topic, marked as you go. Plus keyword tests, with Korean and Chinese.',
         topics:[ {t:'Describe'}, {t:'Explain'}, {t:'Plan'}, {t:'Keywords'} ],
         status:'live', accent:'#62D38A', tone:'light', focus:'50% 78%', go:'Open',
         detail:'1,770 questions',
@@ -151,8 +151,8 @@ window.HUB_LOCAL = {
          says so, and links nowhere. When the site is live: status:'live', url:'https://nlcsbiology.com/write-up-lab/', newTab:true, go:'Open'. */
       { id:'writeup', top:true, url:'#', status:'build',
         eyebrow:'Lab reports',
-        title:'Write-Up <em>Lab</em>', sub:'from IGCSE to the IB',
-        blurb:'Here you learn to write up a practical: one experiment written at three levels, from an IGCSE report to an IB investigation, with the tools and the checklist to write your own.',
+        title:'<span class="nb">Write-Up</span> <em>Lab</em>', sub:'from IGCSE to the IB',
+        blurb:'How to write a lab report, from an IGCSE practical to an IB investigation: one experiment written up at three levels, with the tools and the checklist to write your own.',
         topics:[ {t:'IGCSE report'}, {t:'IB IA'}, {t:'Extended essay'} ],
         accent:'#F5A623', tone:'dark', focus:'50% 30%', go:'Opens soon',
         detail:'Being built',
@@ -165,7 +165,7 @@ window.HUB_LOCAL = {
          below, so there is one place to change it. */
       { id:'mine', personal:true, eyebrow:'Only you see this',
         title:'My <em>assessments</em>', sub:'how you did, and what next',
-        blurb:'Here you look back at every assessment you have reflected on: how you did, what it showed you, and what to revise next.',
+        blurb:'Your results and reflections from every assessment: how you did, what it showed, and what to revise next.',
         status:'live', accent:'#A78BFA', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
         detail:'Your record',   /* replaced by the counts once the tracker answers */
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
@@ -180,20 +180,20 @@ window.HUB_LOCAL = {
          `img:'mine'`: the same gel. */
       { id:'system', personal:true, teacher:true, img:'mine', eyebrow:'Teachers only',
         title:'Assessment <em>system</em>', sub:'spreadsheets, progress, homework',
-        blurb:'Here you open the teacher side of the system: every assessment’s spreadsheet, how each class is getting on with the labs, any pupil’s own tracker, and the homework you have set them.',
+        blurb:'The teacher side of the system: every assessment\u2019s spreadsheet, class progress in the labs, any pupil\u2019s tracker, and the homework you have set.',
         status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
         detail:'Teacher mode',
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 
       { id:'ccas', view:'ccas', eyebrow:'02 · Co-curricular activities',
         title:'CCAs', sub:'after lessons',
-        blurb:'Here you do biology with your hands after lessons: an aquarium to keep alive, a forum to stand up in, a journal to write for.',
+        blurb:'Biology clubs after lessons: keep a real aquarium alive, argue a case in a forum, or write for a journal.',
         status:'live', accent:'#2DD4BF', tone:'dark', focus:'55% 50%',
         alt:'Koi in a pond, seen from above, with lotus leaves at the edge' },
 
       { id:'societies', view:'societies', eyebrow:'03 · Student societies',
         title:'Societies', sub:'run by students',
-        blurb:'Here you explore a subject with other students who chose it too. A society picks its corner of biology \u2014 medicine, the mind, the sea \u2014 and follows it in talks, visits and experiments, and sometimes a paper of your own.',
+        blurb:'Student-run groups that explore one corner of biology \u2014 medicine, the mind, the sea \u2014 through talks, visits and experiments, and sometimes their own publications.',
         status:'live', accent:'#B8860B', tone:'light', focus:'50% 40%',
         alt:'Maria Sibylla Merian\u2019s plate from Metamorphosis insectorum Surinamensium (1705): moths, their caterpillars and the plant they feed on, painted from life in Suriname' },
 
@@ -203,7 +203,7 @@ window.HUB_LOCAL = {
            Sophie Bryant's life — Dublin, the doctorate, the Matterhorn — is on the door it opens.
            At 255 characters it needed half as much height again as any other card, which is what
            forced the row so tall that the others could not be read. */
-        blurb:'Here you spend a Saturday morning beyond the timetable, in a programme named after Sophie Bryant \u2014 mathematician, headmistress, and twice up the Matterhorn.',
+        blurb:'The Saturday-morning activity programme, named after Sophie Bryant: mathematician, headmistress, and twice up the Matterhorn.',
         topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
         /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
            top third: the picture is pushed up until it does */
@@ -212,7 +212,7 @@ window.HUB_LOCAL = {
 
       { id:'enterprises', view:'enterprises', eyebrow:'05 · Community enterprises',
         title:'Enterprises', sub:'for the community',
-        blurb:'Here you give something back. An enterprise here is a project for the people around us, on Jeju and across Korea, and it is measured by who it helps, not by what it makes. A blood donation drive is one of them.',
+        blurb:'Student projects for the community, on Jeju and across Korea, judged by who they help: a blood-donation drive is one of them.',
         status:'live', accent:'#FF6B6B', tone:'dark', focus:'50% 50%',
         alt:'Human blood under a scanning electron microscope: red blood cells, a white blood cell and a platelet' }
     ]

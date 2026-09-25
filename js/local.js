@@ -225,7 +225,7 @@ window.HUB_LOCAL = {
       doors: [
         { id:'learnr', url:'https://nlcsbiology.com/learn-r/', status:'live',
           eyebrow:'Learn R', title:'Learn <em>R</em>', sub:'the programming language scientists use to analyse data',
-          blurb:'R is a free programming language for data. You type short instructions, and R turns your numbers into graphs and statistical tests. Scientists use it in biology, medicine, economics and psychology. The courses run R in your browser, so you start with nothing to install. For your own projects, the IB courses end by showing you how to install R.',
+          blurb:'R is a free programming language for data. You type short instructions, and R turns your numbers into graphs and statistical tests. Scientists use it in biology, medicine, economics and psychology. The courses run R in your browser: the page downloads it the first time (about 20 seconds), and nothing is installed on your computer.',
           topics:[ {t:'Year 8 · Variation'}, {t:'IB · Statistics'}, {t:'IB · Starch curves'} ],
           accent:'#1F5FAD', tone:'light', focus:'100% 50%', go:'Open',
           detail:'3 courses · R runs in your browser',

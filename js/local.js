@@ -216,7 +216,22 @@ window.HUB_LOCAL = {
         blurb:'Student projects for the community, on Jeju and across Korea, judged by who they help: a blood-donation drive is one of them.',
         status:'live', accent:'#FF6B6B', tone:'dark', focus:'50% 50%',
         alt:'Human blood under a scanning electron microscope: red blood cells, a white blood cell and a platelet' }
-    ]
+    ],
+
+    /* Below everything: a door out of NLCS altogether (Daniel, 25 Sep 2026: "learning R is beyond
+       NLCS, beyond the curriculum"). Drawn full width like the hero, words always out. Same tab. */
+    below: {
+      label: 'Beyond NLCS',
+      doors: [
+        { id:'learnr', url:'https://nlcsbiology.com/learn-r/', status:'live',
+          eyebrow:'Learn R', title:'Learn <em>R</em>', sub:'the language scientists use for data',
+          blurb:'R turns numbers into figures and statistics, in biology, medicine, economics and psychology. Here you learn it by doing: real R runs in your browser, so there is nothing to install.',
+          topics:[ {t:'Year 8 · Variation'}, {t:'IB · Statistics'}, {t:'IB · Starch curves'} ],
+          accent:'#1F5FAD', tone:'light', focus:'100% 50%', go:'Open',
+          detail:'3 courses · R runs in your browser',
+          alt:'A figure made in R: a world map with four countries in colour, and four line charts of their GDP growth in the same colours' }
+      ]
+    }
   },
 
   sections: [
@@ -324,6 +339,7 @@ window.HUB_LOCAL = {
     { door:'Veterinary Society', text:'mark drawn for the society by Daniel Mompel Riera: a horse\u2019s head in one line', licence:'', url:'https://nlcsbiology.com/veterinary-society/' },
     { door:'Bio English Lab', text:'Robert Hooke, Micrographia (1665), page 112, Wellcome Collection', licence:'CC BY 4.0',
       url:'https://commons.wikimedia.org/wiki/File:Robert_Hooke,_Micrographia,_text,_obs.;_cork._Wellcome_L0013306.jpg' },
+    { door:'Learn R', text:'Annual GDP growth, four economies: one R figure by Daniel Mompel Riera; map outlines from Natural Earth', licence:'own work', url:'https://nlcsbiology.com/learn-r/' },
     { door:'Write-Up Lab', text:'Benedict\u2019s test, three tubes in a rack \u2014 a photograph its maker released to the public domain', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Benedict_precipitate_20211012_093944.jpg' },
     { door:'Revision',    text:'sea anemones, Ernst Haeckel, Kunstformen der Natur (1904), plate 49', licence:'public domain',

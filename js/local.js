@@ -166,7 +166,7 @@ window.HUB_LOCAL = {
          below, so there is one place to change it. */
       { id:'mine', personal:true, eyebrow:'Only you see this',
         title:'My <em>assessments</em>', sub:'how you did, and what next',
-        blurb:'Your results and reflections from every assessment: how you did, what it showed, and what to revise next.',
+        blurb:'Your results and reflections from every assessment, and your practice in the labs: how you did and what to revise next.',
         status:'live', accent:'#A78BFA', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
         detail:'Your record',   /* replaced by the counts once the tracker answers */
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },

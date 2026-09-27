@@ -75,9 +75,12 @@ window.HUB_LOCAL = {
      `url` is the address of that page. Every assessment gets its own spreadsheet and so its
      own deployment, which means there are SEVERAL addresses that all work — each one a
      window onto the same Student Progress Tracker, so they all show a student the same
-     page. Any of them can go here. Prefer the one whose spreadsheet you are least likely
-     to archive, and put `?page=student` on the end: without it the address opens the
-     reflection FORM instead of the record.
+     page. Since 28 Sep 2026 this one is only the FALLBACK: the reflection spreadsheet
+     running the newest code writes its own address into the tracker by itself, and the
+     labs script hands it to a signed-in student with the record answer (`myAssessments`),
+     so the door opens the newest one (reflection spec §40.78). Keep a working address here
+     anyway — the one whose spreadsheet you are least likely to archive — with `?page=student`
+     on the end: without it the address opens the reflection FORM instead of the record.
 
      What the rest of this block does is let the hub ASK, before it offers: is this person
      on the list, and have they got anything recorded yet? The asking is done by the same

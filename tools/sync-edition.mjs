@@ -2,14 +2,19 @@
        node tools/sync-edition.mjs            # copy, then report what changed
        node tools/sync-edition.mjs --check    # report only, change nothing
 
-   The two editions differ by ONE file, js/local.js: here it adds the school's
-   own doors and renames the site; there it is a stub. Everything else — the
-   page, the stylesheet, the engine, the shared register, the door images — is
-   copied verbatim, so a fix made once reaches both.
+   The only CODE that differs is js/local.js: here it adds the school's own
+   doors and renames the site; there it is a stub. Everything in FILES below —
+   the page, the stylesheet, the engine, the shared register, the apps page,
+   the labs script, the door images — is copied verbatim, so a fix made once
+   reaches both.
 
-   Not copied: js/local.js, README.md, version.txt, .claude/, and the door
-   images belonging to a local door. The open edition is stamped by its own
-   tools/stamp.mjs and committed in its own repository.                       */
+   Not copied, different by design: js/local.js, README.md, version.txt, docs/,
+   .claude/, LICENSE/NOTICE, the door images of a local door and their rows in
+   assets/doors/CREDITS.md (filtered out below), js/data/* with js/progress.js
+   and js/signin.js (each edition's own tools/stamp.mjs writes them), and
+   tools/deploy.mjs and this file (NLCS only). Each edition has its own ?v=
+   stamps. The open edition is stamped by its own tools/stamp.mjs and committed
+   in its own repository.                                                      */
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';

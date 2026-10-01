@@ -31,10 +31,12 @@
            whose kind it names, and its name appears on that page's entry
            door by itself.
    doors   the wide doors, one per club, society or activity.
-           `kind` decides the band a door falls under: "cca" for a
-           co-curricular activity, "society" for a society. js/hub.js
-           declares the bands and their order; adding another club or
-           society here is all it takes for it to appear.
+           `kind` decides the band a door falls under: the `sections`
+           entry with that kind ("cca", "society", "bryant" or
+           "enterprise"), so each band is one page. js/hub.js keeps
+           two bands of its own only for an edition without sections.
+           Adding another club or society here is all it takes for it
+           to appear.
            `ground` is the flat colour at the banner's left edge — the
            words fade out of it, so it must match the image.
            `plate` is the banner's own pixel size, [w,h] — the door's
@@ -98,7 +100,7 @@ window.HUB_LOCAL = {
 
   site: {
     title:'Biology Hub — NLCS Jeju',
-    description:'Biology at NLCS Jeju behind five doors: IGCSE revision — Foundations, the human body, Plants, Life on Earth — then the school\'s co-curricular activities, its student societies, Bryant, and student enterprises. Cambridge IGCSE 0610, with IB as a layer.',
+    description:'Biology at NLCS Jeju: IGCSE revision in four parts (Foundations, the human body, Plants, Life on Earth), Bio English Lab for exam answers and Write-Up Lab for lab reports; then co-curricular activities, student societies, Bryant, community enterprises and Learn R. Cambridge IGCSE 0610, with IB as a layer.',
     eyebrow:'Cambridge IGCSE Biology 0610 · NLCS Jeju',
     /* The name at the top is a way in, not just a credit: it opens the profile that says who
        made this and what else is on the shelf. The line at the foot used to repeat the same
@@ -116,8 +118,9 @@ window.HUB_LOCAL = {
      on its entry door without another edit.
      Two rows. `hero` is the revision door, at half the front row; `top:true` puts a door
      beside it (Bio English Lab, Write-Up Lab — `url`, same tab: they are pages of this website, like every lab);
-     `personal` doors join that row only for a signed-in student. Everything else goes in
-     the row of four beneath, under `rowLabel`. */
+     `personal` doors join that row only when somebody is signed in: My assessments for a student,
+     the Assessment system for a teacher in teacher mode. Everything else goes in the row of four
+     beneath, under `rowLabel`, and `below` holds the door out of NLCS (Learn R). */
   entry: {
     crumb:'Biology Hub',
     eyebrow:'NLCS Jeju · Biology',
@@ -146,7 +149,7 @@ window.HUB_LOCAL = {
       { id:'english', top:true, url:'https://nlcsbiology.com/bio-english-lab/',
         eyebrow:'Writing answers',
         title:'Bio English <em>Lab</em>', sub:'write less, score more',
-        blurb:'Practice in writing short, exact exam answers: describe, explain and plan an investigation, for every topic, marked as you go. Plus keyword tests, with Korean and Chinese.',
+        blurb:'Practice in writing short, exact exam answers: describe and explain for every topic, and plan an investigation, marked as you go. Plus keyword tests, with Korean.',
         topics:[ {t:'Describe'}, {t:'Explain'}, {t:'Plan'}, {t:'Keywords'} ],
         status:'live', accent:'#62D38A', tone:'light', focus:'50% 78%', go:'Open',
         detail:'1,777 questions',
@@ -162,11 +165,12 @@ window.HUB_LOCAL = {
         detail:'23 parts · 10 tools',
         alt:'Three test tubes in a rack after Benedict\u2019s test: blue, orange with a brick-red precipitate, and purple' },
 
-      /* A student's own door. It stands beside the hero only once they are signed in AND the
-         tracker holds something of theirs — until then it is not on the page at all, and the
-         hero keeps the whole row. It takes no number: it is not one of the five, and a number
-         that appears for some readers would renumber the rest. Its address is `record.url`
-         below, so there is one place to change it. */
+      /* A student's own door. It stands beside the hero only once they are signed in AND have
+         something on record: a reflection, finished or not, or lab or Bio English practice —
+         until then it is not on the page at all. It takes no number: it is not one of the five,
+         and a number that appears for some readers would renumber the rest. It opens the newest
+         reflection copy's address, which the labs script hands over with the record answer
+         (`myAssessments`), falling back to `record.url` above. */
       { id:'mine', personal:true, eyebrow:'Only you see this',
         title:'My <em>assessments</em>', sub:'how you did, and what next',
         blurb:'Your results and reflections from every assessment, and your practice in the labs: how you did and what to revise next.',
@@ -175,16 +179,16 @@ window.HUB_LOCAL = {
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 
       /* The same place for a teacher in teacher mode: the whole teacher side of the system, rather
-         than their own record. It began as the spreadsheet list alone and now opens on four tabs —
-         the spreadsheets, how each class is doing in the labs, any pupil's own tracker, and the
-         homework you set — so the wording below has to say so, or a teacher never finds the three
-         that were added. There is NO address here, on purpose: this file is public. The labs
+         than their own record. It began as the spreadsheet list alone and now opens on five tabs —
+         Spreadsheets, Lab progress, Bio English, Students and Set homework (apps-script/Teacher.html,
+         ORDER) — so the wording below has to say so, or a teacher never finds the four that were
+         added. There is NO address here, on purpose: this file is public. The labs
          script gives it only to a signed-in teacher on its private list, and the page behind it
          checks again with the school's own Google sign-in before it shows a single link.
          `img:'mine'`: the same gel. */
       { id:'system', personal:true, teacher:true, img:'mine', eyebrow:'Teachers only',
         title:'Assessment <em>system</em>', sub:'spreadsheets, progress, homework',
-        blurb:'The teacher side of the system: every assessment\u2019s spreadsheet, class progress in the labs, any pupil\u2019s tracker, and the homework you have set.',
+        blurb:'The teacher side of the system: every assessment\u2019s spreadsheet, class progress in the labs and in Bio English, any pupil\u2019s tracker, and the homework you have set.',
         status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
         detail:'Teacher mode',
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
@@ -294,11 +298,10 @@ window.HUB_LOCAL = {
                         colour:'#FFF0C2', glow:'#E3B93C' } },
       alt:'The Science National Honor Society banner: the society crest in gold and purple on navy, standing on the orbits of the atom it carries, with an electron running each ring' },
 
-    /* A section with nothing in it yet still needs to say what it is for. These two doors
-       wear their section\u2019s own picture (`img`) and stay shut. Replace each with the real
-       doors when there is something to open — one entry per activity, as above. */
-    /* The Veterinary Society's site is its own repository, veterinary-society, so its members
-       can edit it. The plate here is a flat ground; the mark is drawn by the page
+    /* The Veterinary Society's site is its own repository, veterinary-society. Only Daniel may
+       write to it, as to every repository served on nlcsbiology.com: they all share one origin, so
+       code pushed to any of them could read every visitor's sign-in (docs/SECURITY-AUDIT-2026-09-17.md,
+       A2). Members suggest changes by pull request. The plate here is a flat ground; the mark is drawn by the page
        (`motion.draw`): small and whole in the band while the door is shut, then big beside the
        words when it opens, with the magazine's other animals drawing in on the right. The
        numbers come from tools/mark.py in that repository. */

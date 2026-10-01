@@ -7,8 +7,8 @@
    commits to make. Deploying without syncing now takes more effort than
    deploying properly.
 
-   tools/stamp.mjs stays a single-purpose file because it is itself shared with
-   the open edition; this one is not synced and lives only here.              */
+   tools/stamp.mjs is shared with the open edition, which runs its own copy;
+   this file is not synced and lives only here.                               */
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';

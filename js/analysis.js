@@ -5,8 +5,8 @@
    The page holds NO data. After a sign-in (the website's one sign-in, js/signin.js) it asks the
    Student Progress Tracker's own script, which checks the Google sign-in and its list of viewers
    and only then reads the tracker. Everything below works on what that answer carries, in this
-   tab only: nothing is written to localStorage or sessionStorage (the only key on the site is
-   signin.js's own), the data is wiped when the tab is hidden for good (pagehide), and after 20
+   tab only: nothing is written to localStorage or sessionStorage (the only keys on the site are
+   signin.js's own and, once ☀/☾ is pressed, js/theme.js's "light" or "dark"), the data is wiped when the tab is hidden for good (pagehide), and after 20
    minutes without a click.
 
    Three parts:
@@ -408,9 +408,9 @@
     return s + '</svg>';
   }
   /* where a paper's marks are: one bar in four parts */
-  var MIX = [{ k: 'own', l: 'its own topics', c: 'var(--s1)' }, { k: 'earlier', l: 'earlier topics', c: '#6B8594' },
+  var MIX = [{ k: 'own', l: 'its own topics', c: 'var(--s1)' }, { k: 'earlier', l: 'earlier topics', c: 'var(--mix-earlier)' },
              { k: 'ao3', l: 'AO3 practical skills', c: 'var(--s2)' }, { k: 'late', l: '⚠ not yet taught', c: 'var(--down)' },
-             { k: 'unmapped', l: 'no syllabus point in the map', c: '#4A5A64' }];
+             { k: 'unmapped', l: 'no syllabus point in the map', c: 'var(--mix-none)' }];
   function marksTxt(v) { var x = Math.round(v * 10) / 10; return x + (x === 1 ? ' mark' : ' marks'); }
   function mixBar(b, W) {
     var x = 0, s = '<svg viewBox="0 0 ' + W + ' 30" role="img" aria-label="Where the paper’s marks are">';
@@ -455,7 +455,7 @@
       if (r.mcq) s += '<rect x="' + barX + '" y="' + by + '" width="' + fx(Math.max(1, wM - (r.wr ? 2 : 0))) + '" height="11" fill="var(--s1)"/>';
       if (r.wr) s += '<path fill="var(--s2)" d="' + barPath(barX + wM, by, Math.max(2, wW), 11) + '"/>';
       s += '<line stroke="var(--chalk-mute)" stroke-width="1.5" stroke-dasharray="2 2" x1="' + fx(barX + X(b.even)) + '" x2="' + fx(barX + X(b.even)) + '" y1="' + (by - 3) + '" y2="' + (by + 14) + '"/>';
-      s += '<text class="t-val" x="' + fx(barX + Math.max(wM + wW, X(b.even)) + 8) + '" y="' + (by + 10) + '">' + (r.miss ? '<tspan fill="#FCD38A">not covered</tspan>' : (Math.round(r.m * 10) / 10) + (r.heavy ? ' <tspan fill="#FCD38A">heavy</tspan>' : '')) + '</text>';
+      s += '<text class="t-val" x="' + fx(barX + Math.max(wM + wW, X(b.even)) + 8) + '" y="' + (by + 10) + '">' + (r.miss ? '<tspan fill="var(--warn-ink)">not covered</tspan>' : (Math.round(r.m * 10) / 10) + (r.heavy ? ' <tspan fill="var(--warn-ink)">heavy</tspan>' : '')) + '</text>';
       s += '<rect class="hit" x="' + barX + '" y="' + (by - 4) + '" width="' + fx(W - barX) + '" height="20" data-tip="' + esc('<b>' + esc(r.n + ' ' + r.l) + '</b><br>' + (Math.round(r.mcq * 10) / 10) + ' MCQ + ' + (Math.round(r.wr * 10) / 10) + ' structured marks<br>' + r.covN + ' of ' + r.sts.length + ' points · an even share is ' + (Math.round(b.even * 10) / 10)) + '"/>';
       y += rowH;
     });
@@ -475,12 +475,14 @@
       (d > 2 ? '▲ +' : d < -2 ? '▼ ' : (d > 0 ? '+' : '')) + Math.round(d);
   }
   /* How well, in three bands (Daniel, 1 Oct 2026: "use this colour coding here too", as the old tracker tabs did: 75 % or
-     more, 50–74 %, below 50 %). Status colours checked for colour-blind readers on the dark chart card (dataviz
-     validator: worst pair ΔE 10.3); every coloured mark also prints its number, and each chart has a legend, so colour
-     is never the only signal. Charts of categories (reasons, girls and boys, keywords, test balance) stay uncoloured. */
-  var BANDS = [{ min: 75, k: 'good', c: 'var(--st-good)', t: 'rgba(43,179,154,.30)', l: '75 % or more' },
-               { min: 50, k: 'mid', c: 'var(--st-mid)', t: 'rgba(242,181,68,.28)', l: '50–74 %' },
-               { min: -1, k: 'low', c: 'var(--st-low)', t: 'rgba(217,83,79,.32)', l: 'below 50 %' }];
+     more green, 50–74 % amber, below 50 % red). The colours are tokens with a dark and a bright value (css/analysis.css),
+     checked for colour-blind readers in each version; every coloured mark also prints its number, and each chart has a
+     legend, so colour is never the only signal. Charts of categories (reasons, girls and boys, keywords, test balance)
+     stay uncoloured. In a table (Daniel: "colour code the table… the rows"), a value sits in a chip of its band and the
+     row takes the band of its main value. */
+  var BANDS = [{ min: 75, k: 'good', c: 'var(--st-good)', l: '75 % or more' },
+               { min: 50, k: 'mid', c: 'var(--st-mid)', l: '50–74 %' },
+               { min: -1, k: 'low', c: 'var(--st-low)', l: 'below 50 %' }];
   function band(v) { for (var i = 0; i < BANDS.length; i++) if (v >= BANDS[i].min) return BANDS[i]; return BANDS[2]; }
   function bandCol(v) { return v === null || v === undefined || isNaN(v) ? 'var(--s1)' : band(v).c; }
   function gradeBand(g) { return g === 'A*' || g === 'A' ? BANDS[0] : g === 'B' || g === 'C' ? BANDS[1] : BANDS[2]; }
@@ -488,13 +490,13 @@
     var words = kind === 'grades' ? ['A* or A', 'B or C', 'D or below'] : kind === 'wrong' ? ['wrong in 25 % or fewer', '26–50 % wrong', 'more than 50 % wrong'] : BANDS.map(function (b) { return b.l; });
     return '<div class="legend">' + BANDS.map(function (b, i) { return '<span><i style="background:' + b.c + '"></i>' + words[i] + '</span>'; }).join('') + '</div>';
   }
-  function heatBg(v) {  // one hue, dark to bright, for a class × topic table
-    var t = clamp((v - 30) / 60, 0, 1), a = [21, 48, 61], b = [92, 190, 236];
-    return 'rgb(' + a.map(function (x, i) { return Math.round(x + (b[i] - x) * t); }).join(',') + ')';
-  }
-  function tableHtml(cap, head, body, numCols) {
+  /* a value in a chip of its band ("—" when there is none); `v` decides the band, `text` is what it shows */
+  function chip(v, text) { return v === null || v === undefined || isNaN(v) ? '—' : '<span class="pchip pchip--' + band(v).k + '">' + (text === undefined ? rnd(v) + ' %' : text) + '</span>'; }
+  function rowBand(v) { return v === null || v === undefined || isNaN(v) ? '' : band(v).k; }
+  /* `rows`, if given: each row's band ('good', 'mid', 'low' or '' for none), from the row's main value */
+  function tableHtml(cap, head, body, numCols, rows) {
     return '<div class="tw"><table><thead><tr>' + head.map(function (h, i) { return '<th' + (numCols && numCols[i] ? ' class="n"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
-      body.map(function (r) { return '<tr>' + r.map(function (c, i) { return '<td' + (numCols && numCols[i] ? ' class="n"' : '') + '>' + c + '</td>'; }).join('') + '</tr>'; }).join('') +
+      body.map(function (r, j) { return '<tr' + (rows && rows[j] ? ' class="r--' + rows[j] + '"' : '') + '>' + r.map(function (c, i) { return '<td' + (numCols && numCols[i] ? ' class="n"' : '') + '>' + c + '</td>'; }).join('') + '</tr>'; }).join('') +
       '</tbody></table></div><p class="tcap">' + cap + '</p>';
   }
   /* One test's balance, as the page shows it (and tools/test-balance.mjs draws it): the answer, what to look at, where
@@ -801,7 +803,7 @@
         (cv.gaps.length ? ' Not complete yet: ' + esc(cv.gaps.join('; ')) + '.' : cv.missing.length || !cv.classes.length ? '' : ' Every class is in.') + '</p>';
       if (!cv.keys.length) h += '<p class="empty">No assessment in this year group has a reflection yet.</p>';
       else {
-        h += '<div class="legend" style="margin-top:14px"><span><i style="background:var(--s1)"></i>marked by a teacher</span><span><i style="background:var(--s2)"></i>only the pupils’ own marks</span><span><i style="background:#22323C"></i>no reflection yet</span></div>';
+        h += '<div class="legend" style="margin-top:14px"><span><i style="background:var(--s1)"></i>marked by a teacher</span><span><i style="background:var(--s2)"></i>only the pupils’ own marks</span><span><i style="background:var(--track)"></i>no reflection yet</span></div>';
         h += tableHtml('Table 1. Data showing, for each class and assessment, how many pupils have a marked paper and how many have only their own marks, out of the pupils the tracker has seen in the class.',
           ['Class', 'Pupils'].concat(cv.keys.map(function (k) { return esc(famShort(k)); })),
           cv.classes.map(function (c) {
@@ -830,7 +832,7 @@
       }
       fig = '<figure class="fig">' + bandLegend('grades') + vbars(gr, { w: side ? W - 410 : W, aria: 'Number of papers at each grade' }) + '<figcaption>Figure 1. Bar chart showing the number of papers at each grade (n = ' + pl(A.nScored, 'paper') + '). ' + boundsLine(A) + '</figcaption></figure>';
       tab = tableHtml('Table 1. Data showing the number and percentage of papers at each grade.', ['Grade', 'Papers', '% of papers'],
-        gr.map(function (g) { return [g.l, g.v, A.nScored ? Math.round(g.v / A.nScored * 100) + ' %' : '—']; }), [0, 1, 1]);
+        gr.map(function (g) { return ['<span class="pchip pchip--' + gradeBand(g.l).k + '">' + g.l + '</span>', g.v, A.nScored ? Math.round(g.v / A.nScored * 100) + ' %' : '—']; }), [0, 1, 1], gr.map(function (g) { return gradeBand(g.l).k; }));
       h += side ? '<div class="bwrap">' + fig + ed + '</div>' : ed + (showT ? tab : fig);
       if (!S.k) h += '<p class="tcap" style="margin-top:12px">To change grade boundaries, choose one assessment above. Each test keeps its own; this view only reads them.</p>';
       h += how([countedRule, 'Each paper is graded on its own version’s boundaries: the ones saved in the tracker’s 🎯 Grade boundaries tab; otherwise the annual ones stored in its 📦 Registry; otherwise the default IGCSE boundaries. ' + boundsLine(A),
@@ -842,7 +844,7 @@
       h = A.topics.length ? '<p class="answer">The hardest topic was <b>' + esc(A.topics[0].l) + '</b>: pupils scored <b>' + rnd(A.topics[0].v) + ' %</b> of its marks. The easiest was ' + esc(A.topics[A.topics.length - 1].l) + ' (' + rnd(A.topics[A.topics.length - 1].v) + ' %).' + waitNote + '</p>' : '<p class="empty">No topic marks yet: they are built when each pupil’s reflection is handed in.</p>';
       fig = A.topics.length ? '<figure class="fig">' + bandLegend('pct') + hbars(tr, { w: W, unit: ' %', aria: 'Percentage of marks scored in each topic' }) + '<figcaption>Figure 1. Bar chart showing the percentage of marks scored in each topic, hardest first (multiple-choice and written marks together).</figcaption></figure>' : '';
       tab = tableHtml('Table 1. Data showing the marks scored in each topic.', ['Topic', 'Marks scored', 'Marks available', '% scored', 'Multiple choice %', 'Written %'],
-        A.topics.map(function (t) { return [esc(t.l), Math.round(t.s * 10) / 10, Math.round(t.a * 10) / 10, rnd(t.v) + ' %', t.m !== null ? rnd(t.m) + ' %' : '—', t.w !== null ? rnd(t.w) + ' %' : '—']; }), [0, 1, 1, 1, 1, 1]);
+        A.topics.map(function (t) { return [esc(t.l), Math.round(t.s * 10) / 10, Math.round(t.a * 10) / 10, chip(t.v), chip(t.m), chip(t.w)]; }), [0, 1, 1, 1, 1, 1], A.topics.map(function (t) { return rowBand(t.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'A topic’s percentage is all the marks scored on it divided by all the marks available on it, multiple choice and written together.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'From the old tab, section 3 (“Topic Difficulty”).']);
     }
     else if (id === 'progress') {
@@ -856,7 +858,7 @@
           ['Pupil', 'Class'].concat(A.keys.map(function (k) { return esc(famShort(k)); })).concat(['Trend', 'Change', 'Their own forecast']),
           pr.map(function (p) {
             var vals = A.keys.map(function (k) { return p.by[k] ? p.by[k].pct : null; });
-            return [esc(p.name || '—'), esc(p.cls)].concat(A.keys.map(function (k) { var x = p.by[k]; return !x ? '—' : x.wait ? '<span class="nym">⏳ not yet marked</span>' : x.pct === null ? '—' : '<span class="pchip pchip--' + band(x.pct).k + '">' + x.pct + ' %</span>' + (x.own ? ' <span class="nym">own marks</span>' : ''); }))
+            return [esc(p.name || '—'), esc(p.cls)].concat(A.keys.map(function (k) { var x = p.by[k]; return !x ? '—' : x.wait ? '<span class="nym">⏳ not yet marked</span>' : x.pct === null ? '—' : chip(x.pct, x.pct + ' %') + (x.own ? ' <span class="nym">own marks</span>' : ''); }))
               .concat([spark(vals), deltaBar(p.delta), esc(p.cal || '—')]);
           }), [0, 0].concat(A.keys.map(function () { return 1; })).concat([0, 0, 0]));
         h += how([countedRule + ' A not-yet-marked paper shows ⏳ and is skipped when the change is worked out.', 'Change = the latest whole percentage minus the one before it, in points. More than 2 up is ▲; more than 2 down is ▼.',
@@ -876,11 +878,11 @@
         tks.map(function (t) {
           return '<tr><td>' + esc(topicLabelOf(t)) + '</td>' + A.classes.map(function (c) {
             var x = c.tp[t]; if (!x || !x[1]) return '<td class="h">—</td>';
-            var v = x[0] / x[1] * 100; return '<td class="h" style="background:' + band(v).t + '">' + Math.round(v) + '</td>';
+            var v = x[0] / x[1] * 100; return '<td class="h h--' + band(v).k + '">' + Math.round(v) + '</td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div><p class="tcap">Table 1. Data showing the percentage of marks scored in each topic by each class, each cell in its band (75 % or more, 50–74 %, below 50 %).</p>' : '');
       tab = tableHtml('Table 1. Data showing each class’s mean percentage and the share at grade C or better.', ['Class', 'Papers', 'Mean %', 'C or better'],
-        A.classes.map(function (c) { return [esc(c.l), c.n, rnd(c.v) + ' %', rnd(c.cb) + ' %']; }), [0, 1, 1, 1]);
+        A.classes.map(function (c) { return [esc(c.l), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'Not in the old tabs.']);
     }
     else if (id === 'sections') {
@@ -888,14 +890,14 @@
       var lo = A.sections.slice().sort(function (a, b) { return a.v - b.v; })[0];
       h = !lo ? '<p class="empty">No marked papers with their parts recorded here yet.</p>' : '<p class="answer">Pupils lost the most in <b>' + esc(lo.l.toLowerCase()) + '</b>: a mean of <b>' + rnd(lo.v) + ' %</b>.' + waitNote + '</p>';
       fig = lo ? '<figure class="fig">' + bandLegend('pct') + hbars(sr, { w: W, unit: ' %', aria: 'Mean percentage in each part of the paper' }) + '<figcaption>Figure 1. Bar chart showing the mean percentage scored in each part of the paper.</figcaption></figure>' : '';
-      tab = tableHtml('Table 1. Data showing the mean percentage in each part of the paper.', ['Part', 'Papers', 'Mean %'], A.sections.map(function (s) { return [esc(s.l), s.n, rnd(s.v) + ' %']; }), [0, 1, 1]);
+      tab = tableHtml('Table 1. Data showing the mean percentage in each part of the paper.', ['Part', 'Papers', 'Mean %'], A.sections.map(function (s) { return [esc(s.l), s.n, chip(s.v)]; }), [0, 1, 1], A.sections.map(function (s) { return rowBand(s.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'Each paper’s part is turned into its own percentage first, then averaged.', 'Section B and Section C appear separately only when both exist.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'From the old tab, section 2 (“Score Breakdown”).']);
     }
     else if (id === 'cmds') {
       var cm = A.cmds.map(function (c) { return { l: c.l, v: c.v, col: bandCol(c.v), tip: '<b>' + esc(c.l) + '</b><br>' + rnd(c.v) + ' % of marks (' + Math.round(c.s * 10) / 10 + ' of ' + Math.round(c.a * 10) / 10 + ')' }; });
       h = !A.cmds.length ? '<p class="empty">No marked written questions here yet.</p>' : '<p class="answer">Questions that start with <b>' + esc(A.cmds[0].l) + '</b> lost the most: pupils scored <b>' + rnd(A.cmds[0].v) + ' %</b> of their marks.' + waitNote + '</p>';
       fig = A.cmds.length ? '<figure class="fig">' + bandLegend('pct') + hbars(cm, { w: W, unit: ' %', aria: 'Percentage of marks scored for each command word' }) + '<figcaption>Figure 1. Bar chart showing the percentage of marks scored for each command word, hardest first.</figcaption></figure>' : '';
-      tab = tableHtml('Table 1. Data showing the marks scored for each command word.', ['Command word', 'Marks scored', 'Marks available', '% scored'], A.cmds.map(function (c) { return [esc(c.l), Math.round(c.s * 10) / 10, Math.round(c.a * 10) / 10, rnd(c.v) + ' %']; }), [0, 1, 1, 1]);
+      tab = tableHtml('Table 1. Data showing the marks scored for each command word.', ['Command word', 'Marks scored', 'Marks available', '% scored'], A.cmds.map(function (c) { return [esc(c.l), Math.round(c.s * 10) / 10, Math.round(c.a * 10) / 10, chip(c.v)]; }), [0, 1, 1, 1], A.cmds.map(function (c) { return rowBand(c.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'Written questions only: each question’s command word comes from the assessment’s map.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'From the old tab, section 4 (“Command Word Performance”).']);
     }
     else if (id === 'mcq') {
@@ -903,7 +905,7 @@
       h = !A.mcq.length ? '<p class="empty">No marked multiple-choice answers here yet.</p>' : '<p class="answer">' + (A.mcqByTopic ? 'Across several papers, question numbers mean different questions, so this shows <b>topics</b>. ' : '') +
         'The most missed: <b>' + esc(A.mcq[0].l) + '</b>, wrong in <b>' + rnd(A.mcq[0].v) + ' %</b> of ' + (A.mcqByTopic ? 'answers' : 'pupils’ answers') + '.' + waitNote + '</p>';
       fig = A.mcq.length ? '<figure class="fig">' + bandLegend('wrong') + hbars(mr, { w: W, unit: ' %', aria: 'Percentage wrong' }) + '<figcaption>Figure 1. Bar chart showing the percentage of ' + (A.mcqByTopic ? 'multiple-choice answers on each topic that were wrong' : 'pupils who got each multiple-choice question wrong') + ' (the ten worst; n = ' + pl(A.mcqDen, 'pupil') + ').</figcaption></figure>' : '';
-      tab = tableHtml('Table 1. Data showing the multiple-choice ' + (A.mcqByTopic ? 'topics' : 'questions') + ' most often wrong.', [A.mcqByTopic ? 'Topic' : 'Question', 'Wrong answers', A.mcqByTopic ? '% of answers' : '% of pupils'], A.mcq.map(function (m) { return [esc(m.l) + (m.sub ? ' · ' + esc(m.sub) : ''), m.c + (m.of ? ' of ' + m.of : ''), rnd(m.v) + ' %']; }), [0, 1, 1]);
+      tab = tableHtml('Table 1. Data showing the multiple-choice ' + (A.mcqByTopic ? 'topics' : 'questions') + ' most often wrong.', [A.mcqByTopic ? 'Topic' : 'Question', 'Wrong answers', A.mcqByTopic ? '% of answers' : '% of pupils'], A.mcq.map(function (m) { return [esc(m.l) + (m.sub ? ' · ' + esc(m.sub) : ''), m.c + (m.of ? ' of ' + m.of : ''), chip(100 - m.v, rnd(m.v) + ' %')]; }), [0, 1, 1], A.mcq.map(function (m) { return rowBand(100 - m.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'One paper version: by question number, out of the pupils whose answers were recorded. Several: by topic, out of all the answers given on that topic.', '<b>Changed from the old tab:</b> across several papers it divided wrong answers by pupils, which can pass 100 %.', 'Colours by the share answered right: 75 % or more, 50–74 %, below 50 % (so more wrong is redder).', 'From the old tab, section 5.']);
     }
     else if (id === 'errors') {
@@ -938,7 +940,7 @@
             '<figcaption>Figure 1. Bar chart showing the percentage of pupils who chose each revision pattern (n = ' + A.timingN + ').</figcaption></figure>' +
           '<figure class="fig" style="flex:1 1 ' + Math.round(half) + 'px;min-width:0">' + bandLegend('pct') + hbars(tm.map(function (t) { return { l: t.l, v: t.m || 0, col: bandCol(t.m), text: t.m === null ? '—' : rnd(t.m) + ' %', tip: '<b>' + esc(t.l) + '</b><br>mean ' + rnd(t.m) + ' % (' + t.np + ' marked papers)' }; }), { w: Math.round(half), unit: ' %', aria: 'Mean score for each revision pattern' }) +
             '<figcaption>Figure 2. Bar chart showing the mean percentage scored for each revision pattern (marked papers only).</figcaption></figure></div>';
-        tab = tableHtml('Table 1. Data showing each revision pattern, how many chose it and their mean score.', ['When they revised', 'Pupils', '% of pupils', 'Mean score'], tm.map(function (t) { return [esc(t.l), t.n, rnd(t.share) + ' %', t.m === null ? '—' : rnd(t.m) + ' %']; }), [0, 1, 1, 1]);
+        tab = tableHtml('Table 1. Data showing each revision pattern, how many chose it and their mean score.', ['When they revised', 'Pupils', '% of pupils', 'Mean score'], tm.map(function (t) { return [esc(t.l), t.n, rnd(t.share) + ' %', chip(t.m)]; }), [0, 1, 1, 1]);
         h += (showT ? tab : fig);
       }
       h += how(['The share counts every reflection. The mean score counts marked papers only.', '<b>Changed from the old tab:</b> the old “Revision Timing” averaged raw marks across papers with different totals; this uses each paper’s percentage.', 'Pupils answer this question on the reflection form. It shows a link, not a cause.', 'From the old tab, section 5.']);
@@ -959,7 +961,7 @@
             .concat(ERR.slice(0, 4).map(function (e, i) { return { l: e.e + ' ' + e.l + ' (share of reasons)', g: g.n ? g.err[i] : null, b: b.n ? b.err[i] : null }; })), { w: W, aria: 'Girls and boys compared' }) +
           '<figcaption>Figure 1. Dot plot showing girls’ and boys’ results and four of their reasons for lost marks.</figcaption></figure>';
         tab = tableHtml('Table 1. Data showing girls’ and boys’ results side by side.', ['', 'Girls', 'Boys', 'Difference (girls − boys)'],
-          [['Papers', g.n, b.n, ''], ['Marked papers', g.nc, b.nc, ''], ['Mean score', pc(g.mean), pc(b.mean), dp(g.mean, b.mean)], ['Grade A* or A', pc(g.top), pc(b.top), dp(g.top, b.top)],
+          [['Papers', g.n, b.n, ''], ['Marked papers', g.nc, b.nc, ''], ['Mean score', chip(g.mean), chip(b.mean), dp(g.mean, b.mean)], ['Grade A* or A', pc(g.top), pc(b.top), dp(g.top, b.top)],
            ['Below grade C', pc(g.low), pc(b.low), dp(g.low, b.low)], ['English level (1–4)', f1(g.eng), f1(b.eng), d1(g.eng, b.eng)], ['Confidence (1–5)', f1(g.conf), f1(b.conf), d1(g.conf, b.conf)]], [0, 1, 1, 1]);
         h += (showT ? tab : fig);
       }

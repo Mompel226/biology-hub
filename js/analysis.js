@@ -324,33 +324,46 @@
     var r = Math.min(4, w / 2, h / 2); if (h <= 0) return '';
     return 'M' + fx(x) + ',' + fx(base) + 'v' + fx(-(h - r)) + 'a' + fx(r) + ',' + fx(r) + ' 0 0 1 ' + fx(r) + ',' + fx(-r) + 'h' + fx(w - 2 * r) + 'a' + fx(r) + ',' + fx(r) + ' 0 0 1 ' + fx(r) + ',' + fx(r) + 'v' + fx(h - r) + 'z';
   }
-  /* horizontal bars, the label above each bar so long topic names never squeeze the chart */
+  /* horizontal bars. Wide: each label to the left of its bar, one row per bar, so a long list stays short (Daniel, 1 Oct
+     2026: the data first, less scrolling). Narrow: the label above its bar, so long topic names never squeeze it. */
   function hbars(rows, o) {
-    var subs = rows.some(function (r) { return r.sub; }), two = subs && o.w < 560;
-    var W = o.w, max = o.max || 100, rowH = two ? 58 : subs ? 50 : 40, top = 4, bot = 24, right = 64;
-    var H = top + rows.length * rowH + bot, X = function (v) { return (W - right) * Math.max(0, Math.min(v, max)) / max; };
+    var W = o.w, max = o.max || 100, side = W >= 700, subs = rows.some(function (r) { return r.sub; });
+    var two = !side && subs && W < 560, top = 4, bot = 26, right = 70;
+    var labW = side ? Math.min(330, Math.round(W * 0.32)) : 0, plotW = W - labW - right;
+    var rowH = side ? (subs ? 44 : 34) : two ? 64 : subs ? 56 : 46;
+    var H = top + rows.length * rowH + bot, X = function (v) { return plotW * Math.max(0, Math.min(v, max)) / max; };
+    var fit = function (t, px) { t = String(t); var n = Math.floor(px / 7.6); return t.length > n ? t.slice(0, Math.max(1, n - 1)) + '\u2026' : t; };
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria) + '">';
     (o.ticks || [0, 25, 50, 75, 100]).forEach(function (t) {
-      var x = X(t); s += '<line class="g-grid" x1="' + fx(x) + '" x2="' + fx(x) + '" y1="' + top + '" y2="' + (H - bot) + '"/>' +
+      var x = labW + X(t); s += '<line class="g-grid" x1="' + fx(x) + '" x2="' + fx(x) + '" y1="' + top + '" y2="' + (H - bot) + '"/>' +
         '<text class="t-ax" x="' + fx(x) + '" y="' + (H - 6) + '" text-anchor="' + (t === 0 ? 'start' : 'middle') + '">' + t + (o.unit || '') + '</text>';
     });
-    s += '<line class="g-axis" x1="0" x2="0" y1="' + top + '" y2="' + (H - bot) + '"/>';
+    s += '<line class="g-axis" x1="' + labW + '" x2="' + labW + '" y1="' + top + '" y2="' + (H - bot) + '"/>';
     rows.forEach(function (r, i) {
-      var y = top + i * rowH, by = y + rowH - 16, w = X(r.v);
-      s += '<text class="t-lab" x="0" y="' + (y + 14) + '">' + esc(r.l) + (r.sub && !two ? '<tspan class="t-sub" dx="8">' + esc(r.sub) + '</tspan>' : '') + '</text>';
-      if (r.sub && two) s += '<text class="t-sub" x="0" y="' + (y + 30) + '">' + esc(r.sub) + '</text>';
-      s += '<path fill="' + (r.col || 'var(--s1)') + '" d="' + barPath(0, by, Math.max(w, r.v > 0 ? 2 : 0), 10) + '"/>';
-      s += '<text class="t-val" x="' + fx(w + 6) + '" y="' + (by + 9) + '">' + esc(r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '')) + '</text>';
+      var y = top + i * rowH, w = X(r.v), by;
+      if (side) {
+        by = y + (rowH - 16) / 2;
+        s += '<text class="t-lab" x="' + (labW - 10) + '" y="' + (subs && r.sub ? y + 17 : by + 12) + '" text-anchor="end">' + esc(fit(r.l, labW - 14)) + '</text>';
+        if (r.sub) s += '<text class="t-sub" x="' + (labW - 10) + '" y="' + (y + 34) + '" text-anchor="end">' + esc(fit(r.sub, labW - 14)) + '</text>';
+        s += '<path fill="' + (r.col || 'var(--s1)') + '" d="' + barPath(labW, by, Math.max(w, r.v > 0 ? 2 : 0), 16) + '"/>';
+        s += '<text class="t-val" x="' + fx(labW + w + 8) + '" y="' + (by + 13) + '">' + esc(r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '')) + '</text>';
+      } else {
+        by = y + rowH - 20;
+        s += '<text class="t-lab" x="0" y="' + (y + 15) + '">' + esc(r.l) + (r.sub && !two ? '<tspan class="t-sub" dx="8">' + esc(r.sub) + '</tspan>' : '') + '</text>';
+        if (r.sub && two) s += '<text class="t-sub" x="0" y="' + (y + 30) + '">' + esc(r.sub) + '</text>';
+        s += '<path fill="' + (r.col || 'var(--s1)') + '" d="' + barPath(0, by, Math.max(w, r.v > 0 ? 2 : 0), 14) + '"/>';
+        s += '<text class="t-val" x="' + fx(w + 8) + '" y="' + (by + 12) + '">' + esc(r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '')) + '</text>';
+      }
       s += '<rect class="hit" x="0" y="' + y + '" width="' + W + '" height="' + rowH + '" data-tip="' + esc(r.tip || '') + '"/>';
     });
     return s + '</svg>';
   }
   /* vertical bars for the grade spread */
   function vbars(rows, o) {
-    var W = o.w, H = 230, top = 22, bot = 28, left = 30, max = Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.v; })));
+    var W = o.w, H = 330, top = 24, bot = 30, left = 34, max = Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.v; })));
     var step = Math.ceil(max / 4 / 5) * 5 || 1; if (max <= 8) step = Math.ceil(max / 4);
     var top4 = step * 4, Y = function (v) { return (H - top - bot) * v / top4; };
-    var bw = Math.min(46, (W - left) / rows.length * 0.56), gap = (W - left) / rows.length;
+    var bw = Math.min(72, (W - left) / rows.length * 0.56), gap = (W - left) / rows.length;
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria) + '">';
     for (var t = 0; t <= 4; t++) { var y = H - bot - Y(t * step); s += '<line class="g-grid" x1="' + left + '" x2="' + W + '" y1="' + fx(y) + '" y2="' + fx(y) + '"/><text class="t-ax" x="' + (left - 6) + '" y="' + fx(y + 4) + '" text-anchor="end">' + t * step + '</text>'; }
     s += '<line class="g-axis" x1="' + left + '" x2="' + W + '" y1="' + (H - bot) + '" y2="' + (H - bot) + '"/>';
@@ -365,16 +378,16 @@
   }
   /* two-part bars (keywords): did not know + partly knew */
   function stacked(rows, o) {
-    var W = o.w, rowH = 40, top = 4, bot = 24, right = 64, max = Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.dk + r.pa; })));
+    var W = o.w, rowH = 46, top = 4, bot = 26, right = 70, max = Math.max(1, Math.max.apply(null, rows.map(function (r) { return r.dk + r.pa; })));
     var nice = Math.ceil(max / 5) * 5, X = function (v) { return (W - right) * v / nice; }, H = top + rows.length * rowH + bot;
     var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(o.aria) + '">';
     for (var t = 0; t <= nice; t += nice / 5) { var x = X(t); s += '<line class="g-grid" x1="' + fx(x) + '" x2="' + fx(x) + '" y1="' + top + '" y2="' + (H - bot) + '"/><text class="t-ax" x="' + fx(x) + '" y="' + (H - 6) + '" text-anchor="' + (t ? 'middle' : 'start') + '">' + t + '</text>'; }
     rows.forEach(function (r, i) {
-      var y = top + i * rowH, by = y + rowH - 16, w1 = X(r.dk), w2 = X(r.pa);
+      var y = top + i * rowH, by = y + rowH - 20, w1 = X(r.dk), w2 = X(r.pa);
       s += '<text class="t-lab" x="0" y="' + (y + 14) + '">' + esc(r.l) + '</text>';
-      if (r.dk) s += '<rect fill="var(--s2)" x="0" y="' + by + '" width="' + fx(Math.max(1, w1 - (r.pa ? 2 : 0))) + '" height="10"/>';
-      if (r.pa) s += '<path fill="var(--s1)" d="' + barPath(w1, by, w2, 10) + '"/>';
-      s += '<text class="t-val" x="' + fx(w1 + w2 + 6) + '" y="' + (by + 9) + '">' + r.dk + ' + ' + r.pa + '</text>';
+      if (r.dk) s += '<rect fill="var(--s2)" x="0" y="' + by + '" width="' + fx(Math.max(1, w1 - (r.pa ? 2 : 0))) + '" height="14"/>';
+      if (r.pa) s += '<path fill="var(--s1)" d="' + barPath(w1, by, w2, 14) + '"/>';
+      s += '<text class="t-val" x="' + fx(w1 + w2 + 8) + '" y="' + (by + 12) + '">' + r.dk + ' + ' + r.pa + '</text>';
       s += '<rect class="hit" x="0" y="' + y + '" width="' + W + '" height="' + rowH + '" data-tip="' + esc('<b>' + esc(r.l) + '</b><br>' + r.dk + ' did not know it · ' + r.pa + ' partly knew it<br>flagged on ' + rnd(r.pc) + ' % of reflections') + '"/>';
     });
     return s + '</svg>';
@@ -685,29 +698,6 @@
   function scopeRows() { return S.D.rows.filter(function (r) { return r.t === S.tab && (!S.k || r.k === S.k) && (!S.c || r.c === S.c); }); }
   function uniq(a) { var o = []; a.forEach(function (x) { if (o.indexOf(x) < 0) o.push(x); }); return o; }
 
-  function shortAnswer(id, A) {
-    if (id === 'balance') { var bt = balanceTests(); return bt.mapped ? bt.flagged + ' of ' + pl(bt.mapped, 'paper') + ' to look at' : 'No question maps yet'; }
-    if (id !== 'cover' && !A.rows.length) return 'No reflections yet';
-    if (SCORE_Q[id] && !A.counted.length) return 'No marked papers yet';
-    switch (id) {
-      case 'cover': return A.cov.withData.length + ' of ' + pl(A.cov.classes.length, 'class', 'classes') + (A.cov.missing.length ? ' · ' + A.cov.missing.join(', ') + ' none yet' : A.cov.gaps.length ? ' · ' + A.cov.gaps.length + ' gap' + (A.cov.gaps.length > 1 ? 's' : '') : ' · all in');
-      case 'grades': return 'Mean ' + rnd(A.meanPct) + ' % · ' + rnd(A.cOrBetter) + ' % at C or better';
-      case 'topics': return A.topics.length ? 'Hardest: ' + A.topics[0].l.replace(/^\d+ /, '') + ', ' + rnd(A.topics[0].v) + ' %' : 'No topic marks yet';
-      case 'progress':
-        var up = A.progress.filter(function (p) { return p.delta !== null && p.delta > 2; }).length, dn = A.progress.filter(function (p) { return p.delta !== null && p.delta < -2; }).length;
-        return A.keys.length < 2 ? 'Needs two assessments' : up + ' up · ' + dn + ' down';
-      case 'classes': var c = A.classes.slice().sort(function (a, b) { return a.v - b.v; }); return c.length > 1 ? 'From ' + rnd(c[0].v) + ' % to ' + rnd(c[c.length - 1].v) + ' %' : c.length ? 'One class so far' : '—';
-      case 'sections': return A.sections.map(function (s) { return (s.l.indexOf('Multiple') === 0 ? 'MCQ' : s.l.split(' (')[0]) + ' ' + rnd(s.v) + ' %'; }).join(' · ') || '—';
-      case 'cmds': return A.cmds.length ? 'Hardest: ' + A.cmds[0].l + ', ' + rnd(A.cmds[0].v) + ' %' : 'No command words yet';
-      case 'mcq': return A.mcq.length ? (A.mcqByTopic ? A.mcq[0].l.replace(/^\d+ /, '') : A.mcq[0].l.replace('Question ', '')) + ': ' + rnd(A.mcq[0].v) + ' % wrong' : 'No answers recorded yet';
-      case 'errors': return A.errTotal ? A.errors[0].l.replace(/^\S+ /, '') + ' ' + rnd(A.errors[0].v) + ' %' : 'No reasons given yet';
-      case 'vocab': return A.vocab.length ? '“' + A.vocab[0].l + '” most often' : 'No keywords flagged yet';
-      case 'timing': return A.timingN ? rnd(A.timing[0].share) + ' % revised all year' : 'No answers yet';
-      case 'bvg': return A.girls.nc && A.boys.nc ? 'Mean: girls ' + rnd(A.girls.mean) + ' % · boys ' + rnd(A.boys.mean) + ' %' : !A.girls.n && !A.boys.n ? 'No class genders yet' : 'Only ' + (A.girls.nc ? 'girls’' : 'boys’') + ' classes so far';
-    }
-    return '';
-  }
-
   function draw() { if (S.screen === 'analysis' && S.D) screenAnalysis(); }
   function screenAnalysis() {
     setAcct();
@@ -716,38 +706,24 @@
     var rows = scopeRows(), A = analyse(D, rows, S.own, S.preview);
     var tabRows = D.rows.filter(function (r) { return r.t === S.tab; });
     A.cov = coverage(D, S.tab, tabRows, S.c ? [S.c] : classes, S.k ? [S.k] : fams.map(function (f) { return f.key; }), S.own);
+    /* Daniel, 1 Oct 2026: the data first. One slim row of choices, one line saying what the numbers rest on, then the
+       answer across the whole page: its question is the panel's title, a dropdown (‹ › step through them). */
     var html = '<section class="scope" aria-label="What to look at">' +
-      '<div class="field"><span class="eyebrow">Year group</span><div class="seg" role="group">' +
-        D.tabs.map(function (t) { var y = yearOfTab(D, t); return '<button data-tab="' + esc(t) + '" aria-pressed="' + (t === S.tab) + '">' + (y === null ? esc(t.slice(-4)) : y > 11 ? 'Left school' : 'Year ' + y) + '<small>' + esc(t) + '</small></button>'; }).join('') + '</div></div>' +
-      '<div class="field"><label class="eyebrow" for="selA">Assessment</label><select id="selA"><option value="">' + (fams.length === 1 ? 'All assessments (1)' : 'All ' + fams.length + ' assessments') + '</option>' +
-        fams.map(function (f) { return '<option value="' + esc(f.key) + '"' + (f.key === S.k ? ' selected' : '') + '>' + esc(f.name) + (f.day ? ' (' + dayTxt(f.day) + ')' : '') + '</option>'; }).join('') + '</select></div>' +
-      '<div class="field"><label class="eyebrow" for="selC">Class</label><select id="selC"><option value="">All classes</option>' +
-        classes.map(function (c) { return '<option value="' + esc(c) + '"' + (c === S.c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select></div>' +
-      '<div class="fresh"><span>Read from the tracker at ' + esc(when(S.readAt)) + (D.newest ? ' · newest data: ' + esc(D.newest) : '') + '</span><button class="btn' + (S.busy ? ' is-busy' : '') + '" data-fresh' + (S.busy ? ' disabled' : '') + '>Read again</button></div>' +
+      '<div class="seg" role="group" aria-label="Year group">' +
+        D.tabs.map(function (t) { var y = yearOfTab(D, t); return '<button data-tab="' + esc(t) + '" aria-pressed="' + (t === S.tab) + '">' + (y === null ? esc(t.slice(-4)) : y > 11 ? 'Left school' : 'Year ' + y) + ' <small>' + esc(t.slice(-4)) + '</small></button>'; }).join('') + '</div>' +
+      '<select id="selA" aria-label="Assessment"><option value="">' + (fams.length === 1 ? 'All assessments (1)' : 'All ' + fams.length + ' assessments') + '</option>' +
+        fams.map(function (f) { return '<option value="' + esc(f.key) + '"' + (f.key === S.k ? ' selected' : '') + '>' + esc(f.name) + (f.day ? ' (' + dayTxt(f.day) + ')' : '') + '</option>'; }).join('') + '</select>' +
+      '<select id="selC" aria-label="Class"><option value="">All classes</option>' +
+        classes.map(function (c) { return '<option value="' + esc(c) + '"' + (c === S.c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select>' +
     '</section>' + (S.flash ? '<p class="partial" role="status">' + esc(S.flash) + '</p>' : '') +
     '<div class="kinds"><span class="cov">Data from <b>' + A.cov.withData.length + ' of ' + A.cov.classes.length + '</b> ' + (A.cov.classes.length === 1 ? 'class' : 'classes') +
       (A.cov.missing.length ? ' <span class="miss">(' + esc(A.cov.missing.join(', ')) + ': no data yet)</span>' : '') + ' · ' + pl(A.nPupils, 'pupil') + ' · ' +
-      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + ' marked by a teacher' + (A.kinds.partly ? ' (' + A.kinds.partly + ' of them: the teacher typed the totals, the pupils gave each question’s marks)' : '') + '</span>' +
+      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> marked ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + (A.kinds.partly ? ' (' + A.kinds.partly + ' with totals typed by the teacher)' : '') + '</span>' +
       (A.kinds.self ? '<button class="sw" role="switch" data-own aria-checked="' + S.own + '"><i></i>Include ' + A.kinds.self + ' paper' + (A.kinds.self === 1 ? '' : 's') + ' with only the pupils’ own marks</button>' : '') +
-    '</div>';
-    html += '<div class="explore"><nav class="rail" aria-label="Questions">';
-    var n = 0;
-    QUESTIONS.forEach(function (g) {
-      html += '<div><h3>' + g.group + ' <span>· ' + g.note + '</span></h3>';
-      g.items.forEach(function (it) {
-        n++;
-        html += '<button class="q" data-q="' + it.id + '" aria-expanded="' + (it.id === S.q) + '"><span class="q__n">' + (n < 10 ? '0' : '') + n + '</span>' +
-          '<span class="q__t">' + it.t + '</span><span class="q__a">' + esc(shortAnswer(it.id, A)) + '</span></button>';
-        if (it.id === S.q) html += '<div class="slot" data-slot></div>';
-      });
-      html += '</div>';
-    });
-    html += '</nav><div class="wide" data-wide></div></div>';
+      '<span class="fresh"><span>Read ' + esc(when(S.readAt)) + (D.newest ? ' · newest data ' + esc(D.newest) : '') + '</span><button class="btn btn--sm' + (S.busy ? ' is-busy' : '') + '" data-fresh' + (S.busy ? ' disabled' : '') + '>Read again</button></span>' +
+    '</div><section class="panel" id="panel"></section>';
     main.innerHTML = html;
-    var panel = doc.createElement('section'); panel.className = 'panel'; panel.id = 'panel';
-    var narrow = root.matchMedia('(max-width:820px)').matches;
-    (narrow ? main.querySelector('[data-slot]') : main.querySelector('[data-wide]')).appendChild(panel);
-    renderPanel(panel, A);
+    renderPanel(doc.getElementById('panel'), A);
     if (viewersEl) viewersEl.textContent = S.viewers ? S.viewers + (S.viewers === 1 ? ' person is' : ' people are') + ' on this page’s list.' : '';
   }
 
@@ -977,7 +953,15 @@
     }
     var hasChart = !emptyMsg && id !== 'cover' && id !== 'progress' && fig;
     if (hasChart || (id === 'balance' && S.bvHas)) h += '<div class="tools"><button class="btn" data-table>' + (showT ? 'Show the chart' : 'Show as a table') + '</button></div>';
-    el.innerHTML = '<p class="eyebrow">' + scopeTxt + '</p><h2>' + item.t + '</h2>' + partial + h;
+    el.innerHTML = '<h2 class="sr-only">' + item.t + '</h2>' + chooserHtml() + '<p class="eyebrow scope-line">' + scopeTxt + '</p>' + partial + h;
+  }
+  /* the 13 questions in one dropdown, grouped as the plan orders them; ‹ and › step through them */
+  function chooserHtml() {
+    return '<div class="qbar"><button class="qstep" data-qstep="-1" aria-label="The question before">‹</button>' +
+      '<select id="selQ" class="qsel" aria-label="Question">' + QUESTIONS.map(function (g) {
+        return '<optgroup label="' + esc(g.group + ' · ' + g.note) + '">' + g.items.map(function (it) {
+          return '<option value="' + it.id + '"' + (it.id === S.q ? ' selected' : '') + '>' + esc(it.t) + '</option>'; }).join('') + '</optgroup>';
+      }).join('') + '</select><button class="qstep" data-qstep="1" aria-label="The next question">›</button></div>';
   }
   function topicLabelOf(k) { var n = String(S.D.topics[k] || '').trim(); return !n ? (k === 'AO3' ? 'AO3 Practical skills' : 'Topic ' + k) : n.indexOf(String(k)) === 0 ? n : k + ' ' + n; }
 
@@ -1112,6 +1096,11 @@
     if (!S.D) return;
     if (t.hasAttribute('data-fresh')) { ask(true); return; }
     if (t.hasAttribute('data-tab')) { S.tab = t.getAttribute('data-tab'); S.k = ''; S.c = ''; S.preview = null; S.bEdit = false; S.bMsg = ''; S.bv = ''; return draw(); }
+    if (t.hasAttribute('data-qstep')) {
+      var flat = []; QUESTIONS.forEach(function (g) { g.items.forEach(function (it) { flat.push(it.id); }); });
+      S.q = flat[(flat.indexOf(S.q) + (+t.getAttribute('data-qstep')) + flat.length) % flat.length];
+      return draw();
+    }
     if (t.hasAttribute('data-q')) {
       S.q = t.getAttribute('data-q'); draw();
       if (root.matchMedia('(max-width:820px)').matches) { var q = main.querySelector('[data-q="' + S.q + '"]'); if (q && q.scrollIntoView) q.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
@@ -1132,6 +1121,7 @@
     if (el.hasAttribute && el.hasAttribute('data-bsame')) { S.bSame = el.checked; S.bMsg = ''; if (S.bSame) { var rd = readBounds(); if (!rd.bad) S.preview = { vals: rd.vals }; } return draw(); }
     if (el.id === 'selA') { S.k = el.value; S.bEdit = false; S.bMsg = ''; S.preview = null; S.bv = ''; return draw(); }
     if (el.id === 'selC') { S.c = el.value; return draw(); }
+    if (el.id === 'selQ') { S.q = el.value; return draw(); }
   });
   /* typing a number previews it at once: every grade on the page re-grades; nothing is saved */
   doc.addEventListener('input', function (e) {

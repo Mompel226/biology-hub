@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- The private analysis page (docs/analysis-site/PLAN.md). It holds NO data: after a sign-in it asks the Student
+     Progress Tracker's own script, which checks the account against its list before it reads anything.
+     Never linked from another page, never in sitemap.xml or robots.txt, and kept out of search by the line below
+     (tools/status.mjs §3g fails if any of that changes). Scripts come only from this site and Google's sign-in. -->
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com https://accounts.google.com; connect-src https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/; frame-src https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0A141C">
+<title>Biology Analysis</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/analysis.css?v=1790860919">
+</head>
+<body>
+
+<div class="page">
+  <header class="mast">
+    <div>
+      <a class="back" href="https://nlcsbiology.com/biology-hub/">← Biology Hub</a>
+      <p class="eyebrow">NLCS Jeju · Biology · private page</p>
+      <h1>Biology <em>Analysis</em></h1>
+      <p class="lede">How each year group did in its assessments, from the teachers' marks and the pupils' reflections.</p>
+      <p class="who-note">Made by <strong>Dr Daniel Mompel Riera</strong></p>
+    </div>
+    <div class="acct" id="acct"></div>
+  </header>
+  <main id="main">
+    <noscript><section class="gate"><h2>This page needs JavaScript</h2><p>Turn JavaScript on, then reload the page.</p></section></noscript>
+  </main>
+  <footer>
+    <span>A private page: not in search results and not linked from the hub. It holds no data itself. The data comes only to a signed-in person on its list, and goes when the tab closes. <span id="viewers"></span></span>
+    <span>Something wrong, or a suggestion? Please contact me: <a href="mailto:dmompelriera@nlcsjeju.kr">dmompelriera@nlcsjeju.kr</a></span>
+  </footer>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<!-- Google's sign-in, in English on every computer (hl=en-GB) -->
+<script src="https://accounts.google.com/gsi/client?hl=en-GB" async defer></script>
+<script src="js/local.js?v=1790860919"></script>
+<script src="js/signin.js?v=1790860919"></script>
+<script src="js/balance.js?v=1790860919"></script>
+<script src="js/syllabus-outline.js?v=1790860919"></script>
+<script src="js/analysis.js?v=1790860919"></script>
+</body>
+</html>

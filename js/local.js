@@ -67,6 +67,11 @@ window.HUB_LOCAL = {
      here and the labs do. */
   googleClientId:'749068441640-jgh9s0rbg8ed9hl14mtv6kdhg5jg6ddf.apps.googleusercontent.com',
 
+  /* The private analysis page (docs/analysis-site/PLAN.md): the /exec address of the Student Progress
+     Tracker's own script, deployed as a web app (1 Oct 2026). Empty, the page says it is not set up. The
+     address is no secret; the script checks every sign-in against its own list before it reads anything. */
+  analysisUrl:'https://script.google.com/macros/s/AKfycbyRUXDAUyncurV4XeM_o4589U1uL99YtnJwoAj-DZ1n9rYURSp5AaYmc42eYHJ79ZTYQw/exec',
+
   /* ── your record, top right ─────────────────────────────────
      After every test the Assessment Reflection System builds each student a page of their
      own — their scores, the topics they were weak on, what to revise next. That page sits

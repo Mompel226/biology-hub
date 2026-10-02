@@ -72,7 +72,8 @@
                      press plays the film from that second; `sci` is the
                      scientific name, set in italics, and is given only where
                      the species was checked against a published description;
-             why     { k, text }: one closing line;
+             why     { k, points:[{ icon, t, text }] }: one coloured box of short
+                     points; `icon` is "current", "meet" or "shield" (js/hub.js);
              facts   [{ k, v, mail }]: with `mail`, the address follows the
                      words as a link that opens a new email.
    open    extra entries in "Open now"
@@ -399,7 +400,11 @@ window.HUB_LOCAL = {
           { img:'diving-seafan', t:'A red sea fan',
             text:'It is not a plant: it is a colony of small animals called polyps. A fish is resting below it, and its colours match the rock. Can you see it?',
             alt:'A red sea fan with white polyps on a reef; a mottled brown fish rests on the rock under it' } ] },
-      why:{ k:'Why Jeju?', text:'A warm ocean current, the Tsushima Current, flows past Jeju. Animals from warm seas, such as the anemonefish, live here beside animals from colder seas. The coral communities of Jeju, with their soft corals and sea fans, are protected as a Natural Monument of Korea.' },
+      why:{ k:'Why is Jeju\u2019s sea special?',
+        points:[
+          { icon:'current', t:'A warm current', text:'The Tsushima Current brings warm water past Jeju.' },
+          { icon:'meet',    t:'Warm seas meet cold seas', text:'Animals of warm seas, such as the anemonefish, live beside animals of colder seas.' },
+          { icon:'shield',  t:'Protected corals', text:'Jeju\u2019s soft corals and sea fans are protected as a Natural Monument of Korea.' } ] },
       facts:[
         { k:'Who',    v:'Year 9 and above' },
         { k:'When',   v:'Saturday mornings, in Bryant. Open-sea dives begin in April.' },

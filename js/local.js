@@ -364,8 +364,8 @@ window.HUB_LOCAL = {
        the base of the pectoral fin (FishBase), with the nearly black tail of a terminal-phase adult,
        and Korea is in its range; the anemonefish is Amphiprion clarkii (dark body, white bars, yellow
        snout, fins and tail; its range reaches north to Korea); the cornetfish is a Fistularia by its
-       very thin body and tail filament, the species not settled (F. commersonii or F. petimba), so
-       only the genus is given. The school and the sea fan are NOT named to species, on purpose. */
+       long tube-like snout and the thin thread at the end of its tail (seen in the first frame of
+       its shot), the species not settled (F. commersonii or F. petimba), so only the genus is given. The school and the sea fan are NOT named to species, on purpose. */
     { id:'diving', kind:'bryant', feature:true, name:'Scuba diving',
       eyebrow:'Bryant \u00B7 Scuba diving',
       title:'Learn to <em>dive</em>', sub:'and see the animals of Jeju\u2019s sea',
@@ -394,9 +394,13 @@ window.HUB_LOCAL = {
           { img:'diving-anemonefish', at:29.3, t:'Clark\u2019s anemonefish', sci:'Amphiprion clarkii',
             text:'The tentacles of a sea anemone sting other fish. The anemonefish is safe between them.',
             alt:'A small black, white and yellow fish among the pale tentacles of sea anemones' },
-          { img:'diving-cornetfish', at:42.7, t:'A cornetfish', sci:'Fistularia',
-            text:'A long, thin fish that hunts smaller fish.',
-            alt:'A very long, thin fish in green water, with a diver behind it' },
+          /* The fish is in the picture only for the first third of a second of its shot (42.68 to
+             about 43.0): it bends past the camera and is gone. The straight thin strand that stays in
+             the shot afterwards is NOT the fish (the first still, made from 43.6 s, showed only that
+             strand: Daniel, 2 Oct 2026). The still is the first frame of the shot. */
+          { img:'diving-cornetfish', at:42.68, t:'A cornetfish', sci:'Fistularia',
+            text:'A long, thin fish that hunts smaller fish. In the film it swims past in less than one second: watch the start.',
+            alt:'A very long, thin fish bending in an S shape close to the camera: a small head with a long tube-like snout, and a tail that ends in a thin thread. A straight thin strand crosses behind it.' },
           { img:'diving-seafan', t:'A red sea fan',
             text:'It is not a plant: it is a colony of small animals called polyps. A fish is resting below it, and its colours match the rock. Can you see it?',
             alt:'A red sea fan with white polyps on a reef; a mottled brown fish rests on the rock under it' } ] },

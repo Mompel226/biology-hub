@@ -7,7 +7,7 @@
 On the front row: IGCSE revision — Foundations, the human body, Plants, Life on Earth — with Bio
 English Lab (writing exam answers) and Write-Up Lab (lab reports) beside it. Beneath them, four
 doors to what the department does beyond the exam: the co-curricular activities, the student
-societies, Bryant, and student enterprises. Below those, one door beyond NLCS: Learn R.
+societies, the Diving Bryant, and student enterprises. Below those, one door beyond NLCS: Learn R.
 
 [![Open the site](https://img.shields.io/badge/▶_Open_the_site-0969DA?style=for-the-badge&logoColor=white)](https://nlcsbiology.com/biology-hub/)
 
@@ -29,7 +29,12 @@ by **Dr Daniel Mompel Riera** · NLCS Jeju
 A student goes **front door → IGCSE Revision → a shelf → a lab**. Each shelf is a map you point
 at; behind it are the labs, where the questions are and where they mark themselves. The other
 four doors on the front lead to a page each: `…/#ccas`, `…/#societies`, `…/#bryant` and
-`…/#enterprises`. `…/#revision` opens the revision hub directly, and the older links still
+`…/#enterprises`. The Bryant page (since 2 Oct 2026) shows the Bryant that is related to biology,
+scuba diving, in full: the Scuba Bryant's own film, the steps of the course, and the animals the
+film shows. It is a *feature*, not a door (`feature:true` in `js/local.js`), because it has no
+website to go to. Sophie Bryant, whom Bryant is named after, is a small card in that page's
+masthead (`note` on the section). The film is at `assets/film/` and is not under this site's
+open licences (`assets/doors/CREDITS.md`). `…/#revision` opens the revision hub directly, and the older links still
 work — `…/#plants` opens that shelf and `…/#y10` opens a year.
 
 | Door | Topics (0610) | Behind it |

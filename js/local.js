@@ -30,6 +30,10 @@
            a society is still one entry in `doors`; it lands on the page
            whose kind it names, and its name appears on that page's entry
            door by itself.
+           `note` is one small card in the masthead, between the heading
+           and the account corner: a round picture (assets/doors/<img>-128
+           and -256), three short lines and, with `url`, a link. The Bryant
+           page uses it to say who Bryant is named after.
    doors   the wide doors, one per club, society or activity.
            `kind` decides the band a door falls under: the `sections`
            entry with that kind ("cca", "society", "bryant" or
@@ -52,6 +56,25 @@
            coordinates. js/hub.js draws it live on top, so it lands on
            the printed art at every size. Change the banner and these
            numbers change with it.
+           `feature:true` makes the entry a FEATURE instead of a door: the
+           thing itself, shown on the page, for an activity that has no
+           website to go to. It may carry
+             film    { src, poster, seconds, play, again, note, credit, alt }:
+                     the film is fetched only when somebody presses play;
+                     `seconds` is its length, which tools/status.mjs (3i) holds
+                     every `from` and `at` to;
+             rail    { label, steps:[{ mark, t, text, from }] }: the steps of
+                     the activity down a depth line; `from` is the second of
+                     the film at which that step begins, so the line follows
+                     the film;
+             stills  { title, hint, list:[{ img, t, sci, text, alt, at }] }: pictures
+                     at assets/doors/<img>-480 and -960 (4:3); with `at`, a
+                     press plays the film from that second; `sci` is the
+                     scientific name, set in italics, and is given only where
+                     the species was checked against a published description;
+             why     { k, text }: one closing line;
+             facts   [{ k, v, mail }]: with `mail`, the address follows the
+                     words as a link that opens a new email.
    open    extra entries in "Open now"
    credits extra image credits
    ============================================================ */
@@ -105,7 +128,7 @@ window.HUB_LOCAL = {
 
   site: {
     title:'Biology Hub — NLCS Jeju',
-    description:'Biology at NLCS Jeju: IGCSE revision in four parts (Foundations, the human body, Plants, Life on Earth), Bio English Lab for exam answers and Write-Up Lab for lab reports; then co-curricular activities, student societies, Bryant, community enterprises and Learn R. Cambridge IGCSE 0610, with IB as a layer.',
+    description:'Biology at NLCS Jeju: IGCSE revision in four parts (Foundations, the human body, Plants, Life on Earth), Bio English Lab for exam answers and Write-Up Lab for lab reports; then co-curricular activities, student societies, the Diving Bryant, community enterprises and Learn R. Cambridge IGCSE 0610, with IB as a layer.',
     eyebrow:'Cambridge IGCSE Biology 0610 · NLCS Jeju',
     /* The name at the top is a way in, not just a credit: it opens the profile that says who
        made this and what else is on the shelf. The line at the foot used to repeat the same
@@ -210,18 +233,20 @@ window.HUB_LOCAL = {
         status:'live', accent:'#B8860B', tone:'light', focus:'50% 40%',
         alt:'Maria Sibylla Merian\u2019s plate from Metamorphosis insectorum Surinamensium (1705): moths, their caterpillars and the plant they feed on, painted from life in Suriname' },
 
-      { id:'bryant', view:'bryant', eyebrow:'04 · The activity programme',
-        title:'Bryant', sub:'on Saturday mornings',
-        /* Kept to the length of its neighbours on purpose: this is the teaser, and the whole of
-           Sophie Bryant's life — Dublin, the doctorate, the Matterhorn — is on the door it opens.
-           At 255 characters it needed half as much height again as any other card, which is what
-           forced the row so tall that the others could not be read. */
-        blurb:'The Saturday-morning activity programme, named after Sophie Bryant: mathematician, headmistress, and twice up the Matterhorn.',
-        topics:[ {t:'Mathematician'}, {t:'Headmistress, 1895\u20131918'}, {t:'Matterhorn, twice'} ],
-        /* the words' panel frosts the lower two thirds of a tile, so her face has to sit in the
-           top third: the picture is pushed up until it does */
-        status:'live', detail:'Who she was', accent:'#C9A227', tone:'dark', focus:'50% 100%',
-        alt:'Sophie Bryant, photographed in the 1880s or early 1890s: a woman in a dark high-collared dress, looking straight at the camera' },
+      /* Bryant is the school's Saturday-morning activity programme. This door shows the Bryant
+         that is related to biology, and for now that is one activity: scuba diving (Daniel, 2 Oct
+         2026: "instead of even saying Bryant you could say Diving Bryant"). The picture is a
+         frame of the Scuba Bryant's own film: a red sea fan in the sea around Jeju. Sophie Bryant,
+         who had this door until then, is the small card in the masthead of the page it opens.
+         The blurb is kept to the length of its neighbours on purpose: at 255 characters it once
+         needed half as much height again as any other card, which forced the row so tall that
+         the others could not be read. */
+      { id:'bryant', view:'bryant', eyebrow:'04 · Bryant, related to biology',
+        title:'Diving <em>Bryant</em>', sub:'on Saturday mornings',
+        blurb:'Learn scuba diving, and see the animals of Jeju\u2019s sea for yourself. Bryant is the school\u2019s activity programme on Saturday mornings.',
+        topics:[ {t:'Scuba diving'}, {t:'PADI licence'}, {t:'Jeju\u2019s sea'} ],
+        status:'live', detail:'Watch the film', accent:'#FF9A76', tone:'dark', focus:'52% 50%',
+        alt:'A red sea fan on a rocky reef in the sea around Jeju, with blue water behind it' },
 
       { id:'enterprises', view:'enterprises', eyebrow:'05 · Community enterprises',
         title:'Enterprises', sub:'for the community',
@@ -254,8 +279,14 @@ window.HUB_LOCAL = {
       eyebrow:'NLCS Jeju · Societies', title:'Student <em>societies</em>',
       lede:'Run by students, for students. Each door leads to the society\u2019s own site.' },
     { id:'bryant', kind:'bryant', label:'Bryant',
-      eyebrow:'NLCS Jeju · Bryant', title:'<em>Bryant</em>',
-      lede:'The co-curricular and activity programme, on Saturday mornings, named after the second headmistress of North London Collegiate. Its doors will stand here as they open; hers is up already.' },
+      eyebrow:'NLCS Jeju · Bryant', title:'Bryant, related to <em>biology</em>',
+      lede:'Bryant is the school\u2019s activity programme on Saturday mornings. This page shows the Bryant activities that are related to biology. The first one is scuba diving, in the sea around Jeju.',
+      /* who it is named after: a small card beside the heading, not the subject of the page */
+      note:{ img:'bryant-note', eyebrow:'Bryant is named after',
+             name:'Dr Sophie Bryant, 1850\u20131922',
+             text:'Mathematician, headmistress of North London Collegiate, and the first woman in England to be awarded a Doctor of Science.',
+             url:'https://en.wikipedia.org/wiki/Sophie_Bryant', go:'Read about her life',
+             alt:'Sophie Bryant, photographed in the 1880s or early 1890s' } },
     { id:'enterprises', kind:'enterprise', label:'Enterprises',
       eyebrow:'NLCS Jeju · Enterprises', title:'Community <em>enterprises</em>',
       lede:'Student projects for the people around us, on Jeju and across Korea. An enterprise here is measured by who it helps, not by what it makes. This section is being set up; its doors will stand here.' }
@@ -319,16 +350,62 @@ window.HUB_LOCAL = {
       motion:{ draw:{"scaleStrokes": true, "groups": [{"id": "head", "shut": {"x": 1024, "y": 236, "s": 0.36}, "open": {"x": 26, "y": 44, "s": 1.24}, "paths": [{"d": "M 230 74 C 214 48 200 20 196 -8 C 214 10 234 40 244 68", "width": 9, "colour": "#F3E7C9", "at": 0.0, "seconds": 0.25}, {"d": "M 266 70 C 276 38 290 14 304 -4 C 306 24 292 52 276 74", "width": 9, "colour": "#F3E7C9", "at": 0.1, "seconds": 0.25}, {"d": "M 248 72 C 238 108 198 148 160 190 C 128 226 94 254 66 282 C 44 304 38 330 56 344 C 76 358 104 352 124 338 C 150 330 196 338 240 334 C 290 330 326 296 322 246 C 318 210 288 178 246 164", "width": 9, "colour": "#F3E7C9", "at": 0.3, "seconds": 0.95}, {"d": "M 252 70 C 238 84 226 104 222 124", "width": 5, "colour": "#9DB7AE", "at": 0.5, "seconds": 0.2}, {"d": "M 292 68 C 348 100 384 180 390 300", "width": 6, "colour": "#9DB7AE", "at": 0.55, "seconds": 0.4}, {"d": "M 300 92 C 332 132 346 190 344 258", "width": 5, "colour": "#9DB7AE", "at": 0.62, "seconds": 0.35}, {"d": "M 314 122 C 348 160 362 214 362 280", "width": 5, "colour": "#9DB7AE", "at": 0.69, "seconds": 0.35}, {"d": "M 326 160 C 364 200 378 246 380 300", "width": 5, "colour": "#9DB7AE", "at": 0.76, "seconds": 0.35}, {"d": "M 300 326 C 320 352 336 384 346 420", "width": 6, "colour": "#9DB7AE", "at": 0.95, "seconds": 0.3}, {"d": "M 64 298 C 74 292 84 294 90 302", "width": 6, "colour": "#F3E7C9", "at": 1.15, "seconds": 0.18}, {"d": "M 70 332 C 84 336 98 336 110 330", "width": 5, "colour": "#F3E7C9", "at": 1.22, "seconds": 0.18}], "marks": [{"cx": 222, "cy": 156, "r": 27, "colour": "#F3E7C9", "width": 8, "fill": "none", "at": 1.28}, {"cx": 222, "cy": 156, "r": 12, "fill": "#F5A623", "at": 1.36}]}, {"id": "name", "shut": {"x": 1196, "y": 292, "s": 1}, "open": {"x": 612, "y": 318, "s": 1.58}, "text": [{"x": 0, "y": 0, "text": "Veterinary", "size": 58, "family": "Fraunces, Georgia, serif", "style": "italic", "weight": 400, "fill": "#F3E7C9", "at": 1.45}, {"x": 0, "y": 56, "text": "Society", "size": 58, "family": "Fraunces, Georgia, serif", "style": "normal", "weight": 400, "fill": "#F3E7C9", "at": 1.55}, {"x": 3, "y": 90, "text": "NLCS JEJU", "size": 15, "family": "'IBM Plex Mono', monospace", "spacing": 4, "fill": "#9DB7AE", "at": 1.65}]}, {"id": "hen", "open": {"x": 1150, "y": 70, "s": 0.78}, "onlyOpen": true, "paths": [{"d": "M 92 70 C 126 48 180 58 188 104 C 194 144 156 168 112 166 C 72 164 46 140 50 106 C 54 86 70 74 92 70", "width": 5, "colour": "#9DB7AE", "at": 1.55, "seconds": 0.55}, {"d": "M 72 80 C 54 60 58 26 84 18 C 110 10 128 30 118 54 C 112 68 100 72 92 70", "width": 5, "colour": "#9DB7AE", "at": 2.05, "seconds": 0.3}, {"d": "M 62 36 L 38 44 L 62 52", "width": 4, "colour": "#9DB7AE", "at": 2.3, "seconds": 0.12}, {"d": "M 80 20 C 78 4 90 2 92 14 C 96 0 110 2 108 16 C 114 8 124 12 122 26", "width": 4, "colour": "#9DB7AE", "at": 2.4, "seconds": 0.2}, {"d": "M 68 56 C 62 70 76 76 82 64", "width": 3, "colour": "#9DB7AE", "at": 2.55, "seconds": 0.1}, {"d": "M 180 80 C 198 54 214 46 228 32 M 186 90 C 208 76 224 76 236 70 M 188 102 C 208 100 222 106 230 114", "width": 4, "colour": "#9DB7AE", "at": 2.6, "seconds": 0.3}, {"d": "M 104 166 L 104 190 M 92 192 L 118 192 M 130 165 L 132 190 M 120 192 L 146 192", "width": 4, "colour": "#9DB7AE", "at": 2.85, "seconds": 0.2}], "marks": [{"cx": 94, "cy": 36, "r": 4, "fill": "#9DB7AE", "at": 3.0}]}, {"id": "pig", "open": {"x": 1130, "y": 330, "s": 0.86}, "onlyOpen": true, "paths": [{"d": "M 72 64 C 112 32 222 32 262 66 C 292 92 290 140 258 158 C 220 176 112 176 74 152 C 46 134 44 86 72 64", "width": 5, "colour": "#9DB7AE", "at": 1.25, "seconds": 0.6}, {"d": "M 46 96 C 30 98 28 124 46 126 C 62 128 64 94 46 96", "width": 4, "colour": "#9DB7AE", "at": 1.8, "seconds": 0.2}, {"d": "M 40 106 L 40 108 M 40 116 L 40 118", "width": 5, "colour": "#9DB7AE", "at": 1.95, "seconds": 0.08}, {"d": "M 60 134 C 70 142 82 140 90 132", "width": 4, "colour": "#9DB7AE", "at": 2.0, "seconds": 0.12}, {"d": "M 102 54 L 112 20 L 140 50", "width": 5, "colour": "#9DB7AE", "at": 2.05, "seconds": 0.2}, {"d": "M 274 86 C 300 70 306 100 288 104 C 278 104 278 92 288 90", "width": 4, "colour": "#9DB7AE", "at": 2.2, "seconds": 0.25}, {"d": "M 102 172 L 102 190 M 130 175 L 130 190 M 200 175 L 200 190 M 232 170 L 234 190", "width": 5, "colour": "#9DB7AE", "at": 2.4, "seconds": 0.25}], "marks": [{"cx": 78, "cy": 86, "r": 4, "fill": "#9DB7AE", "at": 2.55}]}, {"id": "cow", "open": {"x": 1440, "y": 40, "s": 1.02}, "onlyOpen": true, "paths": [{"d": "M 96 92 C 84 140 84 200 98 236 C 104 272 176 272 182 236 C 196 200 196 140 184 92 C 174 56 106 56 96 92", "width": 5, "colour": "#9DB7AE", "at": 1.75, "seconds": 0.7}, {"d": "M 94 104 C 62 92 30 98 30 116 C 30 132 66 130 94 116", "width": 4, "colour": "#9DB7AE", "at": 2.3, "seconds": 0.3}, {"d": "M 186 104 C 218 92 250 98 250 116 C 250 132 214 130 186 116", "width": 4, "colour": "#9DB7AE", "at": 2.3, "seconds": 0.3}, {"d": "M 102 72 C 76 60 52 40 54 8 C 64 22 84 34 108 44", "width": 4, "colour": "#9DB7AE", "at": 2.55, "seconds": 0.3}, {"d": "M 178 72 C 204 60 228 40 226 8 C 216 22 196 34 172 44", "width": 4, "colour": "#9DB7AE", "at": 2.55, "seconds": 0.3}, {"d": "M 112 232 C 114 242 124 242 126 232 M 154 232 C 156 242 166 242 168 232", "width": 3, "colour": "#9DB7AE", "at": 2.85, "seconds": 0.15}], "marks": [{"cx": 118, "cy": 152, "r": 4, "fill": "#9DB7AE", "at": 2.9}, {"cx": 162, "cy": 152, "r": 4, "fill": "#9DB7AE", "at": 2.95}]}]} },
       alt:'The Veterinary Society mark: a horse\u2019s head drawn in one line, beside the words Veterinary Society, NLCS Jeju' },
 
-    /* The Bryant page opens with the woman it is named after. `hero` makes this a full-width
-       door like the one on the front, words always out, rather than a banner. */
-    { id:'sophie-bryant', kind:'bryant', hero:true, name:'Sophie Bryant',
-      eyebrow:'Dr Sophie Bryant \u00B7 1850\u20131922',
-      title:'The woman it is <em>named after</em>',
-      blurb:'Sophie Bryant taught mathematics at North London Collegiate from 1875 and led the school from 1895 to 1918. In 1884 she became the first woman in England to be awarded a Doctor of Science. She rowed, swam and cycled, twice climbed the Matterhorn, and died in the Alps at 72, walking near Chamonix. The programme that carries her name takes you out beyond the timetable in her spirit.',
-      topics:[ {t:'Dublin, 1850'}, {t:'DSc, 1884'}, {t:'Headmistress, 1895\u20131918'}, {t:'Royal Commission, 1894'}, {t:'Matterhorn, twice'} ],
-      status:'live', url:'https://en.wikipedia.org/wiki/Sophie_Bryant', detail:'Her life, in full', go:'Read more',
-      accent:'#C9A227', tone:'dark', focus:'100% 50%',
-      alt:'Sophie Bryant, photographed in the 1880s or early 1890s, at the right of a dark plate: a woman in a dark high-collared dress, looking straight at the camera' },
+    /* The Diving Bryant: a FEATURE, not a door, because it has no website to go to. Everything a
+       pupil needs is on the page: the Scuba Bryant's own film, the steps of the course down a depth
+       line that follows the film, the animals the film shows, and who to ask.
+       The facts come from Mr Rushton's blurb and poster (2 Oct 2026). The film is the work of his
+       pupils, shown with his permission; it is NOT under this site's open licences (CREDITS.md).
+       The web copy stops before the closing credits, which name pupils. The times below are
+       seconds of that copy: `from` is where a step of the course begins in the film, `at` is where
+       an animal comes into the picture. Make a new copy of the film and they must be read again.
+       The animals were named from the frames and then CHECKED (Daniel, 2 Oct 2026: "check yourself"):
+       the tuskfish is Choerodon azurio by its mark, a narrow dark wedge from the dorsal fin down to
+       the base of the pectoral fin (FishBase), with the nearly black tail of a terminal-phase adult,
+       and Korea is in its range; the anemonefish is Amphiprion clarkii (dark body, white bars, yellow
+       snout, fins and tail; its range reaches north to Korea); the cornetfish is a Fistularia by its
+       very thin body and tail filament, the species not settled (F. commersonii or F. petimba), so
+       only the genus is given. The school and the sea fan are NOT named to species, on purpose. */
+    { id:'diving', kind:'bryant', feature:true, name:'Scuba diving',
+      eyebrow:'Bryant \u00B7 Scuba diving',
+      title:'Learn to <em>dive</em>', sub:'and see the animals of Jeju\u2019s sea',
+      blurb:'In this Bryant you learn scuba diving with Mr Rushton, a qualified Divemaster, and with certified instructors. You also practise leadership, teamwork and personal responsibility.',
+      topics:[ {t:'See another world'}, {t:'Dive in other countries'}, {t:'Make new friends'}, {t:'A skill for life'} ],
+      status:'live', accent:'#FF9A76',
+      film:{ src:'assets/film/diving.mp4', poster:'diving-poster', seconds:50.6,
+             play:'Watch the film', again:'Watch the film again', note:'50 seconds \u00B7 with music',
+             credit:'Filmed and edited by students of the Scuba Bryant, NLCS Jeju, spring 2024.',
+             alt:'The film of the Scuba Bryant: the sea surface, training in a swimming pool, then students diving over a rocky reef with fish, sea anemones and a sea fan' },
+      rail:{ label:'The course, from the surface down',
+        steps:[
+          { mark:'0 m',  from:0,    t:'The surface', text:'Jeju is famous for its oranges and its oreums. There is another world here too, under the sea.' },
+          { mark:'4 m',  from:9.6,  t:'The pool',    text:'The course begins in a heated swimming pool, 4 m deep.' },
+          { mark:'Sea',  from:13.6, t:'The open sea', text:'From April (block 3 of Bryant) you dive in the open sea around Jeju.' },
+          { mark:'18 m', from:48.1, t:'The licence', text:'You finish as a PADI Open Water Diver. With this international licence you may dive to 18 m.' } ] },
+      stills:{ title:'Animals in the film',
+        hint:'Press a picture with a time on it. The film plays from that animal.',
+        list:[
+          { img:'diving-school', at:23.2, t:'A school of fish',
+            text:'Thousands of small fish swim together. In a school, each fish is harder for a predator to catch.',
+            alt:'A dense school of small silver fish over green rock' },
+          { img:'diving-tuskfish', at:27.3, t:'An Azurio tuskfish', sci:'Choerodon azurio',
+            text:'A kind of wrasse. Tuskfish have strong front teeth, like small tusks, and eat animals with hard shells, such as crabs.',
+            alt:'An orange fish with one black band and one white band across its body, swimming over the reef' },
+          { img:'diving-anemonefish', at:29.3, t:'Clark\u2019s anemonefish', sci:'Amphiprion clarkii',
+            text:'The tentacles of a sea anemone sting other fish. The anemonefish is safe between them.',
+            alt:'A small black, white and yellow fish among the pale tentacles of sea anemones' },
+          { img:'diving-cornetfish', at:42.7, t:'A cornetfish', sci:'Fistularia',
+            text:'A long, thin fish that hunts smaller fish.',
+            alt:'A very long, thin fish in green water, with a diver behind it' },
+          { img:'diving-seafan', t:'A red sea fan',
+            text:'It is not a plant: it is a colony of small animals called polyps. A fish is resting below it, and its colours match the rock. Can you see it?',
+            alt:'A red sea fan with white polyps on a reef; a mottled brown fish rests on the rock under it' } ] },
+      why:{ k:'Why Jeju?', text:'A warm ocean current, the Tsushima Current, flows past Jeju. Animals from warm seas, such as the anemonefish, live here beside animals from colder seas. The coral communities of Jeju, with their soft corals and sea fans, are protected as a Natural Monument of Korea.' },
+      facts:[
+        { k:'Who',    v:'Year 9 and above' },
+        { k:'When',   v:'Saturday mornings, in Bryant. Open-sea dives begin in April.' },
+        { k:'So far', v:'In one year, ten NLCS Jeju students qualified as PADI Open Water Divers.' },
+        /* his school address, given by Daniel for this page (2 Oct 2026) */
+        { k:'Ask',    v:'Mr Rushton', mail:'jrushton@nlcsjeju.kr' } ] },
 
     /* A section with nothing in it yet still needs to say what it is for: one shut door, full
        width like a hero, wearing the section\u2019s own picture (`img`). Replace it with the real
@@ -359,7 +436,8 @@ window.HUB_LOCAL = {
       url:'https://commons.wikimedia.org/wiki/File:Koi_pond_-_Flickr_-_GeorgeTan%5E5.jpg' },
     { door:'Societies',   text:'Maria Sibylla Merian, Metamorphosis insectorum Surinamensium (1705), Minneapolis Institute of Art', licence:'public domain',
       url:'https://commons.wikimedia.org/wiki/File:Maria_Merian_Metamorphosis_Insectorum_Surinamensium_MIA_P18717.jpg' },
-    { door:'Bryant',      text:'Sophie Bryant, photomechanical print, Rijksmuseum', licence:'CC0',
+    { door:'Diving Bryant', text:'the film and every picture taken from it: students and staff of the Scuba Bryant, NLCS Jeju, 2024, shown with permission', licence:'all rights reserved', url:'' },
+    { door:'Sophie Bryant', text:'photomechanical print, Rijksmuseum', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
     { door:'My assessments', text:'DNA in an agarose gel under UV light, School of Natural Resources, Ann Arbor', licence:'CC BY 2.0',
       url:'https://commons.wikimedia.org/wiki/File:Agarose_gel_with_UV_illumination_-_Ethidium_bromide_stained_DNA_glows_orange_(close-up).jpg' },

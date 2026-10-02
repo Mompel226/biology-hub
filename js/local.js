@@ -181,7 +181,7 @@ window.HUB_LOCAL = {
         blurb:'Practice in writing short, exact exam answers: describe and explain for every topic, and plan an investigation, marked as you go. Plus keyword tests, with Korean.',
         topics:[ {t:'Describe'}, {t:'Explain'}, {t:'Plan'}, {t:'Keywords'} ],
         status:'live', accent:'#62D38A', tone:'light', focus:'50% 78%', go:'Open',
-        detail:'1,777 questions',
+        detail:'2,200 questions',
         alt:'A page of Robert Hooke\u2019s Micrographia (1665): the printed observation of the texture of cork, in which he first wrote the word cell' },
 
       /* Write-Up Lab (labs/write-up-lab), live since 24 Sep 2026. Same tab, like every lab. */

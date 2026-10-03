@@ -218,7 +218,7 @@ window.HUB_LOCAL = {
       { id:'system', personal:true, teacher:true, img:'mine', eyebrow:'Teachers only',
         title:'Assessment <em>system</em>', sub:'spreadsheets, progress, homework',
         blurb:'The teacher side of the system: every assessment\u2019s spreadsheet, class progress in the labs and in Bio English, any pupil\u2019s tracker, and the homework you have set.',
-        status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', newTab:true, go:'Open',
+        status:'live', accent:'#E879F9', tone:'dark', focus:'50% 50%', go:'Open',   /* the SAME tab (Daniel, 2 Oct 2026); the page has ← Biology Hub */
         detail:'Teacher mode',
         alt:'DNA in an agarose gel under ultraviolet light: rows of glowing bands, one lane for each sample' },
 

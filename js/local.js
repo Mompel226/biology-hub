@@ -181,7 +181,7 @@ window.HUB_LOCAL = {
         blurb:'Practice in writing short, exact exam answers: describe and explain for every topic, and plan an investigation, marked as you go. Plus keyword tests, with Korean.',
         topics:[ {t:'Describe'}, {t:'Explain'}, {t:'Plan'}, {t:'Keywords'} ],
         status:'live', accent:'#62D38A', tone:'light', focus:'50% 78%', go:'Open',
-        detail:'2,200 questions',
+        detail:'2,046 questions',
         alt:'A page of Robert Hooke\u2019s Micrographia (1665): the printed observation of the texture of cork, in which he first wrote the word cell' },
 
       /* Write-Up Lab (labs/write-up-lab), live since 24 Sep 2026. Same tab, like every lab. */
@@ -354,9 +354,10 @@ window.HUB_LOCAL = {
     /* The Diving Bryant: a FEATURE, not a door, because it has no website to go to. Everything a
        pupil needs is on the page: the Scuba Bryant's own film, the steps of the course down a depth
        line that follows the film, the animals the film shows, and who to ask.
-       The facts come from Mr Rushton's blurb and poster (2 Oct 2026). The film is the work of his
-       pupils, shown with his permission; it is NOT under this site's open licences (CREDITS.md).
-       The web copy stops before the closing credits, which name pupils. The times below are
+       The facts come from Mr Rushton's blurb and poster (2 Oct 2026). The film is the work of a
+       pupil, Suk-Joon Yoon, shown with Mr Rushton's permission; it is NOT under this site's open
+       licences (CREDITS.md). The web copy stops before the closing credits, which name other pupils:
+       only the maker is named, in `credit` (Mr Rushton asked, 3 Oct 2026). The times below are
        seconds of that copy: `from` is where a step of the course begins in the film, `at` is where
        an animal comes into the picture. Make a new copy of the film and they must be read again.
        The animals were named from the frames and then CHECKED (Daniel, 2 Oct 2026: "check yourself"):
@@ -374,7 +375,10 @@ window.HUB_LOCAL = {
       status:'live', accent:'#FF9A76',
       film:{ src:'assets/film/diving.mp4', poster:'diving-poster', seconds:50.6,
              play:'Watch the film', again:'Watch the film again', note:'50 seconds \u00B7 with music',
-             credit:'Filmed and edited by students of the Scuba Bryant, NLCS Jeju, spring 2024.',
+             /* the student who made the film, by name: Mr Rushton asked for the credit (3 Oct 2026). The
+                closing titles of the original call it "a Suk-Joon Yoon film": written, directed and edited
+                by Suk-Joon Yoon. No other pupil is named. */
+             credit:'A film by Suk-Joon Yoon, an NLCS Jeju student, for the Scuba Bryant, spring 2024.',
              alt:'The film of the Scuba Bryant: the sea surface, training in a swimming pool, then students diving over a rocky reef with fish, sea anemones and a sea fan' },
       rail:{ label:'The course, from the surface down',
         steps:[
@@ -445,7 +449,7 @@ window.HUB_LOCAL = {
       url:'https://commons.wikimedia.org/wiki/File:Koi_pond_-_Flickr_-_GeorgeTan%5E5.jpg' },
     { door:'Societies',   text:'Maria Sibylla Merian, Metamorphosis insectorum Surinamensium (1705), Minneapolis Institute of Art', licence:'public domain',
       url:'https://commons.wikimedia.org/wiki/File:Maria_Merian_Metamorphosis_Insectorum_Surinamensium_MIA_P18717.jpg' },
-    { door:'Diving Bryant', text:'the film and every picture taken from it: students and staff of the Scuba Bryant, NLCS Jeju, 2024, shown with permission', licence:'all rights reserved', url:'' },
+    { door:'Diving Bryant', text:'the film and every picture taken from it: a film by Suk-Joon Yoon, NLCS Jeju student, for the Scuba Bryant, 2024, shown with permission', licence:'all rights reserved', url:'' },
     { door:'Sophie Bryant', text:'photomechanical print, Rijksmuseum', licence:'CC0',
       url:'https://commons.wikimedia.org/wiki/File:Portret_van_Sophie_Bryant,_RP-F-2001-7-232E-14.jpg' },
     { door:'My assessments', text:'DNA in an agarose gel under UV light, School of Natural Resources, Ann Arbor', licence:'CC BY 2.0',

@@ -356,8 +356,9 @@ window.HUB_LOCAL = {
        line that follows the film, the animals the film shows, and who to ask.
        The facts come from Mr Rushton's blurb and poster (2 Oct 2026). The film is the work of a
        pupil, Suk-Joon Yoon, shown with Mr Rushton's permission; it is NOT under this site's open
-       licences (CREDITS.md). The web copy stops before the closing credits, which name other pupils:
-       only the maker is named, in `credit` (Mr Rushton asked, 3 Oct 2026). The times below are
+       licences (CREDITS.md). Since 3 Oct 2026 the web copy is the WHOLE film, closing titles included
+       (Daniel put the original back and asked for them): they name the maker, the pupils in the film
+       and the staff. The first web copy (diving.mp4, 2 Oct) stopped before them; it is in the Archive. The times below are
        seconds of that copy: `from` is where a step of the course begins in the film, `at` is where
        an animal comes into the picture. Make a new copy of the film and they must be read again.
        The animals were named from the frames and then CHECKED (Daniel, 2 Oct 2026: "check yourself"):
@@ -373,11 +374,12 @@ window.HUB_LOCAL = {
       blurb:'In this Bryant you learn scuba diving with Mr Rushton, a qualified Divemaster, and with certified instructors. You also practise leadership, teamwork and personal responsibility.',
       topics:[ {t:'See another world'}, {t:'Dive in other countries'}, {t:'Make new friends'}, {t:'A skill for life'} ],
       status:'live', accent:'#FF9A76',
-      film:{ src:'assets/film/diving.mp4', poster:'diving-poster', seconds:50.6,
-             play:'Watch the film', again:'Watch the film again', note:'50 seconds \u00B7 with music',
+      film:{ src:'assets/film/scuba-bryant.mp4', poster:'diving-poster', seconds:55.06,
+             play:'Watch the film', again:'Watch the film again', note:'55 seconds \u00B7 with music',
              /* the student who made the film, by name: Mr Rushton asked for the credit (3 Oct 2026). The
                 closing titles of the original call it "a Suk-Joon Yoon film": written, directed and edited
-                by Suk-Joon Yoon. No other pupil is named. */
+                by Suk-Joon Yoon. The page's words name no other pupil; the film's own closing titles,
+                in the web copy since 3 Oct 2026, name the others who made it or appear in it. */
              credit:'A film by Suk-Joon Yoon, an NLCS Jeju student, for the Scuba Bryant, spring 2024.',
              alt:'The film of the Scuba Bryant: the sea surface, training in a swimming pool, then students diving over a rocky reef with fish, sea anemones and a sea fan' },
       rail:{ label:'The course, from the surface down',
@@ -401,7 +403,8 @@ window.HUB_LOCAL = {
           /* The fish is in the picture only for the first third of a second of its shot (42.68 to
              about 43.0): it bends past the camera and is gone. The straight thin strand that stays in
              the shot afterwards is NOT the fish (the first still, made from 43.6 s, showed only that
-             strand: Daniel, 2 Oct 2026). The still is the first frame of the shot. */
+             strand: Daniel, 2 Oct 2026). The still is the first frame of the shot, cut from the 1080p
+             original (3 Oct 2026). */
           { img:'diving-cornetfish', at:42.68, t:'A cornetfish', sci:'Fistularia',
             text:'A long, thin fish that hunts smaller fish. In the film it swims past in less than one second: watch the start.',
             alt:'A very long, thin fish bending in an S shape close to the camera: a small head with a long tube-like snout, and a tail that ends in a thin thread. A straight thin strand crosses behind it.' },

@@ -38,23 +38,23 @@ const base = (o) => Object.assign({ pct: 60, done: 10, total: 17, complete: fals
 const pupil = (name, lab) => ({ name, cls: '9B', cohort: { grad: 2029, title: 'Class of 2029', yearGroup: 'Y9' }, byLab: { 'digestion-lab': lab } });
 const students = [
   /* round 2 of the mouth: question 4 tried and not right in round 1, and again in round 2 (failed again) */
-  pupil('Minkyu Joo', base({ checks: 30, c1: 22, ag: 1, rs: 1,
+  pupil('Minho Jeon', base({ checks: 30, c1: 22, ag: 1, rs: 1,
     q: { mouth: 'ff1tff0f', stomach: 'f1t000000' },
     rd: { mouth: ['ff1tff0f.11331101', '0f0t0000.01020000'], stomach: ['f1t000000.132000000'] }, rx: { stomach: 2 } })),
   /* three rounds; question 4 right after more checks in round 1, tried in round 2, right after more in round 3 */
-  pupil('Rue Ha', base({ checks: 40, c1: 12, ag: 1, q: { mouth: 'fff1ff00' },
+  pupil('Ria Ham', base({ checks: 40, c1: 12, ag: 1, q: { mouth: 'fff1ff00' },
     rd: { mouth: ['fff1ff00.11131100', '000t0000.00020000', '0001ffff.00031111'] } })),
   /* twelve rounds of the mouth: rounds 2 to 7 kept together */
-  pupil('Seoyeon Park', base({ checks: 90, c1: 14, ag: 1, q: { mouth: 'f1f1ffff' },
+  pupil('Seohyun Pyo', base({ checks: 90, c1: 14, ag: 1, q: { mouth: 'f1f1ffff' },
     rd: { mouth: ['f1f1ffff.13121111', 'ff1f0000.66e60000*6', 'ffff0000.11110000', 'ffff0000.11110000', 'ffff0000.11110000', 'ffff0000.11110000',
                   'ffff0000.11110000', 'ffff0000.11110000', 'fff1ffff.11131111', '0f000000.01000000'] } })),
   /* a pupil on round 2 from before rounds were kept: round 1's checks not by question, the round between not kept */
-  pupil('Jiwoo Lee', base({ checks: 60, c1: 10, pct: 60, ag: 1, q: { mouth: 'ffftf0ff' },
+  pupil('Jiyun Lee', base({ checks: 60, c1: 10, pct: 60, ag: 1, q: { mouth: 'ffftf0ff' },
     rd: { mouth: ['ffftf0ff.', '', '000t0000.00010000'] }, rx: { mouth: 40 } })),
   /* round 1 only: one row, no "All rounds" */
-  pupil('Hayoon Choi', base({ checks: 12, c1: 12, ag: 0, q: { mouth: 'fffffff0' }, rd: { mouth: ['fffffff0.11111110'] } })),
+  pupil('Hayeon Choi', base({ checks: 12, c1: 12, ag: 0, q: { mouth: 'fffffff0' }, rd: { mouth: ['fffffff0.11111110'] } })),
   /* many checks in round 1 and under 75%: Stuck */
-  pupil('Doyun Jung', base({ checks: 50, c1: 50, ag: 0, pct: 40, q: { mouth: 'fff1ffff' }, rd: { mouth: ['fff1ffff.111a1111'] } })),
+  pupil('Dohyun Jung', base({ checks: 50, c1: 50, ag: 0, pct: 40, q: { mouth: 'fff1ffff' }, rd: { mouth: ['fff1ffff.111a1111'] } })),
   /* the second audit (7 Oct 2026): round 1 never recorded (the first-round record is all "0"), and a station called "constructor" */
   pupil('Bora Lim', base({ checks: 20, c1: 18, ag: 1, q: { mouth: '00000000' }, b: { mouth: 'ftf00000' }, rd: { mouth: ['', '0t000000.02000000'] },
     stations: [{ name: 'mouth', done: 2, total: 8, checks: 9 }, { name: 'constructor', done: 1, total: 3, checks: 2 }] }))
@@ -151,9 +151,9 @@ try {
     const cell = (nm) => [...document.querySelectorAll('.hm tbody tr')].find((tr) => tr.textContent.includes(nm)).querySelectorAll('.cbox')[1];
     const tile = [...document.querySelectorAll('.tile')].find((t) => /Practised again/i.test(t.textContent));
     const flagsOf = (nm) => [...document.querySelectorAll('.attr')].filter((a) => a.textContent.includes(nm)).map((a) => [...a.querySelectorAll('.flag')].map((f) => f.textContent).join(','));
-    return { mk: cell('Minkyu Joo').className, mkTip: cell('Minkyu Joo').getAttribute('data-tip'), hy: cell('Hayoon Choi').className,
+    return { mk: cell('Minho Jeon').className, mkTip: cell('Minho Jeon').getAttribute('data-tip'), hy: cell('Hayeon Choi').className,
       tile: tile && tile.querySelector('.tile__v').textContent, tileTip: tile && tile.getAttribute('data-tip'),
-      jiwoo: flagsOf('Jiwoo Lee'), doyun: flagsOf('Doyun Jung'),
+      jiwoo: flagsOf('Jiyun Lee'), doyun: flagsOf('Dohyun Jung'),
       card: [...document.querySelectorAll('.labc .hard')].map((h) => h.textContent).join(' | '),
       tipsMissing: [...document.querySelectorAll('.tile, .stat > div, .flag, .attr__i, .attr__p')].filter((x) => !x.getAttribute('data-tip')).length };
   });
@@ -167,7 +167,7 @@ try {
   console.log('\na pupil’s card');
   const openFor = async (nm) => { await ev((nm) => [...document.querySelectorAll('.hm td.name')].find((td) => td.textContent.includes(nm)).click(), nm);
     await until(() => document.getElementById('draw').classList.contains('on')); };
-  await openFor('Minkyu Joo');
+  await openFor('Minho Jeon');
   c = await ev(() => {
     const chips = [...document.querySelectorAll('#drawb .dchip')].map((x) => x.textContent);
     const m = document.querySelector('#drawb details[data-st="mouth"]');
@@ -201,7 +201,7 @@ try {
   await shot('r2-card');
   await ev(() => document.getElementById('drawx').click());
 
-  await openFor('Seoyeon Park');
+  await openFor('Seohyun Pyo');
   await ev(() => { document.querySelector('#drawb details[data-st="mouth"]').open = true; });
   c = await ev(() => [...document.querySelectorAll('#drawb details[data-st="mouth"] .rq__l')].map((x) => x.textContent));
   check('rounds kept together read “Rounds 2–7”, then the newest, one by one', c.join('|') === '|Round 1|Rounds 2–7|Round 8|Round 9|Round 10|Round 11|Round 12|Round 13|Round 14|Round 15 now|All rounds', c.join('|'));
@@ -210,7 +210,7 @@ try {
   await shot('r3-folded');
   await ev(() => document.getElementById('drawx').click());
 
-  await openFor('Jiwoo Lee');
+  await openFor('Jiyun Lee');
   await ev(() => { document.querySelector('#drawb details[data-st="mouth"]').open = true; });
   c = await ev(() => { const m = document.querySelector('#drawb details[data-st="mouth"]');
     return { u: m.querySelectorAll('.rq__r')[2].querySelectorAll('.sq.u').length, tip: m.querySelectorAll('.rq__l')[2].getAttribute('data-tip'),
@@ -238,7 +238,7 @@ try {
   await shot('r4-stuck');
 
   console.log('\nbright, dark and a phone');
-  await openFor('Rue Ha');
+  await openFor('Ria Ham');
   await ev(() => { document.querySelector('#drawb details[data-st="mouth"]').open = true; });
   const k = await contrast();
   check('dark: the number on each square is readable (3:1 or more)', k.every(([, r]) => r >= 3), JSON.stringify(k));
@@ -252,7 +252,7 @@ try {
   await send('Emulation.setDeviceMetricsOverride', { width: 375, height: 812, deviceScaleFactor: 1, mobile: true });
   await wait(300);
   await ev(() => document.getElementById('drawx').click());
-  await openFor('Seoyeon Park');
+  await openFor('Seohyun Pyo');
   await ev(() => { document.querySelectorAll('#drawb details.dqd').forEach((d) => { d.open = true; }); });
   await wait(300);
   const w2 = await ev(() => { const b = document.getElementById('drawb'); return { sw: b.scrollWidth, cw: b.clientWidth, page: document.documentElement.scrollWidth, iw: innerWidth }; });

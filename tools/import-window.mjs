@@ -39,7 +39,7 @@ const COURSES = [['cA', '11C Biology', '11C'], ['cB', '11D Biology', '11D'], ['c
   .map(([id, name, code]) => ({ id, name, section: '', display: name, autoClassCode: code }));
 const A = { status: 'success', listed: 16, added: 8, skipped: 8, moved: 0, clashes: [], noEmail: [] };
 const B = { status: 'error', error: 'Request failed for https://classroom.googleapis.com returned code 503' };
-const C = { status: 'success', listed: 20, added: 0, skipped: 20, moved: 3, clashes: [{ name: 'Rue Ha', was: '11C' }], noEmail: ['Ian Kwon'] };
+const C = { status: 'success', listed: 20, added: 0, skipped: 20, moved: 3, clashes: [{ name: 'Ria Ham', was: '11C' }], noEmail: ['Ivy Kwon'] };
 const P = { status: 'pending' };
 /* the pupils in none of this year's classes, as getNotThisYear gives them (7 Oct 2026) */
 const G11B = { cls: '11B', total: 4, pupils: [['Bo Han', 'bo.han'], ['Cy Lee', 'cy.lee'], ['Di Park', 'di.park'], ['Ed Yoon', 'ed.yoon']]
@@ -228,7 +228,7 @@ try {
   check('ONE call for every ticked class, never one per class', s.log.length === 1 && JSON.stringify(s.log[0].ids) === JSON.stringify(['cA', 'cB', 'cC']) && s.log[0].n === 2, JSON.stringify(s.log));
   check('a good class says how many Classroom listed and what was added', /16 in Classroom/.test(s.rows[0]) && /8 added/.test(s.rows[0]) && /8 already here/.test(s.rows[0]), s.rows[0]);
   check('the failed class is named in Google’s words', /❌/.test(s.rows[1]) && /returned code 503/.test(s.rows[1]), s.rows[1]);
-  check('the class after it still went, naming a pupil in two ticked courses and one with no address', /20 in Classroom/.test(s.rows[2]) && /also in 11C/.test(s.rows[2]) && /Rue Ha/.test(s.rows[2]) && /no school address for Ian Kwon/.test(s.rows[2]), s.rows[2]);
+  check('the class after it still went, naming a pupil in two ticked courses and one with no address', /20 in Classroom/.test(s.rows[2]) && /also in 11C/.test(s.rows[2]) && /Ria Ham/.test(s.rows[2]) && /no school address for Ivy Kwon/.test(s.rows[2]), s.rows[2]);
   check('each good class shows its count on the Students tab at the end', /Now 15 in 11C on the Students tab/.test(s.rows[0]) && /Now 20 in 9B/.test(s.rows[2]), s.rows[0] + ' | ' + s.rows[2]);
   check('the summary counts and names the failed class, and offers to try it again', /Finished\./.test(s.bar) && /2 of 3 class\(es\) imported/.test(s.bar) && /11D/.test(s.bar) && s.buttons.some((t) => /Try the 1 again/.test(t)), s.bar + ' | ' + s.buttons);
   check('nothing wider than the window', s.sw <= s.iw, JSON.stringify({ sw: s.sw, iw: s.iw }));

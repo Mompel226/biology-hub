@@ -38,15 +38,15 @@ const SHOTS = arg('--shots');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 const hw = (id, title, dueText, dueDay, dueHm, inClassroom) => ({ id, title, who: '11C', what: 'Digestion: The mouth', teacher: 'teacher@x.kr', mine: true,
-  pupils: [{ name: 'Rue Ha', cls: '11C', done: 3, total: 8, pct: 37, state: 'partly', last: null }], tally: { done: 0, partly: 1, none: 0 }, setCount: 1, gone: 0,
+  pupils: [{ name: 'Ria Ham', cls: '11C', done: 3, total: 8, pct: 37, state: 'partly', last: null }], tally: { done: 0, partly: 1, none: 0 }, setCount: 1, gone: 0,
   created: '2026-10-01T00:00:00.000Z', due: '2026-10-20T14:59:59.000Z', status: 'set', reported: null, dueText, overdue: false, soon: false, dueBad: false,
   dueDay, dueHm, inClassroom, start: null, startText: '', waiting: false, tasks: [{ labId: 'digestion-lab', stationIds: ['mouth'] }], targets: { cls: '11C' }, missing: [], remind: null,
   outside: id === 'HW-A' ? [{ name: 'Late Lee', email: 'late@pupils.x.kr', late: true }, { name: 'Moved Min', email: 'moved@pupils.x.kr', late: false }] : [] });
-const DIR = { students: [{ name: 'Rue Ha', cls: '11C', email: 'rue@pupils.x.kr', cohort: { grad: 2027, title: 'Class of 2027', yearGroup: 'Y11' } },
-  { name: 'Ian Kwon', cls: '11D', email: 'ian@pupils.x.kr', cohort: { grad: 2027, title: 'Class of 2027', yearGroup: 'Y11' } },
+const DIR = { students: [{ name: 'Ria Ham', cls: '11C', email: 'rue@pupils.x.kr', cohort: { grad: 2027, title: 'Class of 2027', yearGroup: 'Y11' } },
+  { name: 'Ivy Kwon', cls: '11D', email: 'ian@pupils.x.kr', cohort: { grad: 2027, title: 'Class of 2027', yearGroup: 'Y11' } },
   { name: 'Gone Go', cls: 'LEFT 2026', email: 'gone@pupils.x.kr', cohort: null }], classes: ['11C', '11D', '11E'] };
 const DATA = { generatedAt: 't', labs: [{ id: 'digestion-lab', name: 'Digestion', topic: '7', questions: 8, stations: [{ id: 'mouth', name: 'The mouth', questions: 8 }] }],
-  students: [{ name: 'Rue Ha', cls: '11C', email: 'rue@pupils.x.kr' }], classes: ['11C'], whose: 'mine', manifestOk: true, hubSet: true, english: null, writeup: null,
+  students: [{ name: 'Ria Ham', cls: '11C', email: 'rue@pupils.x.kr' }], classes: ['11C'], whose: 'mine', manifestOk: true, hubSet: true, english: null, writeup: null,
   classroomOk: true, remindAllowed: null,
   homework: [hw('HW-A', 'Gut practice', '20 Oct', '2026-10-20', '23:59', true), hw('HW-B', 'Teeth only', '21 Oct, 08:30', '2026-10-21', '08:30', false)] };
 
@@ -227,7 +227,7 @@ try {
   check('Move sends { email, cls } once, says what happened and that Classroom is the teacher’s, and the card shows the new class',
     await until(() => /moved to 11D/.test(document.getElementById('slist2').textContent) && /Google Classroom/.test(document.getElementById('slist2').textContent)) &&
     JSON.stringify(await ev(() => window.__MOVED)) === JSON.stringify([{ email: 'rue@pupils.x.kr', cls: '11D' }]) &&
-    await ev(() => [...document.querySelectorAll('.card')].some((c) => /Rue Ha/.test(c.textContent) && /11D/.test(c.textContent))), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
+    await ev(() => [...document.querySelectorAll('.card')].some((c) => /Ria Ham/.test(c.textContent) && /11D/.test(c.textContent))), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
   check('the other views’ kept copies are dropped, so they show the new class', await ev(() => { try { return !sessionStorage.getItem('teach.progress'); } catch (e) { return false; } }), 'teach.progress is still kept');
   await shot('5-moved');
   await press('[data-mv="ian@pupils.x.kr"]');
@@ -237,9 +237,9 @@ try {
   await ev(() => { const s = document.getElementById('mv-to'); s.value = '__left'; s.dispatchEvent(new Event('change')); });
   await press('[data-mvgo="ian@pupils.x.kr"]');
   check('"Left: in no class" sends { email, left: true } once, and the pupil moves to the last group',
-    await until(() => /Ian Kwon is in none of the classes now/.test(document.getElementById('slist2').textContent)) &&
+    await until(() => /Ivy Kwon is in none of the classes now/.test(document.getElementById('slist2').textContent)) &&
     JSON.stringify(await ev(() => window.__MOVED.filter((x) => x.email === 'ian@pupils.x.kr'))) === JSON.stringify([{ email: 'ian@pupils.x.kr', left: true }]) &&
-    await ev(() => /Ian Kwon/.test([...document.querySelectorAll('#slist2 .grp')].pop().textContent)), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
+    await ev(() => /Ivy Kwon/.test([...document.querySelectorAll('#slist2 .grp')].pop().textContent)), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
   await press('[data-mv="gone@pupils.x.kr"]');
   m = await ev(() => [...document.querySelectorAll('#mv-to option')].map((x) => x.value));
   check('a pupil in LEFT is offered every class, and not "Left" again', JSON.stringify(m) === JSON.stringify(['', '11C', '11D', '11E']), JSON.stringify(m));

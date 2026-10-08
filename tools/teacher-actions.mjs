@@ -20,6 +20,8 @@
      shows the answer and the new class, and drops the other views' kept copies (they show the class);
    · (7 Oct 2026) a pupil in LEFT … is listed last, under "In none of the classes", never as a class in the filter; Move
      offers "Left: in no class" (sent as { email, left: true }) to the others, and brings a LEFT pupil back to a class;
+   · (8 Oct 2026) each pupil has Accommodation; it sends { email, on } once, the card then says "Accommodation" and the
+     button "Accommodation: on" (pressed); pressed again it sends { email, on: false } and both go;
    · a phone: nothing wider than the screen; no script error.
    usage: node tools/teacher-actions.mjs [--file <a Teacher.html>] [--shots <folder>]
    ============================================================ */
@@ -52,6 +54,10 @@ const STUB = `<style>*{transition:none!important;animation:none!important}</styl
 window.__DATA = ${JSON.stringify(DATA)};
 window.__SENT = []; window.__ADDED = []; window.__MOVED = [];
 window.__DIR = ${JSON.stringify(DIR)};
+/* ?base=1: the tracker address is set (Copy and Open tracker on every card, as on Daniel's page) and the first pupil has the
+   accommodation on ("Accommodation: on", the widest button): the card-fit check below (the audit, 8 Oct 2026) */
+if (/base=1/.test(location.search)) { window.__BASE = 'https://script.google.com/macros/s/AKfycbTEST/exec'; window.__DIR.students[0].acc = true;
+  try { sessionStorage.clear(); } catch (e) {} }   /* the page keeps each view in sessionStorage: drop the copy without the address */
 window.google = { script: {} };
 Object.defineProperty(window.google.script, 'run', { get: function () {
   var s = null, p = new Proxy({}, { get: function (t, k) {
@@ -61,8 +67,9 @@ Object.defineProperty(window.google.script, 'run', { get: function () {
       if (k === 'homeworkChangeDue') window.__SENT.push(a);
       if (k === 'homeworkAddPupils') window.__ADDED.push(a);
       if (k === 'studentMove') window.__MOVED.push(a);
+      if (k === 'studentAccommodation') (window.__ACC = window.__ACC || []).push(a);
       setTimeout(function () { if (!ok) return;
-        if (k === 'uiData') return ok(a === 'homework' ? { ok: true, data: window.__DATA } : a === 'students' ? { ok: true, data: window.__DIR, trackerBase: '' } : { ok: false, why: 'not in this check' });
+        if (k === 'uiData') return ok(a === 'homework' ? { ok: true, data: window.__DATA } : a === 'students' ? { ok: true, data: window.__DIR, trackerBase: window.__BASE || '' } : { ok: false, why: 'not in this check' });
         if (k === 'homeworkAddPupils') {
           var d2 = JSON.parse(JSON.stringify(window.__DATA));
           d2.homework.forEach(function (h) { if (h.id === a.id) { h.outside = h.outside.filter(function (p) { return a.emails.indexOf(p.email) < 0; });
@@ -77,6 +84,12 @@ Object.defineProperty(window.google.script, 'run', { get: function () {
           window.__DIR = d3;
           return ok({ ok: true, note: a.left ? who + ' is in none of the classes now (LEFT 2026). Their records stay.'
                                              : who + ' moved to ' + a.cls + '. Their homework and work go with them. Move them in Google Classroom too.', data: d3, trackerBase: '' });
+        }
+        if (k === 'studentAccommodation') {
+          var d4 = JSON.parse(JSON.stringify(window.__DIR)), nm = '';
+          d4.students.forEach(function (p) { if (p.email === a.email) { nm = p.name; if (a.on) p.acc = true; else delete p.acc; } });
+          window.__DIR = d4;
+          return ok({ ok: true, note: a.on ? nm + ' has the accommodation now.' : nm + ' has no accommodation now.', data: d4, trackerBase: '' });
         }
         if (k === 'homeworkChangeDue') {
           if (a.due < '2026-10-07') return ok({ ok: false, why: 'The new due time (5 Oct, 23:59) has passed. Choose a later one.' });
@@ -235,6 +248,35 @@ try {
   check('…and Move brings them back to a class', await until(() => /Gone Go moved to 11C/.test(document.getElementById('slist2').textContent)) &&
     JSON.stringify(await ev(() => window.__MOVED.filter((x) => x.email === 'gone@pupils.x.kr'))) === JSON.stringify([{ email: 'gone@pupils.x.kr', cls: '11C' }]), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
   await shot('6-left-group');
+  /* the Accommodation (8 Oct 2026) */
+  check('each pupil has an Accommodation button, off', await ev(() => [...document.querySelectorAll('[data-acc]')].length === 3 && [...document.querySelectorAll('[data-acc]')].every((b) => b.getAttribute('aria-pressed') === 'false')), 'buttons: ' + await ev(() => document.querySelectorAll('[data-acc]').length));
+  await press('[data-acc="rue@pupils.x.kr"]');
+  check('Accommodation sends { email, on: true } once; the card says so and the button reads "Accommodation: on", pressed',
+    await until(() => /has the accommodation now/.test(document.getElementById('slist2').textContent)) &&
+    JSON.stringify(await ev(() => window.__ACC)) === JSON.stringify([{ email: 'rue@pupils.x.kr', on: true }]) &&
+    await ev(() => { const b = document.querySelector('[data-acc="rue@pupils.x.kr"]'), c = b.closest('.card'); return b.getAttribute('aria-pressed') === 'true' && b.textContent === 'Accommodation: on' && /Accommodation/.test(c.querySelector('.card__d').textContent); }),
+    await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
+  await press('[data-acc="rue@pupils.x.kr"]');
+  check('pressed again it sends { email, on: false }, and the card and button go back',
+    await until(() => /has no accommodation now/.test(document.getElementById('slist2').textContent)) &&
+    JSON.stringify(await ev(() => window.__ACC.slice(1))) === JSON.stringify([{ email: 'rue@pupils.x.kr', on: false }]) &&
+    await ev(() => { const b = document.querySelector('[data-acc="rue@pupils.x.kr"]'); return b.getAttribute('aria-pressed') === 'false' && b.textContent === 'Accommodation' && !/Accommodation/.test(b.closest('.card').querySelector('.card__d').textContent); }),
+    await ev(() => JSON.stringify(window.__ACC)));
+
+  /* every pupil card fits, with Copy, Open tracker, Move and Accommodation (the audit, 8 Oct 2026: names ran one letter per
+     line and the buttons stood out of the card at every width; on a phone the page scrolled sideways) */
+  for (const wd of [1440, 1280, 375]) {
+    await send('Emulation.setDeviceMetricsOverride', { width: wd, height: 900, deviceScaleFactor: 1, mobile: wd < 768 });
+    await send('Page.navigate', { url: page('students') + '?base=1' });
+    await until(() => document.querySelectorAll('[data-acc]').length === 3);
+    const fit = await ev(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth,
+      cards: [...document.querySelectorAll('.cards--wide .card')].map((c) => { const r = c.getBoundingClientRect(), a = c.querySelector('.card__a').getBoundingClientRect(), n = c.querySelector('.card__n').getBoundingClientRect();
+        return { name: c.querySelector('.card__n').textContent, out: Math.round(a.right - r.right), nameW: Math.round(n.width), copy: !!c.querySelector('[data-copy]') }; }) }));
+    check(wd + ' px: every pupil card holds its four buttons and a readable name (tracker address set, one pupil on)',
+      fit.cards.length === 3 && fit.cards.every((c) => c.out <= 1 && c.nameW >= 60 && c.copy) && fit.sw <= fit.iw, JSON.stringify(fit));
+    if (wd === 1280) await shot('7-students-fit');
+  }
+  await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
 
   await send('Page.navigate', { url: page('homework') });
   await until(() => document.querySelectorAll('.hw__h').length === 2);

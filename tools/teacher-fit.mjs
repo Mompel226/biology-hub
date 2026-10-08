@@ -6,7 +6,7 @@
 
    The REAL apps-script/Teacher.html, in headless Chrome, with a stand-in for google.script.run that answers uiData with
    made-up pupils (24 in one class, as in his screenshot): no spreadsheet, no sign-in. For ⏱️ Homework habits, Lab
-   progress and Bio English, at a short window like his (1000 × 490), a laptop (1440 × 900), a large screen
+   progress, Bio English and Write-Up (8 Oct 2026), at a short window like his (1000 × 490), a laptop (1440 × 900), a large screen
    (1920 × 1000) and a phone (375 × 812), it proves:
    · the first screen: while the class table is on screen, its key is in sight (it stays at the foot of the window);
    · one scroll of the page brings the table's top under the pinned header, and then the whole box AND its key are
@@ -54,7 +54,14 @@ const english = { english: { years: [{ y: 9, title: 'Year 9', units: ['t3'] }], 
     { id: 't3.d1', unit: 't3', kind: 'describe', title: 'Describe 1', total: 5 }, { id: 't3.e1', unit: 't3', kind: 'explain', title: 'Explain 1', total: 4 }] },
   students: NAMES.map((n) => ({ name: n, cls: '9B', email: email(n) })),
   progress: Object.fromEntries(NAMES.map((n, k) => [email(n), { sets: { 't3.kw': [k % 11, k % 6], 't3.d1': [k % 6, 2] } }])) };
-const FAKE = { habits: { ok: true, data: habits }, progress: { ok: true, data: progress }, english: { ok: true, data: english } };
+/* the Write-Up view (8 Oct 2026): the site's real list of parts, so the table is as wide as the real one */
+const WUP = JSON.parse(fs.readFileSync(path.join(ROOT, '../../labs/write-up-lab/data/parts.json'), 'utf8'));
+const writeup = { writeup: { stages: WUP.stages, parts: WUP.parts.map((p) => ({ id: p.id, title: p.title, stage: p.stage, units: p.units,
+    marks: (p.redpens || []).reduce((a, y) => a + y.n, 0), questions: p.questions })) },
+  students: NAMES.map((n) => ({ name: n, cls: '9B', email: email(n) })),
+  progress: Object.fromEntries(NAMES.map((n, k) => [email(n), { parts: Object.fromEntries(WUP.parts.filter((p, i) => (k + i) % 3).map((p, i) =>
+    [p.id, [Math.min(p.units, (k * 3 + i) % (p.units + 1)), 2, 3, 1, (k + i) % 7 === 0 ? 1 : 0]])) }])) };
+const FAKE = { habits: { ok: true, data: habits }, progress: { ok: true, data: progress }, english: { ok: true, data: english }, writeup: { ok: true, data: writeup } };
 
 /* google.script.run, answering uiData from FAKE; every call gets its own handlers */
 const STUB = `<script>
@@ -113,7 +120,7 @@ async function shot(name) {
 }
 
 /* ---------- the checks ---------- */
-const VIEWS = [['habits', '⏱️ Homework habits', '.hbwrap', '.hbkey'], ['progress', 'Lab progress', '.hmwrap', '.hmleg'], ['english', 'Bio English', '.hmwrap', '.hmleg']];
+const VIEWS = [['habits', '⏱️ Homework habits', '.hbwrap', '.hbkey'], ['progress', 'Lab progress', '.hmwrap', '.hmleg'], ['english', 'Bio English', '.hmwrap', '.hmleg'], ['writeup', 'Write-Up', '.hmwrap', '.hmleg']];
 const SIZES = [[1000, 490, 'a short window (his)'], [1440, 900, 'a laptop'], [1920, 1000, 'a large screen'], [375, 812, 'a phone']];
 const measure = (sel) => ev((s) => {
   const top = document.querySelector('.top').getBoundingClientRect().bottom, box = document.querySelector(s[0]);

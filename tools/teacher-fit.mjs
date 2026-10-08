@@ -5,7 +5,7 @@
    information at once", in ⏱️ Homework habits and Lab progress.)
 
    The REAL apps-script/Teacher.html, in headless Chrome, with a stand-in for google.script.run that answers uiData with
-   made-up pupils (24 in one class, as in his screenshot): no spreadsheet, no sign-in. For ⏱️ Homework habits, Lab
+   invented pupils (24 in one class, the size of the class in his screenshot; every name is invented): no spreadsheet, no sign-in. For ⏱️ Homework habits, Lab
    progress, Bio English and Write-Up (8 Oct 2026), at a short window like his (1000 × 490), a laptop (1440 × 900), a large screen
    (1920 × 1000) and a phone (375 × 812), it proves:
    · the first screen: while the class table is on screen, its key is in sight (it stays at the foot of the window);
@@ -27,10 +27,10 @@ const FILE = arg('--file') || path.join(ROOT, 'apps-script/Teacher.html');
 const SHOTS = arg('--shots');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-/* ---------- made-up pupils ---------- */
-const NAMES = ['Minkyu Joo', 'Mookeon Seok', 'Moowan Kim', 'Rue Ha', 'Seoyeon Park', 'Jiwoo Lee', 'Hayoon Choi', 'Doyun Jung',
-  'Siwoo Kang', 'Yejun Cho', 'Haeun Yoon', 'Jiho Jang', 'Seojun Lim', 'Chaewon Han', 'Juwon Oh', 'Yuna Seo',
-  'Gaon Shin', 'Ian Kwon', 'Ella Hwang', 'Dahee Ahn', 'Minseo Song', 'Taeyang Yoo', 'Sohee Hong', 'Jun Moon'];
+/* ---------- invented pupils (no real names, ever) ---------- */
+const NAMES = ['Minho Jeon', 'Moonhee Seol', 'Moseon Ko', 'Ria Ham', 'Seohyun Pyo', 'Jiyun Lee', 'Hayeon Choi', 'Dohyun Jung',
+  'Sihoo Kang', 'Yejin Cho', 'Haein Yoon', 'Jihan Jang', 'Seoah Lim', 'Chaerin Han', 'Juyeon Oh', 'Yuri Seo',
+  'Garam Shin', 'Ivy Kwon', 'Elin Hwang', 'Dain Ahn', 'Minsu Song', 'Taemin Yoo', 'Sohyun Hong', 'Juho Moon'];
 const email = (n) => n.toLowerCase().replace(/ /g, '.') + '@pupils.x.kr';
 const BANDS = ['early', 'good', 'last', 'late', 'none', 'open', 'before', 'unknown'];
 const HW = [0, 1, 2].map((i) => ({ title: ['Classification Homework', 'Cells: membranes', 'Enzymes'][i] + ' ' + (i + 1),

@@ -37,8 +37,8 @@ const pupil = (name, cls, k, extra) => ({ name, cls, cohort: { grad: 2029, title
   byLab: Object.assign({ 'digestion-lab': { pct: 60, done: 10, total: 17, complete: false, checks: 30, firstTime: 8, handIns: 3,
     stations: [{ name: 'mouth', done: 6, total: 8, checks: 11 }, { name: 'stomach', done: 4, total: 9, checks: 7 }, { name: 'liver', done: 0, total: 5, checks: 0 }],
     q: { mouth: MOUTH[k % MOUTH.length], stomach: k === 0 ? 'f1t000000' : 'ffff00000' }, b: k === 0 ? { mouth: 'ff1fff0f' } : undefined } }, extra || {}) });
-const students = ['Minkyu Joo', 'Rue Ha', 'Seoyeon Park', 'Jiwoo Lee', 'Hayoon Choi', 'Doyun Jung'].map((n, k) => pupil(n, '9B', k));
-students.push(pupil('Siwoo Kang', '9C', 0, {}), pupil('Yejun Cho', '9C', 3, {}));
+const students = ['Minho Jeon', 'Ria Ham', 'Seohyun Pyo', 'Jiyun Lee', 'Hayeon Choi', 'Dohyun Jung'].map((n, k) => pupil(n, '9B', k));
+students.push(pupil('Sihoo Kang', '9C', 0, {}), pupil('Yejin Cho', '9C', 3, {}));
 students.forEach((s) => { if (!s.byLab['digestion-lab'].b) delete s.byLab['digestion-lab'].b; });
 students[0].byLab['plants-lab'] = { pct: 40, done: 2, total: 5, complete: false, checks: 6, firstTime: 1, handIns: 1, stations: [{ name: 'seed', done: 2, total: 5, checks: 6 }], q: { seed: 'f1t00' } };
 const progress = { labs: LABS, classes: ['9B', '9C'], stationNames: { 'digestion-lab': { mouth: 'The mouth', stomach: 'The stomach', liver: 'The liver' }, 'plants-lab': { seed: 'Seeds' } }, students };
@@ -123,7 +123,7 @@ try {
   check('Lab progress draws', await until(() => document.querySelectorAll('.hm td.name').length >= 8), 'no pupils after 6 s');
 
   console.log('\na pupil’s card');
-  await ev(() => [...document.querySelectorAll('.hm td.name')].find((td) => /Minkyu Joo/.test(td.textContent)).click());
+  await ev(() => [...document.querySelectorAll('.hm td.name')].find((td) => /Minho Jeon/.test(td.textContent)).click());
   await until(() => document.getElementById('draw').classList.contains('on'));
   let c = await ev(() => {
     const d = [...document.querySelectorAll('#drawb details.dqd')];

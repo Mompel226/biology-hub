@@ -34,12 +34,12 @@ const SHOTS = arg('--shots');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
 const hw = (id, title, due, dueText, overdue, hidden) => ({ id, title, who: '11C', what: 'Digestion: The mouth', teacher: 'teacher@x.kr', mine: true,
-  pupils: [{ name: 'Rue Ha', cls: '11C', done: 3, total: 8, pct: 37, state: 'partly', last: null }], tally: { done: 0, partly: 1, none: 0 }, setCount: 1, gone: 0,
+  pupils: [{ name: 'Ria Ham', cls: '11C', done: 3, total: 8, pct: 37, state: 'partly', last: null }], tally: { done: 0, partly: 1, none: 0 }, setCount: 1, gone: 0,
   created: '2026-09-20T00:00:00.000Z', due, status: 'set', reported: null, dueText, overdue, soon: false, dueBad: false,
   dueDay: due.slice(0, 10), dueHm: '23:59', inClassroom: true, start: null, startText: '', waiting: false, tasks: [{ labId: 'digestion-lab', stationIds: ['mouth'] }],
   targets: { cls: '11C' }, missing: [], remind: null, outside: [], hidden: !!hidden, hiddenText: hidden ? '5 Oct, 10:00' : '' });
 const DATA = { generatedAt: 't', labs: [{ id: 'digestion-lab', name: 'Digestion', topic: '7', questions: 8, stations: [{ id: 'mouth', name: 'The mouth', questions: 8 }] }],
-  students: [{ name: 'Rue Ha', cls: '11C', email: 'rue@pupils.x.kr' }], classes: ['11C'], whose: 'mine', manifestOk: true, hubSet: true, english: null, writeup: null,
+  students: [{ name: 'Ria Ham', cls: '11C', email: 'rue@pupils.x.kr' }], classes: ['11C'], whose: 'mine', manifestOk: true, hubSet: true, english: null, writeup: null,
   classroomOk: true, remindAllowed: null,
   homework: [hw('HW-NOW', 'Still to come', '2026-10-20T14:59:59.000Z', '20 Oct', false),
              hw('HW-P1', 'Past one', '2026-10-05T14:59:59.000Z', '5 Oct', true),

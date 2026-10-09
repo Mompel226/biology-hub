@@ -43,7 +43,7 @@ const habits = { recorded: true, bands: { early: 50, good: 85 }, flagWords: 'Wor
     flags: k === 5 ? [{ h: 1, says: 'very fast for this pupil' }] : [],
     cells: HW.map((h, i) => [i, BANDS[(k + i) % BANDS.length], (k + i) % 4 === 0 ? 1 : 0, 10 + k, 6, 10, 3, 0, '2 h', '1 Oct, 19:00', '1 Oct, 21:00']) })) };
 const LABS = [['digestion-lab', 'Digestion Lab', 'Topic 7', 123], ['classification-lab', 'Classification Lab', 'Topic 1', 64],
-  ['plants-lab', 'Plants Lab', 'Topics 6, 8', 116], ['circulation-lab', 'Circulation Lab', 'Topic 9', 115]]
+  ['plants-lab', 'Plants Lab', 'Topics 6, 8', 116], ['circulation-lab', 'Circulation Lab', 'Topic 9', 120]]
   .map(([id, name, topic, questions]) => ({ id, name, topic, questions }));
 const progress = { labs: LABS, stationNames: { 'digestion-lab': { mouth: 'The mouth', stomach: 'The stomach' } },
   students: NAMES.map((n, k) => ({ name: n, cls: '9B', email: email(n), cohort: { grad: 2029, title: 'Class of 2029', yearGroup: 'Y9' },

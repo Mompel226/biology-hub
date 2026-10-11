@@ -22,6 +22,9 @@
      offers "Left: in no class" (sent as { email, left: true }) to the others, and brings a LEFT pupil back to a class;
    · (8 Oct 2026) each pupil has Accommodation; it sends { email, on } once, the card then says "Accommodation" and the
      button "Accommodation: on" (pressed); pressed again it sends { email, on: false } and both go;
+   · (11 Oct 2026) Spreadsheets: a reflection or test card has Form, Dashboard and Spreadsheet, each to its own address,
+     and no Copy (Daniel: "you should have form, dashboard, and spreadsheet … I don't think is necessary to have the copy
+     button"); a card with no dashboard keeps one Open; every card fits at 1280 and 375 px;
    · a phone: nothing wider than the screen; no script error.
    usage: node tools/teacher-actions.mjs [--file <a Teacher.html>] [--shots <folder>]
    ============================================================ */
@@ -50,14 +53,22 @@ const DATA = { generatedAt: 't', labs: [{ id: 'digestion-lab', name: 'Digestion'
   classroomOk: true, remindAllowed: null,
   homework: [hw('HW-A', 'Gut practice', '20 Oct', '2026-10-20', '23:59', true), hw('HW-B', 'Teeth only', '21 Oct, 08:30', '2026-10-21', '08:30', false)] };
 
+const EXEC = 'https://script.google.com/a/macros/x.kr/s/AKfycbREFLECTION000000000000/exec';
+const LINKS = { records: [{ name: 'Student Progress Tracker', url: 'https://docs.google.com/spreadsheets/d/TRACKER0000000000000000/edit', dash: '', form: '', type: 'Records', detail: '' }],
+  cohorts: [{ grad: 2028, title: 'Class of 2028', yearGroup: 'Y10', current: true, types: [
+    { type: 'Reflection', links: [{ name: 'Topic 7 · Human Nutrition — a long name that wraps on a phone', url: 'https://docs.google.com/spreadsheets/d/REFL7000000000000000000/edit',
+      dash: EXEC + '?page=dashboard', form: EXEC, type: 'Reflection', detail: 'Added by 🔎 Find new spreadsheets, 26 Sep' }] },
+    { type: 'Test', links: [{ name: 'Topic 7 test', url: 'https://docs.google.com/spreadsheets/d/TEST70000000000000000000/edit', dash: '', form: '', type: 'Test', detail: '' }] }] }],
+  loose: [], unreadable: [], typed: [], chipsOn: false };
 const STUB = `<style>*{transition:none!important;animation:none!important}</style><script>
 window.__DATA = ${JSON.stringify(DATA)};
 window.__SENT = []; window.__ADDED = []; window.__MOVED = [];
 window.__DIR = ${JSON.stringify(DIR)};
+window.__LINKS = ${JSON.stringify(LINKS)};
 /* ?base=1: the tracker address is set (Copy and Open tracker on every card, as on Daniel's page) and the first pupil has the
    accommodation on ("Accommodation: on", the widest button): the card-fit check below (the audit, 8 Oct 2026) */
 if (/base=1/.test(location.search)) { window.__BASE = 'https://script.google.com/macros/s/AKfycbTEST/exec'; window.__DIR.students[0].acc = true;
-  try { sessionStorage.clear(); } catch (e) {} }   /* the page keeps each view in sessionStorage: drop the copy without the address */
+  try { sessionStorage.clear(); localStorage.clear(); } catch (e) {} }   /* the page keeps each view on the computer (localStorage since 10 Oct 2026): drop the copy without the address */
 window.google = { script: {} };
 Object.defineProperty(window.google.script, 'run', { get: function () {
   var s = null, p = new Proxy({}, { get: function (t, k) {
@@ -69,7 +80,7 @@ Object.defineProperty(window.google.script, 'run', { get: function () {
       if (k === 'studentMove') window.__MOVED.push(a);
       if (k === 'studentAccommodation') (window.__ACC = window.__ACC || []).push(a);
       setTimeout(function () { if (!ok) return;
-        if (k === 'uiData') return ok(a === 'homework' ? { ok: true, data: window.__DATA } : a === 'students' ? { ok: true, data: window.__DIR, trackerBase: window.__BASE || '' } : { ok: false, why: 'not in this check' });
+        if (k === 'uiData') return ok(a === 'homework' ? { ok: true, data: window.__DATA } : a === 'students' ? { ok: true, data: window.__DIR, trackerBase: window.__BASE || '' } : a === 'teachers' ? { ok: true, data: window.__LINKS } : { ok: false, why: 'not in this check' });
         if (k === 'homeworkAddPupils') {
           var d2 = JSON.parse(JSON.stringify(window.__DATA));
           d2.homework.forEach(function (h) { if (h.id === a.id) { h.outside = h.outside.filter(function (p) { return a.emails.indexOf(p.email) < 0; });
@@ -215,7 +226,7 @@ try {
     last: [...document.querySelectorAll('#slist2 .grp')].pop().textContent, filter: [...document.querySelectorAll('#tc option')].map((x) => x.value) }));
   check('a pupil in LEFT is listed last, under "In none of the classes", and LEFT is never a class in the filter',
     g.heads[g.heads.length - 1] === 'In none of the classes' && /Gone Go/.test(g.last) && /LEFT 2026/.test(g.last) && g.filter.indexOf('LEFT 2026') < 0 && g.filter.indexOf('11C') > 0, JSON.stringify(g));
-  await ev(() => { try { sessionStorage.setItem('teach.progress', JSON.stringify({ at: Date.now(), r: { ok: true, data: {} } })); } catch (e) {} });
+  await ev(() => { try { localStorage.setItem('teach2.teacher@x.kr.progress', JSON.stringify({ at: Date.now(), r: { ok: true, data: {} } })); } catch (e) {} });
   await press('[data-mv="rue@pupils.x.kr"]');
   let m = await ev(() => ({ opts: [...document.querySelectorAll('#mv-to option')].map((x) => x.value), focus: document.activeElement && document.activeElement.id }));
   check('Move offers the other classes, never their own, then "Left: in no class"; the box has the focus', JSON.stringify(m.opts) === JSON.stringify(['', '11D', '11E', '__left']) && m.focus === 'mv-to', JSON.stringify(m));
@@ -228,7 +239,7 @@ try {
     await until(() => /moved to 11D/.test(document.getElementById('slist2').textContent) && /Google Classroom/.test(document.getElementById('slist2').textContent)) &&
     JSON.stringify(await ev(() => window.__MOVED)) === JSON.stringify([{ email: 'rue@pupils.x.kr', cls: '11D' }]) &&
     await ev(() => [...document.querySelectorAll('.card')].some((c) => /Ria Ham/.test(c.textContent) && /11D/.test(c.textContent))), await ev(() => document.getElementById('slist2').textContent.slice(0, 300)));
-  check('the other views’ kept copies are dropped, so they show the new class', await ev(() => { try { return !sessionStorage.getItem('teach.progress'); } catch (e) { return false; } }), 'teach.progress is still kept');
+  check('the other views’ kept copies are dropped, so they show the new class', await ev(() => { try { return !localStorage.getItem('teach2.teacher@x.kr.progress'); } catch (e) { return false; } }), 'teach2.teacher@x.kr.progress is still kept');
   await shot('5-moved');
   await press('[data-mv="ian@pupils.x.kr"]');
   await press('[data-mvno]');
@@ -288,6 +299,25 @@ try {
   const w = await ev(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth, open: !!document.getElementById('dd-HW-B') }));
   await shot('3-phone');
   check('a phone: the boxes open, nothing wider than the screen', w.open && w.sw <= w.iw, JSON.stringify(w));
+
+  /* Spreadsheets (11 Oct 2026): Form, Dashboard, Spreadsheet; no Copy */
+  for (const wd of [1280, 375]) {
+    await send('Emulation.setDeviceMetricsOverride', { width: wd, height: 900, deviceScaleFactor: 1, mobile: wd < 768 });
+    await send('Page.navigate', { url: page('teachers') + '?base=1' });
+    await until(() => document.querySelectorAll('#slist .card').length === 3);
+    const sp = await ev(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth,
+      cards: [...document.querySelectorAll('#slist .card')].map((c) => { const r = c.getBoundingClientRect();
+        return { name: c.querySelector('.card__n').textContent.slice(0, 20), copy: !!c.querySelector('[data-copy]'), nameW: Math.round(c.querySelector('.card__m').getBoundingClientRect().width),
+          out: Math.max(0, ...[...c.querySelectorAll('.card__a a')].map((a) => Math.round(a.getBoundingClientRect().right - r.right))),
+          links: [...c.querySelectorAll('.card__a a')].map((a) => [a.textContent, a.getAttribute('href'), a.target]) }; }) }));
+    const refl = sp.cards.find((c) => /Topic 7 · Human/.test(c.name)) || { links: [] };
+    check(wd + ' px: a reflection card has Form, Dashboard and Spreadsheet — the form, the ?page=dashboard address and the spreadsheet, each in a new tab',
+      JSON.stringify(refl.links) === JSON.stringify([['Form', EXEC, '_blank'], ['Dashboard', EXEC + '?page=dashboard', '_blank'],
+        ['Spreadsheet', 'https://docs.google.com/spreadsheets/d/REFL7000000000000000000/edit', '_blank']]), JSON.stringify(refl));
+    check(wd + ' px: no card has Copy; a card with no dashboard keeps one Open; every button inside its card, every name readable (never a few letters a line), nothing wider than the screen',
+      sp.cards.length === 3 && sp.cards.every((c) => !c.copy && c.out <= 1 && c.nameW >= 120) && sp.cards.filter((c) => !/Topic 7 · Human/.test(c.name)).every((c) => c.links.length === 1 && c.links[0][0] === 'Open') && sp.sw <= sp.iw, JSON.stringify(sp));
+    if (wd === 375) await shot('8-spreadsheets-phone');
+  }
   check('no script error', !errors.length, errors.slice(0, 3).join(' | '));
 } finally {
   ws.close(); chrome.kill();

@@ -1,7 +1,8 @@
 // The front door's "Checking… · Checked at 09:14" line, in a real browser, with a fake Google and a fake labs script
 // (Daniel, 13 Oct 2026: pupils signed in and said "sir, I've signed in, I cannot see anything" while the check still ran).
 //   node tools/hub-checking.mjs [base url, default http://127.0.0.1:8787/hubs/biology-hub/]
-//        [--hub <a hub.js to test instead>] [--open <the open edition's url, default ../igcse-biology-hub/ beside it>]
+//        [--hub <a hub.js to test instead>] [--html <an index.html>] [--css <a hub.css>] (the page or style of before)
+//        [--open <the open edition's url, default ../igcse-biology-hub/ beside it>]
 //        [--shots <folder for screenshots>]
 // Needs the estate served locally. Nobody signs in: Google's script is replaced by a stand-in whose quiet renewal never
 // works, and the labs script by one whose answers each case sets. A minute and the 30 s "no answer" wait are shortened
@@ -15,6 +16,7 @@ const argv = process.argv.slice(2), opt = k => { const i = argv.indexOf('--' + k
 const BASE = argv.find(a => /^https?:/.test(a) && argv[argv.indexOf(a) - 1] !== '--open') || 'http://127.0.0.1:8787/hubs/biology-hub/';
 const OPEN = opt('open') || new URL('../igcse-biology-hub/', BASE).href, SHOTS = opt('shots');
 const HUB = opt('hub') ? readFileSync(opt('hub'), 'utf8') : null;
+const HTML = opt('html') ? readFileSync(opt('html'), 'utf8') : null, CSS = opt('css') ? readFileSync(opt('css'), 'utf8') : null;
 if (SHOTS) mkdirSync(SHOTS, { recursive: true });
 
 const PUPIL = { email: 'pupil.test@nlcsjeju.kr', name: 'Test Pupil' }, OTHER = { email: 'other.pupil@nlcsjeju.kr', name: 'Other Pupil' };
@@ -65,6 +67,8 @@ ws.onmessage = async e => {
     body: Buffer.from(body).toString('base64') }), delay);
   if (/accounts\.google\.com\/gsi\/client/.test(u)) return ok(FAKE_GSI, 'text/javascript');
   if (HUB && /\/js\/hub\.js/.test(u)) return ok(HUB, 'text/javascript');
+  if (CSS && /\/css\/hub\.css/.test(u)) return ok(CSS, 'text/css');
+  if (HTML && /\/biology-hub\/(index\.html)?(\?|$)/.test(u)) return ok(HTML, 'text/html');
   if (/script\.google(usercontent)?\.com/.test(u)) {
     let j = {}; try { j = JSON.parse(request.postData || '{}'); } catch {}
     if (j.action === 'record') return ok(JSON.stringify(FAKE.record), 'application/json', FAKE.recordDelay);
@@ -82,7 +86,8 @@ ws.onmessage = async e => {
 };
 await send('Runtime.enable'); await send('Page.enable');
 await send('Page.addScriptToEvaluateOnNewDocument', { source: SHORT });
-await send('Fetch.enable', { patterns: [{ urlPattern: '*accounts.google.com/gsi/client*' }, { urlPattern: '*script.google*' }, { urlPattern: '*/js/hub.js*' }] });
+await send('Fetch.enable', { patterns: [{ urlPattern: '*accounts.google.com/gsi/client*' }, { urlPattern: '*script.google*' }, { urlPattern: '*/js/hub.js*' },
+  { urlPattern: '*/css/hub.css*' }, { urlPattern: '*/biology-hub/?*' }, { urlPattern: '*/biology-hub/index.html*' }] });
 const ev = async expr => (await send('Runtime.evaluate', { expression: `(async()=>{${expr}})()`, awaitPromise: true, returnByValue: true })).result?.value;
 const LINE = `const vis = e => !!e && !e.hidden && e.getClientRects().length > 0, $ = i => document.getElementById(i);
   const el = $('sitCheck'), again = $('sitCheckAgain'), gsi = $('sitCheckGsi');
@@ -233,6 +238,41 @@ const fit = await ev(`const r = id => document.getElementById(id).getBoundingCli
 check('the line and Check again inside 375 px, the words on several lines', fit.page <= 375 && fit.line <= 375 && fit.btn <= 375 && fit.h > 30 && c.again, { fit, c });
 await shot('7-phone-not-started');
 await send('Emulation.clearDeviceMetricsOverride');
+
+console.log('K. cards: a row of their own; the corner stays level with the heading; two side by side on a laptop, a third under the first');
+{
+  const RFL = 'https://script.google.com/macros/s/AKfycbREFLFORM000000000000/exec';
+  const three = () => ({ ...OPEN_T7(), reflect: { state: 'start', name: 'T6 Enzymes: reflection', url: RFL },
+                         feedback: { name: 'T5 Diffusion', at: Date.now() - 3600e3, url: FORM + '?page=feedback&test=T5', more: 0 } });
+  const geo = `const r = (id) => { const e = document.getElementById(id); if (!e || e.hidden || !e.getClientRects().length) return null; const b = e.getBoundingClientRect(); return { l: Math.round(b.left), t: Math.round(b.top), b: Math.round(b.bottom), w: Math.round(b.width) }; };
+    const corner = r('acctWho') || r('acctLink') || r('acctBtn');
+    return { corner, h1: (() => { const b = document.querySelector('.masthead h1').getBoundingClientRect(); return { t: Math.round(b.top), b: Math.round(b.bottom) }; })(),
+             sit: r('sit'), rfl: r('rfl'), fbk: r('fbk'), line: r('sitCheck'), page: document.documentElement.scrollWidth };`;
+  FAKE = { ...FAKE, record: { ok: true, name: PUPIL.name, reflected: 0, practice: false }, recordDelay: 100, test: NOTHING, testDelay: 200, testHow: 'ok' };
+  await open({ 'biology.signin': token(PUPIL, 50) });
+  await until((v) => /^Checked/.test(v.line || ''), 3000);
+  const g0 = await ev(geo);
+  FAKE.test = three;
+  await open({ 'biology.signin': token(PUPIL, 50) });
+  await until((v) => v.test && v.rfl && v.fb, 3000);
+  await sleep(800);   // the cards' half-second slide-in has ended
+  const g3 = await ev(geo);
+  await shot('8-three-cards-laptop');
+  check('the corner stays where it was when three cards show (level with the heading, not pushed down)',
+    g0.corner && g3.corner && Math.abs(g0.corner.t - g3.corner.t) <= 1 && g3.corner.t < g3.h1.b, { g0: g0.corner, g3: g3.corner, h1: g3.h1 });
+  check('two cards side by side on a 1280 px laptop (the test and its neighbour on one line), the third under the first, the line under them',
+    g3.sit && g3.fbk && g3.rfl && g3.sit.t === g3.fbk.t && g3.fbk.l > g3.sit.l + g3.sit.w - 2 && g3.rfl.t >= g3.sit.b && g3.rfl.l === g3.sit.l && g3.line && g3.line.t >= g3.rfl.b,
+    g3);
+  await send('Emulation.setDeviceMetricsOverride', { width: 375, height: 812, deviceScaleFactor: 2, mobile: true });
+  await open({ 'biology.signin': token(PUPIL, 50) });
+  await until((v) => v.test && v.rfl && v.fb, 3000);
+  await sleep(800);
+  const gp = await ev(geo);
+  await shot('9-three-cards-phone');
+  check('on a phone (375 px): one card under another, nothing wider than the screen',
+    gp.sit && gp.fbk && gp.rfl && gp.fbk.t >= gp.sit.b && gp.rfl.t >= gp.fbk.b && gp.page <= 375 && gp.sit.w <= 375, gp);
+  await send('Emulation.clearDeviceMetricsOverride');
+}
 
 {
   console.log('J. the open edition: no sign-in, so never the line');

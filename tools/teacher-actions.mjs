@@ -54,11 +54,13 @@ const DATA = { generatedAt: 't', labs: [{ id: 'digestion-lab', name: 'Digestion'
   homework: [hw('HW-A', 'Gut practice', '20 Oct', '2026-10-20', '23:59', true), hw('HW-B', 'Teeth only', '21 Oct, 08:30', '2026-10-21', '08:30', false)] };
 
 const EXEC = 'https://script.google.com/a/macros/x.kr/s/AKfycbREFLECTION000000000000/exec';
+const TX = 'https://script.google.com/a/macros/x.kr/s/AKfycbTESTSYSTEM00000000000/exec';   // 13 Oct 2026: a Test System card
 const LINKS = { records: [{ name: 'Student Progress Tracker', url: 'https://docs.google.com/spreadsheets/d/TRACKER0000000000000000/edit', dash: '', form: '', type: 'Records', detail: '' }],
   cohorts: [{ grad: 2028, title: 'Class of 2028', yearGroup: 'Y10', current: true, types: [
     { type: 'Reflection', links: [{ name: 'Topic 7 · Human Nutrition — a long name that wraps on a phone', url: 'https://docs.google.com/spreadsheets/d/REFL7000000000000000000/edit',
       dash: EXEC + '?page=dashboard', form: EXEC, type: 'Reflection', detail: 'Added by 🔎 Find new spreadsheets, 26 Sep' }] },
-    { type: 'Test', links: [{ name: 'Topic 7 test', url: 'https://docs.google.com/spreadsheets/d/TEST70000000000000000000/edit', dash: '', form: '', type: 'Test', detail: '' }] }] }],
+    { type: 'Test', links: [{ name: 'Topic 7 test', url: 'https://docs.google.com/spreadsheets/d/TEST70000000000000000000/edit', dash: '', form: '', type: 'Test', detail: '' },
+      { name: 'Heart rate lab report', url: 'https://docs.google.com/spreadsheets/d/TEST90000000000000000000/edit', dash: TX + '?page=dashboard', form: TX, review: TX + '?page=review', type: 'Test', detail: '' }] }] }],
   loose: [], unreadable: [], typed: [], chipsOn: false };
 const STUB = `<style>*{transition:none!important;animation:none!important}</style><script>
 window.__DATA = ${JSON.stringify(DATA)};
@@ -304,7 +306,7 @@ try {
   for (const wd of [1280, 375]) {
     await send('Emulation.setDeviceMetricsOverride', { width: wd, height: 900, deviceScaleFactor: 1, mobile: wd < 768 });
     await send('Page.navigate', { url: page('teachers') + '?base=1' });
-    await until(() => document.querySelectorAll('#slist .card').length === 3);
+    await until(() => document.querySelectorAll('#slist .card').length === 4);
     const sp = await ev(() => ({ sw: document.documentElement.scrollWidth, iw: innerWidth,
       cards: [...document.querySelectorAll('#slist .card')].map((c) => { const r = c.getBoundingClientRect();
         return { name: c.querySelector('.card__n').textContent.slice(0, 20), copy: !!c.querySelector('[data-copy]'), nameW: Math.round(c.querySelector('.card__m').getBoundingClientRect().width),
@@ -314,8 +316,12 @@ try {
     check(wd + ' px: a reflection card has Form, Dashboard and Spreadsheet — the form, the ?page=dashboard address and the spreadsheet, each in a new tab',
       JSON.stringify(refl.links) === JSON.stringify([['Form', EXEC, '_blank'], ['Dashboard', EXEC + '?page=dashboard', '_blank'],
         ['Spreadsheet', 'https://docs.google.com/spreadsheets/d/REFL7000000000000000000/edit', '_blank']]), JSON.stringify(refl));
+    const hr = sp.cards.find((c) => /Heart rate lab/.test(c.name)) || { links: [] };
+    check(wd + ' px: a Test System card has Form, Dashboard, Marker Review and Spreadsheet — the form, ?page=dashboard, ?page=review and the spreadsheet, each in a new tab (13 Oct 2026)',
+      JSON.stringify(hr.links) === JSON.stringify([['Form', TX, '_blank'], ['Dashboard', TX + '?page=dashboard', '_blank'], ['Marker Review', TX + '?page=review', '_blank'],
+        ['Spreadsheet', 'https://docs.google.com/spreadsheets/d/TEST90000000000000000000/edit', '_blank']]), JSON.stringify(hr));
     check(wd + ' px: no card has Copy; a card with no dashboard keeps one Open; every button inside its card, every name readable (never a few letters a line), nothing wider than the screen',
-      sp.cards.length === 3 && sp.cards.every((c) => !c.copy && c.out <= 1 && c.nameW >= 120) && sp.cards.filter((c) => !/Topic 7 · Human/.test(c.name)).every((c) => c.links.length === 1 && c.links[0][0] === 'Open') && sp.sw <= sp.iw, JSON.stringify(sp));
+      sp.cards.length === 4 && sp.cards.every((c) => !c.copy && c.out <= 1 && c.nameW >= 120) && sp.cards.filter((c) => !/Topic 7 · Human|Heart rate lab/.test(c.name)).every((c) => c.links.length === 1 && c.links[0][0] === 'Open') && sp.sw <= sp.iw, JSON.stringify(sp));
     if (wd === 375) await shot('8-spreadsheets-phone');
   }
   check('no script error', !errors.length, errors.slice(0, 3).join(' | '));

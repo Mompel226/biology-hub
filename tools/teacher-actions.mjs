@@ -52,6 +52,14 @@ const DATA = { generatedAt: 't', labs: [{ id: 'digestion-lab', name: 'Digestion'
   students: [{ name: 'Ria Ham', cls: '11C', email: 'rue@pupils.x.kr' }], classes: ['11C'], whose: 'mine', manifestOk: true, hubSet: true, english: null, writeup: null,
   classroomOk: true, remindAllowed: null,
   homework: [hw('HW-A', 'Gut practice', '20 Oct', '2026-10-20', '23:59', true), hw('HW-B', 'Teeth only', '21 Oct, 08:30', '2026-10-21', '08:30', false)] };
+/* 14 Oct 2026: HW-B has a pupil in each state, "tried, 0 right" among them (Daniel: a pupil who tried and got everything wrong
+   also showed "not started"; "I need to be able to differentiate this"). Every name is invented. */
+DATA.homework[1].pupils = [{ name: 'Ria Ham', cls: '11C', done: 8, total: 8, pct: 100, state: 'done', last: null },
+  { name: 'Tom Rae', cls: '11C', done: 0, total: 8, pct: 0, state: 'tried', last: null },
+  { name: 'Ivy Kwon', cls: '11C', done: 3, total: 8, pct: 37, state: 'partly', last: null },
+  { name: 'Ned Oh', cls: '11C', done: 0, total: 8, pct: 0, state: 'none', last: null }];
+DATA.homework[1].tally = { done: 1, partly: 1, tried: 1, none: 1 };
+DATA.homework[1].setCount = 4;
 
 const EXEC = 'https://script.google.com/a/macros/x.kr/s/AKfycbREFLECTION000000000000/exec';
 const TX = 'https://script.google.com/a/macros/x.kr/s/AKfycbTESTSYSTEM00000000000/exec';   // 13 Oct 2026: a Test System card
@@ -167,6 +175,22 @@ try {
   await send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false });
   await send('Page.navigate', { url: page() });
   check('the homework list draws', await until(() => document.querySelectorAll('.hw__h').length === 2), 'no homework after 6 s');
+  /* 14 Oct 2026 (Daniel): "tried, 0 right" apart from "not started" */
+  await open('HW-B');
+  await until(() => { const h = document.querySelector('.hw__h[data-hw="HW-B"]'); return !!h && h.closest('.hw').querySelectorAll('.st-pill').length === 4; });
+  const tr = await ev(() => { const c = document.querySelector('.hw__h[data-hw="HW-B"]').closest('.hw');
+    const tp = c.querySelector('.st-pill.tried'), bar = c.querySelector('.bars'), t = bar && bar.querySelector('i.t');
+    return { pills: Array.prototype.map.call(c.querySelectorAll('.st-pill'), (p) => p.textContent.trim()), dashed: tp ? getComputedStyle(tp).borderTopStyle : null,
+             tip: bar ? bar.getAttribute('data-tip') : '', tw: t ? Math.round(t.getBoundingClientRect().width) : 0 }; });
+  check('a homework’s pupils: done, “tried, 0 right” (answers checked, none right yet: a dashed pill), part way and not started; its bar has a striped part for tried and its tip says so',
+    tr.pills.join('|') === 'done|tried, 0 right|partly|not started' && tr.dashed === 'dashed' && /1 tried \(none right yet\)/.test(tr.tip) && tr.tw > 0, JSON.stringify(tr));
+  await ev(() => document.querySelector('.hw__h[data-hw="HW-B"]').closest('.hw').scrollIntoView({ block: 'center' }));
+  await wait(150); await shot('0-tried-light');
+  const theme0 = await ev(() => document.documentElement.getAttribute('data-theme'));
+  await ev(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await wait(150); await shot('0-tried-dark');
+  await ev((t) => document.documentElement.setAttribute('data-theme', t || 'light'), theme0);
+  await ev(() => { const h = document.querySelector('.hw__h[data-hw="HW-B"]'); if (h.getAttribute('aria-expanded') === 'true') h.click(); });
   await open('HW-A');
   check('an open card has “Change the due date”', await until(() => !!document.querySelector('[data-duechg="HW-A"]')), await card('HW-A'));
   await press('[data-duechg="HW-A"]');
@@ -317,9 +341,15 @@ try {
       JSON.stringify(refl.links) === JSON.stringify([['Form', EXEC, '_blank'], ['Dashboard', EXEC + '?page=dashboard', '_blank'],
         ['Spreadsheet', 'https://docs.google.com/spreadsheets/d/REFL7000000000000000000/edit', '_blank']]), JSON.stringify(refl));
     const hr = sp.cards.find((c) => /Heart rate lab/.test(c.name)) || { links: [] };
-    check(wd + ' px: a Test System card has Form, Dashboard, Marker Review and Spreadsheet — the form, ?page=dashboard, ?page=review and the spreadsheet, each in a new tab (13 Oct 2026)',
-      JSON.stringify(hr.links) === JSON.stringify([['Form', TX, '_blank'], ['Dashboard', TX + '?page=dashboard', '_blank'], ['Marker Review', TX + '?page=review', '_blank'],
+    check(wd + ' px: a Test System card has Marker Review, Form, Dashboard and Spreadsheet — ?page=review, the form, ?page=dashboard and the spreadsheet, each in a new tab (13 Oct 2026; Marker Review first since 14 Oct)',
+      JSON.stringify(hr.links) === JSON.stringify([['Marker Review', TX + '?page=review', '_blank'], ['Form', TX, '_blank'], ['Dashboard', TX + '?page=dashboard', '_blank'],
         ['Spreadsheet', 'https://docs.google.com/spreadsheets/d/TEST90000000000000000000/edit', '_blank']]), JSON.stringify(hr));
+    if (wd === 1280) {   /* 14 Oct 2026 (Daniel: "aligned to the left of form"): Form, Dashboard and Spreadsheet in the same places on both cards */
+      const at = await ev(() => { const o = {}; [...document.querySelectorAll('#slist .card')].forEach((c) => { const n = c.querySelector('.card__n').textContent, r = c.getBoundingClientRect();
+        o[/Heart rate lab/.test(n) ? 'test' : /Topic 7 · Human/.test(n) ? 'refl' : n] = Object.fromEntries([...c.querySelectorAll('.card__a a')].map((a) => [a.textContent, Math.round(r.right - a.getBoundingClientRect().right)])); }); return o; });
+      check('1280 px: Form, Dashboard and Spreadsheet stand in the same places on a Test System card and a reflection card; Marker Review is to the left of Form',
+        ['Form', 'Dashboard', 'Spreadsheet'].every((k) => at.test && at.refl && Math.abs(at.test[k] - at.refl[k]) <= 1) && at.test['Marker Review'] > at.test.Form, JSON.stringify(at));
+    }
     check(wd + ' px: no card has Copy; a card with no dashboard keeps one Open; every button inside its card, every name readable (never a few letters a line), nothing wider than the screen',
       sp.cards.length === 4 && sp.cards.every((c) => !c.copy && c.out <= 1 && c.nameW >= 120) && sp.cards.filter((c) => !/Topic 7 · Human|Heart rate lab/.test(c.name)).every((c) => c.links.length === 1 && c.links[0][0] === 'Open') && sp.sw <= sp.iw, JSON.stringify(sp));
     if (wd === 375) await shot('8-spreadsheets-phone');

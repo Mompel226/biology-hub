@@ -47,7 +47,8 @@ work — `…/#plants` opens that shelf and `…/#y10` opens a year.
 Also here: the [Protein & Enzyme Sim](https://nlcsbiology.com/protein-enzyme-sim/), and an
 [IB B1.1 practical](https://nlcsbiology.com/B11-starch-calibration-curve-pract/) and the
 [IB rocky shore fieldwork](https://nlcsbiology.com/rocky-shore-fieldwork-pract/) behind the
-**IB extension** toggle. The three year tabs show which topics each year meets, the year of its
+**IB extension** toggle, and the Year 7 [Separating mixtures](https://nlcsbiology.com/ks3-separating-mixtures-pract/)
+practical behind the **Key Stage 3** toggle just before it. The three year tabs show which topics each year meets, the year of its
 IGCSE exams and which syllabus those follow; `…/#y10` opens a year and `…/#plants` opens a door —
 both are useful links to hand a class.
 

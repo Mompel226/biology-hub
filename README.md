@@ -611,6 +611,8 @@ the other three goes into an HTML file with the same name.
 
 ## For developers
 
+The `tools/` named here stay on Daniel's computer: they are not in this repository (since 18 Oct 2026).
+
 Static files. No build step beyond `node tools/stamp.mjs`, which first copies in what the site
 shares with the labs, when it finds `labs-shared/` above this folder (the lab register as
 `js/data/labs.json` and `labs.js`, `js/progress.js`, `js/signin.js`, `js/data/stations.json` and the

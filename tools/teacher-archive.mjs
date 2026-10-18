@@ -14,7 +14,7 @@
    · Open lists them, the most recent first; the hidden one only once "Show the 1 hidden" is pressed;
    · homework still to come has Remove but no Hide; Remove's tip (the real bubble, on hover) says it leaves ⏱️ Homework
      habits, is for homework set by mistake, and that a wrong date only needs “Change the due date”;
-   · past its due date: Hide, whose tip says it still counts in ⏱️ Homework habits; Remove, whose tip says to press Hide;
+   · past its due date: Hide, whose tip says it still counts in Homework habits; Remove, whose tip says to press Hide;
    · waiting for a yes, Remove says the same in words on the card (a tip never shows on a touch screen); Keep it closes it;
    · Hide sends { id, hide: true } once, the card moves to the hidden homework, and the Archive says it still counts;
      Show it again sends { id, hide: false } once and lists it again; a refusal is said in red;
@@ -145,7 +145,7 @@ try {
   check('the list holds only the homework still to come; the Archive is folded, and says how many it holds',
     s.list === 'HW-NOW' && s.arch === '' && /Archive/.test(s.head) && /2 past their due date · 1 hidden/.test(s.head) && /Open/.test(s.head), JSON.stringify(s));
   const d = await ev(() => document.querySelector('#harch .sec__d').textContent);
-  check('the Archive says that all of it still counts in ⏱️ Homework habits, and what Hide does', /still counts in ⏱️ Homework habits/.test(d) && /“Hide” takes one off this list without deleting anything/.test(d), d);
+  check('the Archive says that all of it still counts in Homework habits, and what Hide does', /still counts in Homework habits/.test(d) && /“Hide” takes one off this list without deleting anything/.test(d), d);
   await shot('1-folded');
 
   await open('HW-NOW');
@@ -153,8 +153,8 @@ try {
   check('homework still to come has Remove and “Change the due date”, never Hide',
     await ev(() => !!document.querySelector('[data-ask="HW-NOW"]') && !!document.querySelector('[data-duechg="HW-NOW"]') && !document.querySelector('[data-hide="HW-NOW"]')), 'see the card');
   let t = await tipOf('[data-ask="HW-NOW"]');
-  check('its Remove tip says it leaves ⏱️ Homework habits, is for homework set by mistake, and that a wrong date only needs “Change the due date”',
-    /cannot be undone/.test(t) && /leaves ⏱️ Homework habits and every student’s record/.test(t) && /only for homework set by mistake/.test(t) && /“Change the due date” instead/.test(t), t);
+  check('its Remove tip says it leaves Homework habits, is for homework set by mistake, and that a wrong date only needs “Change the due date”',
+    /cannot be undone/.test(t) && /leaves Homework habits and every student’s record/.test(t) && /only for homework set by mistake/.test(t) && /“Change the due date” instead/.test(t), t);
   await press('[data-ask="HW-NOW"]');
   t = await ev(() => { const c = document.querySelector('.hw__h[data-hw="HW-NOW"]').closest('.hw'); return c.textContent; });
   check('waiting for a yes, the card says the same in words (a tip never shows on a touch screen)',
@@ -169,11 +169,11 @@ try {
   await open('HW-P1');
   await until(() => !!document.querySelector('[data-hide="HW-P1"]'));
   t = await tipOf('[data-hide="HW-P1"]');
-  check('past its due date: Hide, whose tip says nothing is deleted and it still counts in ⏱️ Homework habits',
-    /Takes it off this list/.test(t) && /Nothing is deleted/.test(t) && /still counts in ⏱️ Homework habits/.test(t), t);
+  check('past its due date: Hide, whose tip says nothing is deleted and it still counts in Homework habits',
+    /Takes it off this list/.test(t) && /Nothing is deleted/.test(t) && /still counts in Homework habits/.test(t), t);
   t = await tipOf('[data-ask="HW-P1"]');
-  check('…and Remove, whose tip says it leaves ⏱️ Homework habits and to press “Hide” to keep the record',
-    /leaves ⏱️ Homework habits/.test(t) && /set by mistake/.test(t) && /press “Hide”/.test(t), t);
+  check('…and Remove, whose tip says it leaves Homework habits and to press “Hide” to keep the record',
+    /leaves Homework habits/.test(t) && /set by mistake/.test(t) && /press “Hide”/.test(t), t);
   await press('[data-ask="HW-P1"]');
   t = await ev(() => document.querySelector('.hw__h[data-hw="HW-P1"]').closest('.hw').textContent);
   check('waiting for a yes on archived homework, the card points to Hide', /“Keep it”, then “Hide”/.test(t), t.slice(0, 400));
@@ -182,7 +182,7 @@ try {
 
   await press('[data-hide="HW-P1"]');
   check('Hide sends { id, hide: true } once; the card leaves the Archive; the Archive says it is hidden and still counts',
-    await until(() => /is hidden\. It still counts in ⏱️ Homework habits/.test((document.querySelector('#harch .msg.ok') || {}).textContent || '')) &&
+    await until(() => /is hidden\. It still counts in Homework habits/.test((document.querySelector('#harch .msg.ok') || {}).textContent || '')) &&
     JSON.stringify(await ev(() => window.__HID)) === JSON.stringify([{ id: 'HW-P1', hide: true }]) && (await ids()).arch === 'HW-P2' &&
     /1 past its due date · 2 hidden/.test((await ids()).head), JSON.stringify([await ev(() => window.__HID), await ids()]));
   await press('[data-hidopen]');

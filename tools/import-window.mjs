@@ -2,15 +2,19 @@
 /* ============================================================
    tools/import-window.mjs — the Classroom import window: ONE call starts a job on the server, and the window follows it.
    (Daniel, 6 Oct 2026: importing several classes at once "got stuck", and 11C came in as 8 of 16; the import must
-   "handle the six minutes limit well", and the window may be closed while it goes on.)
+   "handle the six minutes limit well". Daniel, 10 Oct 2026, memory long-jobs-carry-on: Google runs the later parts out of
+   sight, so this window is the one place the import reports; it says in large letters "Do not close this window until it
+   says Finished", never that it may be closed, although the job would go on: "other teachers … will wait".)
 
    The REAL apps-script/ClassroomImport.html, in headless Chrome, with a stand-in for google.script.run that answers as
    the labs script's job would: the first piece's results from executeBatchImportAll, then each record the job publishes,
    one per poll (getBatchImportProgress). No spreadsheet, no Classroom, no sign-in. It proves:
-   · ONE call for every ticked class, never one per class; it says the window may be closed;
+   · ONE call for every ticked class, never one per class; "⚠️ Do not close this window until it says Finished." in large
+     letters, and never that the window may be closed;
    · each class shows its result as the record brings it ("N in Classroom", added, already here, moved, no address, also
      in another ticked class), a failed class in Google's words, the next still going;
-   · while the job waits a minute it says so (⏸, "carries on by itself"), and keeps following it;
+   · while the job waits it says so in the server's words (⏸ "It restarts by itself at about HH:MM", an estimate; once
+     late, "Google is starting the next part"), the warning still above them, and keeps following it;
    · at the end: each class's count on the Students tab, the summary, "Try the 1 again" for the failed class, which
      starts a NEW job for that class alone;
    · the first call failing (a stopped piece) is not called a failure: the window follows the job to its end;
@@ -41,6 +45,10 @@ const A = { status: 'success', listed: 16, added: 8, skipped: 8, moved: 0, clash
 const B = { status: 'error', error: 'Request failed for https://classroom.googleapis.com returned code 503' };
 const C = { status: 'success', listed: 20, added: 0, skipped: 20, moved: 3, clashes: [{ name: 'Ria Ham', was: '11C' }], noEmail: ['Ivy Kwon'] };
 const P = { status: 'pending' };
+/* what the labs script publishes while the job waits (Code.gs _importLater_ + JOB_WAIT_WORDS), and what
+   getBatchImportProgress puts in its place once the estimate has passed */
+const PAUSED = 'Paused, to stay inside Google’s time limit. It restarts by itself at about 10:42. This is an estimate: Google can take a few minutes longer.';
+const LATE = 'Google is starting the next part. It is a little later than the estimate (10:42). This is normal: please wait.';
 /* the pupils in none of this year's classes, as getNotThisYear gives them (7 Oct 2026) */
 const G11B = { cls: '11B', total: 4, pupils: [['Bo Han', 'bo.han'], ['Cy Lee', 'cy.lee'], ['Di Park', 'di.park'], ['Ed Yoon', 'ed.yoon']]
   .map(([name, e]) => ({ name, email: e + '@x.kr', why: 'course' })) };
@@ -54,8 +62,8 @@ const SCENARIOS = {
   main: `{
     first: { 1: [A, B, P], 2: [{ status: 'success', listed: 15, added: 15, skipped: 0, moved: 0, clashes: [], noEmail: [] }] },
     polls: {
-      1: [ { results: [A, B, P], done: false, phase: 'Paused for a minute, to stay inside Google’s time limit. It carries on by itself: you can close this window.', continuing: true, ts: 1 },
-           { results: [A, B, P], done: false, phase: 'Paused for a minute, to stay inside Google’s time limit. It carries on by itself: you can close this window.', continuing: true, ts: 1 },
+      1: [ { results: [A, B, P], done: false, phase: PAUSED, continuing: true, ts: 1 },
+           { results: [A, B, P], done: false, phase: LATE, continuing: true, ts: 1 },
            { results: [A, B, C], done: false, phase: 'Names imported. Building and formatting every tab…', ts: 2 },
            { results: [A, B, C], done: true, phase: 'Finished.', ts: 3, counts: { '11C': 15, '9B': 20 } } ],
       2: [ { results: [{ status: 'success', listed: 15, added: 15, skipped: 0, moved: 0, clashes: [], noEmail: [] }], done: true, phase: 'Finished.', ts: 4, counts: { '11C': 15, '11D': 15, '9B': 20 } } ]
@@ -105,7 +113,7 @@ const SCENARIOS = {
   /* the audit (7 Oct 2026): a second import refused while one runs; an import with a class that failed */
   busyRefused: `{
     first: { 1: [{ status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }, P, P] },
-    polls: { 1: [ { results: [{ status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }, { status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }, { status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }], done: true, stopped: true, phase: 'Another import is still running. Try again once it says Finished.', ts: 1 } ] }
+    polls: { 1: [ { results: [{ status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }, { status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }, { status: 'busy', error: 'Another import is still running (it carries on by itself). Try again once it says Finished.' }], done: true, stopped: true, phase: 'Another import is still running (it carries on by itself). Try again once it says Finished.', ts: 1 } ] }
   }`,
   leftAfterFail: `{
     left0: LIST,
@@ -116,7 +124,7 @@ const SCENARIOS = {
   leftWhileImporting: `{
     left0: LIST,
     first: { 1: [A, P] },
-    polls: { 1: [ { results: [A, P], done: false, phase: 'Paused for a minute, to stay inside Google’s time limit. It carries on by itself: you can close this window.', continuing: true, ts: 1 } ] }
+    polls: { 1: [ { results: [A, P], done: false, phase: PAUSED, continuing: true, ts: 1 } ] }
   }`
 };
 
@@ -125,6 +133,7 @@ const stub = (scenario) => `<script>
 (function () { var real = Date.now; window.__shift = 0; Date.now = function () { return real() + window.__shift; }; })();
 var A = ${JSON.stringify(A)}, B = ${JSON.stringify(B)}, C = ${JSON.stringify(C)}, P = ${JSON.stringify(P)};
 var LIST = ${JSON.stringify(LIST)}, AFTER = ${JSON.stringify(AFTER)};
+var PAUSED = ${JSON.stringify(PAUSED)}, LATE = ${JSON.stringify(LATE)};
 window.__LOG = []; window.__JOBS = {}; window.__POLLN = {};
 window.__S = ${SCENARIOS[scenario]};
 window.google = { script: { host: { close: function () { window.__closed = true; } } } };
@@ -205,6 +214,16 @@ const tick = (ids) => ev((ids) => {
   if (b.disabled) return 'the Import button stayed off';
   b.click(); return '';
 }, ids);
+/* every text the bar under the table shows while the import works (from Import pressed to the summary), in order, so no
+   line it showed is missed */
+const watchBar = () => ev(() => {
+  const bar = document.getElementById('bar'); window.__BARS = [];
+  new MutationObserver(() => {
+    const t = bar.textContent;
+    if (document.getElementById('btn-import') || /class\(es\) imported/.test(t)) return;   /* before Import; the summary */
+    if (window.__BARS[window.__BARS.length - 1] !== t) window.__BARS.push(t);
+  }).observe(bar, { childList: true, subtree: true, characterData: true });
+});
 const summaryShown = () => until(() => /class\(es\) imported/.test(document.getElementById('bar').textContent), null, 20000);
 const state = () => ev(() => ({
   rows: [0, 1, 2].map((i) => document.getElementById('st-' + i).textContent),
@@ -218,9 +237,20 @@ const state = () => ev(() => ({
 try {
   console.log('\nthree classes: the second fails, the job pauses a minute, then finishes');
   check('the window lists the courses', await open('main'), 'no rows after 12 s');
+  await watchBar();
   check('ticking three and pressing Import starts it', !(await tick(['cb-0', 'cb-1', 'cb-2'])), 'the Import button stayed off');
-  check('it says the window may be closed, and that the import carries on by itself', await until(() => /You can close this window/.test(document.getElementById('bar').textContent)), 'no hint');
-  check('while the job waits it says so', await until(() => /⏸/.test((document.getElementById('phase') || {}).textContent || '') && /carries on by itself/.test(document.getElementById('phase').textContent)), 'no pause shown');
+  check('it says in large letters not to close the window until it says Finished, and never that it may be closed', await until(() => {
+    const bar = document.getElementById('bar'), w = [...bar.querySelectorAll('div')].find((d) => /^⚠️ Do not close this window until it says Finished\.$/.test(d.textContent.trim()));
+    if (!w) return false;
+    const cs = getComputedStyle(w);
+    return parseFloat(cs.fontSize) >= 15 && parseInt(cs.fontWeight, 10) >= 600 && !/(can|may) close/i.test(bar.textContent);
+  }), 'no warning in large letters, or it says the window may be closed: ' + await ev(() => (window.__BARS || [])[0] || document.getElementById('bar').textContent));
+  check('while the job waits it says so (⏸, when it restarts, an estimate; once late, that Google is starting it), the warning still above, never that the window may be closed',
+    await until(() => {
+      const seen = window.__BARS || [], warned = (t) => /Do not close this window until it says Finished/.test(t) && !/(can|may) close/i.test(t);
+      return seen.some((t) => /⏸ Paused/.test(t) && /It restarts by itself at about 10:42\. This is an estimate/.test(t)) &&
+        seen.some((t) => /⏸ Google is starting the next part/.test(t)) && seen.every(warned);
+    }), JSON.stringify(await ev(() => (window.__BARS || []).slice(-3))).slice(0, 400));
   await shot('1-paused');
   check('it finishes with a summary', await summaryShown(), 'no summary after 20 s');
   let s = await state();
@@ -348,7 +378,7 @@ try {
   await ev(() => [...document.querySelectorAll('#leftbox button')].find((b) => /See them/.test(b.textContent)).click());
   await ev(() => document.querySelector('[data-lg="0"]').click());
   await tick(['cb-0', 'cb-1']);
-  await until(() => /carries on by itself/.test(document.body.innerText));
+  await until(() => /restarts by itself/.test(document.body.innerText));
   const during = await ev(() => { const go = document.getElementById('lgo'); return { off: go.disabled, text: go.textContent }; });
   check('while an import runs, “Mark … as Left” waits (the server refuses it then)', during.off === true && /Wait until the import has finished/.test(during.text), JSON.stringify(during));
   check('a class code longer than 16 characters cannot be typed', await ev(() => document.getElementById('cc-0').maxLength === 16), 'maxlength');

@@ -274,6 +274,37 @@ console.log('K. cards: a row of their own; the corner stays level with the headi
   await send('Emulation.clearDeviceMetricsOverride');
 }
 
+console.log('L. a teacher\'s own reflection cards: a switch in test mode, remembered on this computer; pupils never touched (18 Oct 2026)');
+{
+  const RFL = 'https://script.google.com/macros/s/AKfycbREFLFORM000000000000/exec';
+  const card = `const e = document.getElementById('rfl'), s = document.getElementById('acctRfl');
+    return { rfl: !!e && !e.hidden, sw: !!s && !s.hidden, says: s ? s.textContent : '', pressed: s ? s.getAttribute('aria-pressed') : '' };`;
+  FAKE = { ...FAKE, record: { ok: true, name: TEACHER.name, teacher: true, teacherPage: TP, reflected: 0, practice: false }, recordDelay: 100,
+           test: { ok: true, teacher: true, state: 'none', reflect: { state: 'start', name: 'T6 Enzymes: reflection', url: RFL } }, testDelay: 200, testHow: 'ok' };
+  await open({ 'biology.signin': token(TEACHER, 50), 'biology-hub.mine': teacherMine });
+  await sleep(900); c = await ev(card);
+  check('teacher mode: no reflection card and no switch', !c.rfl && !c.sw, c);
+  await ev(`document.querySelector('#acctMode button[data-mode="test"]').click()`);
+  for (let i = 0; i < 20 && !(c = await ev(card)).rfl; i++) await sleep(150);
+  check('test mode: the card, and beside Sign out "Reflection cards: shown"', c.rfl && c.sw && c.says === 'Reflection cards: shown' && c.pressed === 'true', c);
+  await ev(`document.getElementById('acctRfl').click()`); await sleep(300); c = await ev(card);
+  check('pressed: the card goes, the switch says "Reflection cards: hidden"', !c.rfl && c.sw && c.says === 'Reflection cards: hidden' && c.pressed === 'false', c);
+  await send('Page.navigate', { url: BASE + '?t=' + Date.now() });
+  for (let i = 0; i < 100 && !(await ev(`return document.readyState === 'complete'`)); i++) await sleep(50);
+  await sleep(1200); c = await ev(card);
+  check('after a reload, still hidden on this computer', !c.rfl && c.sw && c.says === 'Reflection cards: hidden', c);
+  await ev(`document.getElementById('acctRfl').click()`);
+  for (let i = 0; i < 20 && !(c = await ev(card)).rfl; i++) await sleep(150);
+  check('pressed again: the card is back', c.rfl && c.says === 'Reflection cards: shown', c);
+  FAKE = { ...FAKE, record: { ok: true, name: PUPIL.name, reflected: 0, practice: false }, test: { ok: true, state: 'none', reflect: { state: 'start', name: 'T6 Enzymes: reflection', url: RFL } } };
+  await open({ 'biology.signin': token(PUPIL, 50) });
+  await ev(`localStorage.setItem('biology-hub.rflcards', 'hide'); return true`);   /* as a teacher's press leaves it, on a shared computer */
+  await send('Page.navigate', { url: BASE + '?t=' + Date.now() });
+  for (let i = 0; i < 100 && !(await ev(`return document.readyState === 'complete'`)); i++) await sleep(50);
+  for (let i = 0; i < 20 && !(c = await ev(card)).rfl; i++) await sleep(150);
+  check('a pupil: the card shows whatever the setting says, and no switch', c.rfl && !c.sw, c);
+}
+
 {
   console.log('J. the open edition: no sign-in, so never the line');
   await open({ 'biology.signin': token(PUPIL, 50) }, OPEN);

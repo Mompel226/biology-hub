@@ -40,6 +40,11 @@
   /* the revision-timing answers of the reflection form, as the old tab matched them (TIMING_MAP) */
   var TIMING = [['Consistently throughout the year', 'All through the year'], ['Mainly in the weeks before the exam', 'In the weeks before'],
     ['Only shortly before the exam', 'Only just before'], ['Very little revision', 'Very little'], ['Other', 'Other']];
+  /* the revision tools of the reflection form (reflection §40.201, 23 Oct 2026): the first word is found in the saved
+     text (a pupil may pick several), the second is shown */
+  var TOOLS = [['Class PPTs', 'Class PPTs'], ['exercise book', 'Exercise book'], ['Guided revision', 'Guided revision'], ['Biology Hub labs', 'Biology Hub labs'],
+    ['Bio English', 'Bio English Lab'], ['PaperGrinder', 'PaperGrinder'], ['Save My Exams', 'Save My Exams'], ['Videos', 'Videos'],
+    ['Other websites', 'Other websites'], ['None of these', 'None of these']];
 
   /* _scoreKind_ (reflection §40.101): teacher | partly | self */
   function kindOf(src) {
@@ -255,6 +260,19 @@
     });
     out.timing = tc.map(function (t) { return { l: t.l, share: tn ? t.n / tn * 100 : 0, n: t.n, m: mean(t.p), np: t.p.length }; }); out.timingN = tn;
 
+    /* revision tools (reflection §40.201): each tool's share is of the pupils who answered (several tools each, so the
+       shares do not add up to 100 %); the mean score counts marked papers, as a percentage; the other websites the pupils
+       typed are counted by name */
+    var tl = TOOLS.map(function (t) { return { l: t[1], n: 0, p: [] }; }), tln = 0, named = {};
+    rows.forEach(function (r) {
+      var raw = String(r.rt || '').toLowerCase(); if (!raw.trim()) return; tln++;
+      var p = counts(r) ? pctOf(r) : null;
+      TOOLS.forEach(function (t, i) { if (raw.indexOf(t[0].toLowerCase()) >= 0) { tl[i].n++; if (p !== null) tl[i].p.push(p); } });
+      String(r.ro || '').split(/[,;\n]+|\s+and\s+/i).forEach(function (w) { w = w.trim(); if (w.length < 2) return; var key = w.toLowerCase().replace(/\s+/g, ' '); (named[key] = named[key] || { l: w, n: 0 }).n++; });
+    });
+    out.tools = tl.map(function (t) { return { l: t.l, share: tln ? t.n / tln * 100 : 0, n: t.n, m: mean(t.p), np: t.p.length }; }); out.toolsN = tln;
+    out.toolsNamed = Object.keys(named).map(function (key) { return named[key]; }).sort(function (a, b) { return b.n - a.n || a.l.localeCompare(b.l); }).slice(0, 10);
+
     /* each pupil, assessment by assessment in date order (📈 Progression): whole percentages, the change between the
        last two, and their own forecast against the real total */
     var pp = {};
@@ -326,9 +344,13 @@
   }
   /* horizontal bars. Wide: each label to the left of its bar, one row per bar, so a long list stays short (Daniel, 1 Oct
      2026: the data first, less scrolling). Narrow: the label above its bar, so long topic names never squeeze it. */
+  /* everyone's mean for the "did it help?" charts (23 Oct 2026): a number, or null when nothing is marked yet */
+  function evMean(A) { return typeof A.meanPct === 'number' && isFinite(A.meanPct) && A.nScored ? A.meanPct : null; }
   function hbars(rows, o) {
     var W = o.w, max = o.max || 100, side = W >= 700, subs = rows.some(function (r) { return r.sub; });
-    var two = !side && subs && W < 560, top = 4, bot = 26, right = 70;
+    /* o.ref: a dashed line at that value with its words above (o.refLabel), e.g. everyone's average (23 Oct 2026) */
+    var hasRef = typeof o.ref === 'number' && isFinite(o.ref);
+    var two = !side && subs && W < 560, top = hasRef ? 22 : 4, bot = 26, right = 70;
     var labW = side ? Math.min(330, Math.round(W * 0.32)) : 0, plotW = W - labW - right;
     var rowH = side ? (subs ? 44 : 34) : two ? 64 : subs ? 56 : 46;
     var H = top + rows.length * rowH + bot, X = function (v) { return plotW * Math.max(0, Math.min(v, max)) / max; };
@@ -339,6 +361,9 @@
         '<text class="t-ax" x="' + fx(x) + '" y="' + (H - 6) + '" text-anchor="' + (t === 0 ? 'start' : 'middle') + '">' + t + (o.unit || '') + '</text>';
     });
     s += '<line class="g-axis" x1="' + labW + '" x2="' + labW + '" y1="' + top + '" y2="' + (H - bot) + '"/>';
+    var refX = hasRef ? labW + X(o.ref) : null;
+    /* a value's words never sit across the dashed line: they move just past it */
+    var valX = function (x0, txt) { if (refX === null) return x0; var tw = String(txt).length * 7.6; return (refX >= x0 - 3 && refX <= x0 + tw + 3) ? refX + 6 : x0; };
     rows.forEach(function (r, i) {
       var y = top + i * rowH, w = X(r.v), by;
       if (side) {
@@ -346,16 +371,23 @@
         s += '<text class="t-lab" x="' + (labW - 10) + '" y="' + (subs && r.sub ? y + 17 : by + 12) + '" text-anchor="end">' + esc(fit(r.l, labW - 14)) + '</text>';
         if (r.sub) s += '<text class="t-sub" x="' + (labW - 10) + '" y="' + (y + 34) + '" text-anchor="end">' + esc(fit(r.sub, labW - 14)) + '</text>';
         s += '<path fill="' + (r.col || 'var(--s1)') + '" d="' + barPath(labW, by, Math.max(w, r.v > 0 ? 2 : 0), 16) + '"/>';
-        s += '<text class="t-val" x="' + fx(labW + w + 8) + '" y="' + (by + 13) + '">' + esc(r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '')) + '</text>';
+        var vt1 = r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '');
+        s += '<text class="t-val" x="' + fx(valX(labW + w + 8, vt1)) + '" y="' + (by + 13) + '">' + esc(vt1) + '</text>';
       } else {
         by = y + rowH - 20;
         s += '<text class="t-lab" x="0" y="' + (y + 15) + '">' + esc(r.l) + (r.sub && !two ? '<tspan class="t-sub" dx="8">' + esc(r.sub) + '</tspan>' : '') + '</text>';
         if (r.sub && two) s += '<text class="t-sub" x="0" y="' + (y + 30) + '">' + esc(r.sub) + '</text>';
         s += '<path fill="' + (r.col || 'var(--s1)') + '" d="' + barPath(0, by, Math.max(w, r.v > 0 ? 2 : 0), 14) + '"/>';
-        s += '<text class="t-val" x="' + fx(w + 8) + '" y="' + (by + 12) + '">' + esc(r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '')) + '</text>';
+        var vt2 = r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '');
+        s += '<text class="t-val" x="' + fx(valX(w + 8, vt2)) + '" y="' + (by + 12) + '">' + esc(vt2) + '</text>';
       }
       s += '<rect class="hit" x="0" y="' + y + '" width="' + W + '" height="' + rowH + '" data-tip="' + esc(r.tip || '') + '"/>';
     });
+    if (hasRef) {
+      var rx = refX, anchor = rx > labW + plotW * 0.6 ? 'end' : 'start';
+      s += '<line class="g-ref" x1="' + fx(rx) + '" x2="' + fx(rx) + '" y1="' + (top - 4) + '" y2="' + (H - bot) + '"/>' +
+        '<text class="t-ref" x="' + fx(anchor === 'end' ? rx - 4 : rx + 4) + '" y="' + (top - 8) + '" text-anchor="' + anchor + '">' + esc(o.refLabel || '') + '</text>';
+    }
     return s + '</svg>';
   }
   /* vertical bars for the grade spread */
@@ -528,7 +560,7 @@
   }
 
   var api = {
-    GRADES: GRADES, DEFAULT_PCTS: DEFAULT_PCTS, BOUND_GRADES: BOUND_GRADES, ERR: ERR, TIMING: TIMING,
+    GRADES: GRADES, DEFAULT_PCTS: DEFAULT_PCTS, BOUND_GRADES: BOUND_GRADES, ERR: ERR, TIMING: TIMING, TOOLS: TOOLS,
     kindOf: kindOf, gradeOf: gradeOf, pctOf: pctOf, parseDay: parseDay, errorCounts: errorCounts, normCls: normCls,
     prepare: prepare, yearOfTab: yearOfTab, famsOfTab: famsOfTab, gradOf: gradOf, boundsFor: boundsFor, coverage: coverage, analyse: analyse,
     esc: esc, hbars: hbars, vbars: vbars, stacked: stacked, dots: dots, mixBar: mixBar, subMap: subMap, spark: spark, deltaBar: deltaBar,
@@ -694,7 +726,7 @@
       { id: 'mcq', t: 'Which multiple-choice questions went wrong most?' }] },
     { group: 'Reflections', note: 'every reflection', items: [
       { id: 'errors', t: 'Why do pupils say they lost marks?' }, { id: 'vocab', t: 'Which keywords do pupils not know?' },
-      { id: 'timing', t: 'When did pupils revise, and did it help?' }] },
+      { id: 'timing', t: 'When did pupils revise, and did it help?' }, { id: 'tools', t: 'Which revision tools did pupils use, and did they help?' }] },
     { group: 'Groups', note: 'by each class’s gender', items: [{ id: 'bvg', t: 'Girls and boys: what differs?' }] },
     { group: 'The tests', note: 'how each paper was built', items: [{ id: 'balance', t: 'Is each test balanced, and do its versions match?' }] }];
   var SCORE_Q = { grades: 1, topics: 1, progress: 1, classes: 1, sections: 1, cmds: 1, mcq: 1, bvg: 1 };
@@ -938,12 +970,31 @@
         fig = '<div style="display:flex;flex-wrap:wrap;gap:24px">' +
           '<figure class="fig" style="flex:1 1 ' + Math.round(half) + 'px;min-width:0">' + hbars(tm.map(function (t) { return { l: t.l, v: t.share, tip: '<b>' + esc(t.l) + '</b><br>' + t.n + ' pupils (' + rnd(t.share) + ' %)' }; }), { w: Math.round(half), unit: ' %', aria: 'Share of pupils for each revision pattern' }) +
             '<figcaption>Figure 1. Bar chart showing the percentage of pupils who chose each revision pattern (n = ' + A.timingN + ').</figcaption></figure>' +
-          '<figure class="fig" style="flex:1 1 ' + Math.round(half) + 'px;min-width:0">' + bandLegend('pct') + hbars(tm.map(function (t) { return { l: t.l, v: t.m || 0, col: bandCol(t.m), text: t.m === null ? '—' : rnd(t.m) + ' %', tip: '<b>' + esc(t.l) + '</b><br>mean ' + rnd(t.m) + ' % (' + t.np + ' marked papers)' }; }), { w: Math.round(half), unit: ' %', aria: 'Mean score for each revision pattern' }) +
-            '<figcaption>Figure 2. Bar chart showing the mean percentage scored for each revision pattern (marked papers only).</figcaption></figure></div>';
-        tab = tableHtml('Table 1. Data showing each revision pattern, how many chose it and their mean score.', ['When they revised', 'Pupils', '% of pupils', 'Mean score'], tm.map(function (t) { return [esc(t.l), t.n, rnd(t.share) + ' %', chip(t.m)]; }), [0, 1, 1, 1]);
+          '<figure class="fig" style="flex:1 1 ' + Math.round(half) + 'px;min-width:0">' + bandLegend('pct') + hbars(tm.map(function (t) { return { l: t.l, v: t.m || 0, col: bandCol(t.m), text: t.m === null ? '—' : rnd(t.m) + ' %', tip: '<b>' + esc(t.l) + '</b><br>mean ' + rnd(t.m) + ' % (' + t.np + ' marked papers)' }; }), { w: Math.round(half), unit: ' %', aria: 'Mean score for each revision pattern', ref: evMean(A), refLabel: evMean(A) === null ? '' : 'everyone ' + rnd(evMean(A)) + ' %' }) +
+            '<figcaption>Figure 2. Bar chart showing the mean percentage scored for each revision pattern (marked papers only).' + (evMean(A) === null ? '' : ' The dashed line is the mean of every marked paper chosen above (' + rnd(evMean(A)) + ' %).') + '</figcaption></figure></div>';
+        tab = tableHtml('Table 1. Data showing each revision pattern, how many chose it and their mean score.', ['When they revised', 'Pupils', '% of pupils', 'Mean score'], tm.map(function (t) { return [esc(t.l), t.n, rnd(t.share) + ' %', chip(t.m)]; }).concat(evMean(A) === null ? [] : [['<b>Every marked paper</b>', A.nScored, '', chip(evMean(A))]]), [0, 1, 1, 1]);
         h += (showT ? tab : fig);
       }
       h += how(['The share counts every reflection. The mean score counts marked papers only.', '<b>Changed from the old tab:</b> the old “Revision Timing” averaged raw marks across papers with different totals; this uses each paper’s percentage.', 'Pupils answer this question on the reflection form. It shows a link, not a cause.', 'From the old tab, section 5.']);
+    }
+    else if (id === 'tools') {
+      var tt = A.tools.filter(function (t) { return t.n; }).sort(function (a, b) { return b.n - a.n; });
+      var gr = A.tools[2];
+      if (!A.toolsN) h = '<p class="empty">No answers yet. The reflection form asks this from version 40 (23 Oct 2026).</p>';
+      else {
+        h = '<p class="answer">Most used: <b>' + esc(tt[0].l) + '</b> (' + rnd(tt[0].share) + ' % of the pupils who answered). <b>' + rnd(gr.share) + ' %</b> used Guided revision' +
+          (gr.m !== null ? '; their mean score was <b>' + rnd(gr.m) + ' %</b>' + (evMean(A) !== null ? ' (everyone: ' + rnd(evMean(A)) + ' %)' : '') : '') + '.</p>';
+        var half2 = root.matchMedia('(min-width:900px)').matches ? (PI - 24) / 2 - CARD : W;
+        fig = '<div style="display:flex;flex-wrap:wrap;gap:24px">' +
+          '<figure class="fig" style="flex:1 1 ' + Math.round(half2) + 'px;min-width:0">' + hbars(tt.map(function (t) { return { l: t.l, v: t.share, tip: '<b>' + esc(t.l) + '</b><br>' + t.n + ' pupils (' + rnd(t.share) + ' %)' }; }), { w: Math.round(half2), unit: ' %', aria: 'Share of pupils who used each revision tool' }) +
+            '<figcaption>Figure 1. Bar chart showing the percentage of pupils who used each revision tool (n = ' + A.toolsN + '; a pupil may use several).</figcaption></figure>' +
+          '<figure class="fig" style="flex:1 1 ' + Math.round(half2) + 'px;min-width:0">' + bandLegend('pct') + hbars(tt.map(function (t) { return { l: t.l, v: t.m || 0, col: bandCol(t.m), text: t.m === null ? '—' : rnd(t.m) + ' %', tip: '<b>' + esc(t.l) + '</b><br>mean ' + (t.m === null ? '—' : rnd(t.m) + ' %') + ' (' + t.np + ' marked papers)' }; }), { w: Math.round(half2), unit: ' %', aria: 'Mean score of the pupils who used each revision tool', ref: evMean(A), refLabel: evMean(A) === null ? '' : 'everyone ' + rnd(evMean(A)) + ' %' }) +
+            '<figcaption>Figure 2. Bar chart showing the mean percentage scored by the pupils who used each revision tool (marked papers only).' + (evMean(A) === null ? '' : ' The dashed line is the mean of every marked paper chosen above (' + rnd(evMean(A)) + ' %): a bar past it means those pupils scored above it.') + '</figcaption></figure></div>';
+        tab = tableHtml('Table 1. Data showing each revision tool, how many pupils used it and their mean score.', ['Revision tool', 'Pupils', '% of pupils who answered', 'Mean score'], tt.map(function (t) { return [esc(t.l), t.n, rnd(t.share) + ' %', chip(t.m)]; }).concat(evMean(A) === null ? [] : [['<b>Every marked paper</b>', A.nScored, '', chip(evMean(A))]]), [0, 1, 1, 1]);
+        h += (showT ? tab : fig);
+        if (A.toolsNamed.length) h += '<p class="answer" style="margin-top:10px">Other websites named: ' + A.toolsNamed.map(function (x) { return esc(x.l) + (x.n > 1 ? ' ×' + x.n : ''); }).join(' · ') + '</p>';
+      }
+      h += how(['A pupil may pick several tools, so the shares do not add up to 100 %. The share counts every reflection that answered. The mean score counts marked papers only, as each paper’s percentage.', 'Pupils answer this on the reflection form’s Exam Strategy screen (“Which of these did you use to revise for this test?”), from version 40. It shows a link, not a cause.', 'The names under the charts are what pupils typed for “Other websites”, counted by name.']);
     }
     else if (id === 'balance') {
       h = balancePanel(W, showT);
@@ -992,6 +1043,7 @@
       case 'errors': return A.errTotal ? A.errors[0].l.replace(/^\S+ /, '') + ' ' + rnd(A.errors[0].v) + ' %' : 'No reasons given yet';
       case 'vocab': return A.vocab.length ? '“' + A.vocab[0].l + '” most often' : 'No keywords flagged yet';
       case 'timing': return A.timingN ? rnd(A.timing[0].share) + ' % revised all year' : 'No answers yet';
+      case 'tools': return A.toolsN ? rnd(A.tools[2].share) + ' % used Guided revision' : 'No answers yet';
       case 'bvg': return A.girls.nc && A.boys.nc ? 'Mean: girls ' + rnd(A.girls.mean) + ' % · boys ' + rnd(A.boys.mean) + ' %' : !A.girls.n && !A.boys.n ? 'No class genders yet' : 'Only ' + (A.girls.nc ? 'girls’' : 'boys’') + ' classes so far';
     }
     return '';
@@ -1049,6 +1101,8 @@
     else if (id === 'vocab' && A.vocab.length) out = [k(A.vocab[0].dk + A.vocab[0].pa, 'flagged “' + A.vocab[0].l + '”'), k(A.vocabSubs, A.vocabSubs === 1 ? 'reflection' : 'reflections')];
     else if (id === 'timing' && A.timingN) out = [k(rnd(A.timing[0].share) + ' %', 'revised all year')].concat(A.timing[0].m !== null ? [k(rnd(A.timing[0].m) + ' %', 'their mean score', false, A.timing[0].m)] : [])
       .concat(A.timing[2].m !== null ? [k(rnd(A.timing[2].m) + ' %', 'mean, revised only just before', false, A.timing[2].m)] : []);
+    else if (id === 'tools' && A.toolsN) out = [k(rnd(A.tools[2].share) + ' %', 'used Guided revision')].concat(A.tools[2].m !== null ? [k(rnd(A.tools[2].m) + ' %', 'their mean score', false, A.tools[2].m)] : [])
+      .concat([k(A.toolsN, A.toolsN === 1 ? 'pupil answered' : 'pupils answered')]);
     else if (id === 'bvg' && A.girls.nc && A.boys.nc) out = [k(rnd(A.girls.mean) + ' %', 'girls\u2019 mean', false, A.girls.mean), k(rnd(A.boys.mean) + ' %', 'boys\u2019 mean', false, A.boys.mean),
       k((A.girls.mean - A.boys.mean > 0 ? '+' : '') + rnd(A.girls.mean - A.boys.mean), 'points, girls \u2212 boys')];
     return out.filter(function (x) { return x.v.indexOf('\u2014') < 0; });

@@ -233,6 +233,9 @@ tr[class^="r--"] td:first-child{padding-left:14px}
 .t-ax{fill:var(--chalk-mute);font:400 12px var(--mono)}
 .g-grid{stroke:var(--grid);stroke-width:1}
 .g-axis{stroke:var(--axis);stroke-width:1}
+/* 23 Oct 2026: everyone's average on a "did it help?" chart */
+.g-ref{stroke:var(--chalk);stroke-width:1.5;stroke-dasharray:5 4;opacity:.8}
+.t-ref{fill:var(--chalk);font:600 12px var(--mono)}
 .hit{fill:transparent}
 .hit:hover{fill:var(--hit-hover)}
 

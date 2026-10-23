@@ -42,9 +42,10 @@
     ['Only shortly before the exam', 'Only just before'], ['Very little revision', 'Very little'], ['Other', 'Other']];
   /* the revision tools of the reflection form (reflection §40.201, 23 Oct 2026): the first word is found in the saved
      text (a pupil may pick several), the second is shown */
-  var TOOLS = [['Class PPTs', 'Class PPTs'], ['exercise book', 'Exercise book'], ['Guided revision', 'Guided revision'], ['Biology Hub labs', 'Biology Hub labs'],
+  var TOOLS = [['Class PPTs', 'Class PPTs'], ['exercise book', 'Exercise book'], ['Complete Biology', 'Complete Biology book'], ['Guided revision', 'Guided revision'], ['Biology Hub labs', 'Biology Hub labs'],
     ['Bio English', 'Bio English Lab'], ['PaperGrinder', 'PaperGrinder'], ['Save My Exams', 'Save My Exams'], ['Videos', 'Videos'],
     ['Other websites', 'Other websites'], ['None of these', 'None of these']];
+  var GR_I = TOOLS.map(function (t) { return t[0]; }).indexOf('Guided revision');   // Guided revision found by name, never by place (§40.204)
 
   /* _scoreKind_ (reflection §40.101): teacher | partly | self */
   function kindOf(src) {
@@ -979,7 +980,7 @@
     }
     else if (id === 'tools') {
       var tt = A.tools.filter(function (t) { return t.n; }).sort(function (a, b) { return b.n - a.n; });
-      var gr = A.tools[2];
+      var gr = A.tools[GR_I];
       if (!A.toolsN) h = '<p class="empty">No answers yet. The reflection form asks this from version 40 (23 Oct 2026).</p>';
       else {
         h = '<p class="answer">Most used: <b>' + esc(tt[0].l) + '</b> (' + rnd(tt[0].share) + ' % of the pupils who answered). <b>' + rnd(gr.share) + ' %</b> used Guided revision' +
@@ -1043,7 +1044,7 @@
       case 'errors': return A.errTotal ? A.errors[0].l.replace(/^\S+ /, '') + ' ' + rnd(A.errors[0].v) + ' %' : 'No reasons given yet';
       case 'vocab': return A.vocab.length ? '“' + A.vocab[0].l + '” most often' : 'No keywords flagged yet';
       case 'timing': return A.timingN ? rnd(A.timing[0].share) + ' % revised all year' : 'No answers yet';
-      case 'tools': return A.toolsN ? rnd(A.tools[2].share) + ' % used Guided revision' : 'No answers yet';
+      case 'tools': return A.toolsN ? rnd(A.tools[GR_I].share) + ' % used Guided revision' : 'No answers yet';
       case 'bvg': return A.girls.nc && A.boys.nc ? 'Mean: girls ' + rnd(A.girls.mean) + ' % · boys ' + rnd(A.boys.mean) + ' %' : !A.girls.n && !A.boys.n ? 'No class genders yet' : 'Only ' + (A.girls.nc ? 'girls’' : 'boys’') + ' classes so far';
     }
     return '';
@@ -1101,7 +1102,7 @@
     else if (id === 'vocab' && A.vocab.length) out = [k(A.vocab[0].dk + A.vocab[0].pa, 'flagged “' + A.vocab[0].l + '”'), k(A.vocabSubs, A.vocabSubs === 1 ? 'reflection' : 'reflections')];
     else if (id === 'timing' && A.timingN) out = [k(rnd(A.timing[0].share) + ' %', 'revised all year')].concat(A.timing[0].m !== null ? [k(rnd(A.timing[0].m) + ' %', 'their mean score', false, A.timing[0].m)] : [])
       .concat(A.timing[2].m !== null ? [k(rnd(A.timing[2].m) + ' %', 'mean, revised only just before', false, A.timing[2].m)] : []);
-    else if (id === 'tools' && A.toolsN) out = [k(rnd(A.tools[2].share) + ' %', 'used Guided revision')].concat(A.tools[2].m !== null ? [k(rnd(A.tools[2].m) + ' %', 'their mean score', false, A.tools[2].m)] : [])
+    else if (id === 'tools' && A.toolsN) out = [k(rnd(A.tools[GR_I].share) + ' %', 'used Guided revision')].concat(A.tools[GR_I].m !== null ? [k(rnd(A.tools[GR_I].m) + ' %', 'their mean score', false, A.tools[GR_I].m)] : [])
       .concat([k(A.toolsN, A.toolsN === 1 ? 'pupil answered' : 'pupils answered')]);
     else if (id === 'bvg' && A.girls.nc && A.boys.nc) out = [k(rnd(A.girls.mean) + ' %', 'girls\u2019 mean', false, A.girls.mean), k(rnd(A.boys.mean) + ' %', 'boys\u2019 mean', false, A.boys.mean),
       k((A.girls.mean - A.boys.mean > 0 ? '+' : '') + rnd(A.girls.mean - A.boys.mean), 'points, girls \u2212 boys')];

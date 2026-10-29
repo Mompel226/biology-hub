@@ -367,6 +367,8 @@ Leave any of it empty and no card appears; nothing else on the page changes.
 Signed in on the hub as a teacher, the corner card gains a **Teacher | Test** switch.
 **Test** shows you the hub exactly as a student sees it, from your own TEST reflections.
 **Teacher** replaces the student's door with **Assessment system**, which opens the teacher page.
+The door changes as soon as you press the switch: the hub remembers both doors on your computer, so it never waits for
+its check (29 Oct 2026).
 It has eight tabs. All eight are read at the same time as the page opens, and each is kept on your computer (for a week,
 under your own address), so the next time the page opens at once and every tab is ready: it says how old what you see is
 ("read 2 h ago · updating") and draws the new figures over it when they come. If you have started typing or clicking in

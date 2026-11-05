@@ -136,9 +136,36 @@ window.HUB_LOCAL = {
        name and address, which told a reader nothing twice — it now asks them for something
        instead, which is the more useful thing to put at the end of a page. */
     maker:'Made by <a class="maker__me" href="https://github.com/Mompel226" target="_blank" rel="noopener">'
-         +'<strong>Dr Daniel Mompel Riera</strong></a> · Biology, NLCS Jeju',
+         +'<strong>Dr Daniel Mompel Riera</strong></a>, a Biology teacher at NLCS Jeju',
+    /* Who owns this website, said once at the foot (Daniel, 5 Nov 2026). Colleagues were unsure whether they
+       could rely on it, and with the school's name in the title it read as the school's own site. The school
+       stays named as where he teaches (his head of department wants the link kept), never as the owner. */
+    owner:'This is my own website. It is not an official NLCS Jeju website: the school does not own it, '
+         +'and I am not paid to make it.',
     byline:'Something wrong, or an idea that would make this better? '
           +'<a href="mailto:dmompelriera@nlcsjeju.kr">Tell me</a> — I teach with it too, so it gets fixed.'
+  },
+
+  /* For teachers: the panel at the foot (js/hub.js section 7b; the address #teachers opens it). The labs'
+     rows come from the register by themselves; these are the words around them. Every line under
+     `checks` is something the build or the gates enforce, so it stays true: the syllabus tag (status
+     §3c), the mark schemes' words (docs/QUESTION-STANDARD.md §2), the marking gate in each lab's
+     tools/build.mjs, the picture credits (status §3i). Change a check and change its line. */
+  teachers: {
+    summary:'For teachers',
+    title:'Send your class to the topic you are teaching',
+    lede:'Copy a lab’s address into Google Classroom. Pupils need nothing else: their answers stay in '
+        +'their own browser, and save to their school account once they sign in.',
+    checkedTitle:'How the questions are checked',
+    checks:[
+      'Every question is tagged with the Cambridge IGCSE 0610 syllabus statement (syllabus 2026–2028) it practises.',
+      'Right answers use the words of the real Cambridge mark schemes.',
+      'Each time a lab changes, a check answers every question with its right answer. If even one is marked wrong, '
+        +'the change is not published.',
+      'Questions marked IB go beyond the IGCSE and follow the IB Biology guide (first assessment 2025).',
+      'Every picture names its source and its licence (Picture credits, below).',
+      'Found a mistake? <a href="mailto:dmompelriera@nlcsjeju.kr">Tell me</a>: the fix reaches every pupil at once.'
+    ]
   },
 
   /* ── the front of the building ─────────────────────────────

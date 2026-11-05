@@ -677,8 +677,13 @@ that too, so the two cannot drift.
 Every door image is public domain, CC0, or a Creative Commons licence that permits this use, and
 each is credited on the page and in [`assets/doors/CREDITS.md`](assets/doors/CREDITS.md).
 
-Made by **Dr Daniel Mompel Riera** · Biology, NLCS Jeju ·
+Made by **Dr Daniel Mompel Riera**, a Biology teacher at NLCS Jeju ·
 [dmompelriera@nlcsjeju.kr](mailto:dmompelriera@nlcsjeju.kr)
+
+This is my own website. It is not an official NLCS Jeju website: the school does not own it, and I am not paid to
+make it. Teachers: **For teachers** at the foot of the page (or
+[nlcsbiology.com/biology-hub/#teachers](https://nlcsbiology.com/biology-hub/#teachers)) gives each lab's address to copy
+into Google Classroom, and says how the questions are checked.
 
 ## Licence
 

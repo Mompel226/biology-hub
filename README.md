@@ -16,7 +16,7 @@ societies, the Diving Bryant, and student enterprises. Below those, one door bey
 ![No sign-up](https://img.shields.io/badge/students-no_sign--up_needed-6FA287)
 ![Marks](https://img.shields.io/badge/teachers-marks_in_Google_Sheets-C9A227)
 
-by **Dr Daniel Mompel Riera** · NLCS Jeju
+by **Dr Daniel Mompel Riera**, a Biology teacher at NLCS Jeju
 
 </div>
 

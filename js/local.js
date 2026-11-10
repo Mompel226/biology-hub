@@ -77,6 +77,7 @@
              facts   [{ k, v, mail }]: with `mail`, the address follows the
                      words as a link that opens a new email.
    open    extra entries in "Open now"
+   apps    the school's own apps on the apps shelf (applications.html): a card each, before "Add yours"
    credits extra image credits
    ============================================================ */
 window.HUB_LOCAL = {
@@ -462,6 +463,18 @@ window.HUB_LOCAL = {
   ],
 
   open: [],
+
+  /* The school's own apps on the apps shelf, which a signed-in staff address reaches by the Apps button. applications.html
+     draws each as a card before "Add yours" (the open edition has none). A card opens the app itself, in the same tab
+     (memory hub-one-tab), not a detail sheet: a teacher opens Quiz Hall most days. `pic` is an 800 × 450 picture in
+     assets/apps/ named <app>-…, which tools/sync-edition.mjs leaves out of the open edition (Daniel, 10 Nov 2026). */
+  apps: [
+    { app:'quiz-hall', url:'https://nlcsbiology.com/quiz-hall/', accent:'#8EA0F2', kind:'Assessment', name:'Quiz Hall',
+      sum:'Your Google Forms quizzes, run as locked quizzes for any class and any subject: marked at once, with a live page and the results.',
+      needs:['On this website', 'Your school Google account'], warn:'Teachers on its list',
+      pic:'assets/apps/quiz-hall-card.jpg', alt:'Quiz Hall\u2019s Run a quiz page: a quiz, a class, the length and the four test mode switches.',
+      more:'Open Quiz Hall \u2192' }
+  ],
 
   credits: [
     { door:'BioGuardians', text:'banner by Daniel Mompel Riera for the BioGuardians CCA', licence:'', url:'' },

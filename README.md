@@ -402,7 +402,8 @@ the tracker: the page is told only the website's address.
 
 Signed in on a staff address, the hub's masthead also shows **Apps teachers made**: a page of small tools teachers built
 for their own classrooms (a seating plan and a birthday reminder, both for macOS). That page is public; the link is
-hidden from pupils only so they are not offered a seating-plan app.
+hidden from pupils only so they are not offered a seating-plan app. A school's own apps are added to it from
+`js/local.js` `apps` (at NLCS: Quiz Hall, since 10 Nov 2026), so the open edition's page stays as it is.
 
 **Nothing about that page is in this website.** Not its address, not a spreadsheet link, not who
 the teachers are, not a single pupil or mark. It is guarded twice:

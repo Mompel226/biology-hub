@@ -97,6 +97,13 @@ window.HUB_LOCAL = {
      address is no secret; the script checks every sign-in against its own list before it reads anything. */
   analysisUrl:'https://script.google.com/macros/s/AKfycbyRUXDAUyncurV4XeM_o4589U1uL99YtnJwoAj-DZ1n9rYURSp5AaYmc42eYHJ79ZTYQw/exec',
 
+  /* Quiz Hall (10 Nov 2026), the school's quiz app for any subject: `site` is where a pupil sits the quiz; `backOffice` is
+     its Apps Script /exec (apps/quiz-hall/js/config.js backOfficeUrl), which the front page asks "is a quiz open for me?"
+     (pupil.now) to draw the Quiz card for a signed-in pupil. No secret: the back office checks every sign-in itself. The
+     open edition has no Quiz Hall, so no card. */
+  quizHall:{ site:'https://nlcsbiology.com/quiz-hall/',
+             backOffice:'https://script.google.com/macros/s/AKfycbwamfMr92H_S5DRXoGBkz6bJMTI7ohsLqKEIqgdYD6ZRI2gT5CZISoCZpAIIWt7N_sfUg/exec' },
+
   /* ── your record, top right ─────────────────────────────────
      After every test the Assessment Reflection System builds each student a page of their
      own — their scores, the topics they were weak on, what to revise next. That page sits

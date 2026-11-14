@@ -30,7 +30,7 @@
   var URL_ = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(String(CFG.submitUrl || '')) ? String(CFG.submitUrl) : '';
   var CID = String(CFG.googleClientId || '');
   var PAGE = ((/[?&]p=([a-z0-9-]{1,40})(?:&|$)/.exec(String(root.location.search)) || [])[1]) || 'eco-mini-ia';
-  var TITLES = { 'eco-mini-ia': 'Ecology mini IA: the model' };
+  var TITLES = { 'eco-mini-ia': 'Ecology mini IA, step by step' };
   var TITLE = TITLES[PAGE] || 'Biology model page';
   var LOOK = { type: 'standard', theme: 'filled_blue', size: 'large', text: 'signin_with', shape: 'pill', logo_alignment: 'left', width: 240, locale: 'en-GB' };
   var gate = doc.getElementById('mpg-gate'), page = doc.getElementById('mpg-page'), bar = doc.getElementById('mpg-bar'),
@@ -92,7 +92,8 @@
     if (+j.closes && +j.closes < end) end = +j.closes;
     S.hours = h;
     card(head('Private page') + '<p>You are signed in as <b>' + esc(j.email || '') + '</b>.</p>' +
-      '<p class="mpg-note"><b>Your ' + hoursWord(h) + ' start when you press Start.</b> If you start now, the page closes for you on <b>' + esc(when(end)) + '</b>.</p>' +
+      '<p class="mpg-note"><b>Your ' + hoursWord(h) + ' start when you press Start.</b> If you start now, the page closes for you on <b>' + esc(when(end)) + '</b>.' +
+      (+j.closes ? ' You can start until ' + esc(when(+j.closes)) + '.' : '') + '</p>' +
       rules(h) +
       '<div class="mpg-row"><button class="mpg-btn mpg-btn--solid" type="button" data-start>Start my ' + hoursWord(h) + '</button>' +
       '<button class="mpg-btn" type="button" data-out>Use another account</button></div>');
@@ -222,7 +223,7 @@
     if (!S.open) return;
     if (S.teacher) {
       bar.className = 'mpg-bar';
-      bar.innerHTML = '<span><b>Teacher view:</b> no time limit for you. A pupil has ' + esc(hoursWord(S.hours)) + ' from when they press Start.</span><span class="mpg-bar__hint">Copying is blocked for you too, as for the pupils.</span>';
+      bar.innerHTML = '<span><b>Teacher view:</b> no time limit for you. Each class has the hours and days its teacher chose on the teacher page.</span><span class="mpg-bar__hint">Copying is blocked for you too, as for the pupils.</span>';
       bar.hidden = false; return;
     }
     var left = S.ends - now();

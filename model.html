@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- A private model page (14 Nov 2026; Estate atlas, labs-script chapter, "🔐 Model pages"). It holds NO content: after a
+     Google sign-in it asks the labs script (action model.open), which checks the account and the pupil's hours from their
+     first visit, and only then sends the page, read from the teacher's own Drive. Never linked from another page, never
+     in sitemap.xml or robots.txt, kept out of search by the line below (tools/status.mjs §3g fails if any of that
+     changes). Scripts come only from this site, Google's sign-in and webR (R inside the page, pinned by its SHA-384 in
+     the import map below; the policy allows that one inline script by its own SHA-256). webR's worker needs
+     'unsafe-eval' (without it R never starts: measured 14 Nov 2026) and blob: (webR makes its worker from one, and the
+     model page's own script runs from one); no inline script but the import map can run. -->
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' blob: 'unsafe-eval' 'wasm-unsafe-eval' 'sha256-3MOhphlDR6TAAFMzj1YLg+qnnpeuudq7+aYQA21bu2U=' https://accounts.google.com/gsi/client https://webr.r-wasm.org; worker-src 'self' blob: https://webr.r-wasm.org; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; img-src 'self' data: blob: https://*.googleusercontent.com https://accounts.google.com; font-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com https://accounts.google.com/gsi/ https://webr.r-wasm.org https://repo.r-wasm.org; frame-src https://accounts.google.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#E8ECF1">
+<title>Biology model page</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🔐</text></svg>">
+<script type="importmap">{"integrity":{"https://webr.r-wasm.org/v0.6.0/webr.mjs":"sha384-DEuiwLy52yyyYmOMxE1CxAm94cx017U7Mre5rFsNSR8R6wLxAJ0V4KL1BLmLlMCn"}}</script>
+<script type="module" src="js/model-webr.js?v=1794384707"></script>
+<link rel="stylesheet" href="css/model.css?v=1794384707">
+</head>
+<body class="mpg-locked">
+
+<div class="mpg-wrap" id="mpg-gate">
+  <noscript><section class="mpg-card"><h2>This page needs JavaScript</h2><p>Turn JavaScript on, then reload the page.</p></section></noscript>
+</div>
+<div id="mpg-page" hidden></div>
+<div class="mpg-bar" id="mpg-bar" hidden></div>
+<div class="mpg-mark" id="mpg-mark" hidden></div>
+<div class="mpg-veil" id="mpg-veil" hidden><div class="mpg-veil__in"><p class="mpg-veil__t" id="mpg-veil-t">The page is hidden.</p><p class="mpg-veil__s" id="mpg-veil-s">Click here to continue reading.</p></div></div>
+
+<!-- Google's sign-in, in English on every computer (hl=en-GB) -->
+<script src="https://accounts.google.com/gsi/client?hl=en-GB" async defer></script>
+<script src="js/local.js?v=1794384707"></script>
+<script src="js/signin.js?v=1794384707"></script>
+<script src="js/model.js?v=1794384707"></script>
+</body>
+</html>

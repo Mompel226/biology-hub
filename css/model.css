@@ -1,0 +1,69 @@
+/* model.css — the shell of a private model page (model.html, 14 Nov 2026).
+   Only the shell's own parts: the sign-in and closed screens, the clock bar, the cover that hides the page, and the
+   name watermark. The model page brings its own stylesheet with it (injected by js/model.js after the sign-in).
+   Every class and id starts mpg-, so the model page's own styles never meet these. */
+:root { --mpg-page: #E8ECF1; --mpg-sheet: #FFFFFF; --mpg-ink: #0F172A; --mpg-ink-2: #475569; --mpg-line: #CBD5E1;
+        --mpg-ib: #1D4ED8; --mpg-ib-soft: #EFF6FF; --mpg-warn: #B45309; --mpg-warn-soft: #FFFBEB;
+        --mpg-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+body.mpg-locked { margin: 0; background: var(--mpg-page); color: var(--mpg-ink); font: 400 16px/1.6 var(--mpg-sans); }
+[hidden] { display: none !important; }
+
+/* the screens before the page: sign in, loading, not on the list, time is up, closed */
+.mpg-wrap { max-width: 640px; margin: 0 auto; padding: 7vh 16px 40px; }
+.mpg-card { background: var(--mpg-sheet); border: 1px solid var(--mpg-line); border-radius: 10px; padding: 28px 28px 24px;
+            box-shadow: 0 1px 2px rgba(15,23,42,.06); }
+.mpg-eyebrow { margin: 0 0 6px; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--mpg-ink-2); font-weight: 600; }
+.mpg-card h1 { margin: 0 0 4px; font-size: 1.45rem; line-height: 1.3; }
+.mpg-card h2 { margin: 18px 0 8px; font-size: 1.05rem; }
+.mpg-by { margin: 0 0 16px; color: var(--mpg-ink-2); font-size: .9rem; }
+.mpg-card p { margin: 0 0 10px; }
+.mpg-card ol { margin: 0 0 12px; padding-left: 22px; }
+.mpg-card li { margin: 0 0 6px; }
+.mpg-key { background: var(--mpg-ib-soft); border-radius: 4px; padding: 0 4px; font-weight: 600; }
+.mpg-note { background: var(--mpg-warn-soft); border-left: 4px solid var(--mpg-warn); border-radius: 4px; padding: 10px 12px; margin: 12px 0; }
+.mpg-muted { color: var(--mpg-ink-2); font-size: .9rem; }
+.mpg-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; min-height: 44px; }
+.mpg-btn { font: 600 .95rem/1 var(--mpg-sans); padding: 11px 18px; border-radius: 999px; border: 1px solid var(--mpg-ib);
+           background: var(--mpg-sheet); color: var(--mpg-ib); cursor: pointer; }
+.mpg-btn--solid { background: var(--mpg-ib); color: #fff; }
+.mpg-btn:focus-visible { outline: 3px solid #93C5FD; outline-offset: 2px; }
+.mpg-bar-load { height: 4px; border-radius: 2px; background: var(--mpg-line); overflow: hidden; margin-top: 16px; }
+.mpg-bar-load i { display: block; height: 100%; width: 40%; background: var(--mpg-ib); animation: mpg-slide 1.2s ease-in-out infinite; }
+@keyframes mpg-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) { .mpg-bar-load i { animation: none; width: 100%; opacity: .5; } }
+
+/* the page itself: no selecting, no dragging, no callout on a long press (the R boxes stay typable) */
+#mpg-page, #mpg-page * { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-user-drag: none; }
+#mpg-page textarea, #mpg-page input { -webkit-user-select: text; user-select: text; }
+body.mpg-open { padding-bottom: 44px; }
+
+/* the clock: how long the page stays open for this pupil */
+.mpg-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 2147482000; display: flex; flex-wrap: wrap; gap: 4px 14px;
+           align-items: center; justify-content: center; padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+           background: #0F172A; color: #F8FAFC; font: 500 .84rem/1.35 var(--mpg-sans); text-align: center; }
+.mpg-bar b { font-weight: 700; }
+.mpg-bar.mpg-bar--soon { background: #92400E; }
+.mpg-bar .mpg-bar__hint { color: #CBD5E1; font-weight: 400; }
+
+/* the name watermark over the whole page: faint, never in the way of a click */
+.mpg-mark { position: fixed; inset: 0; z-index: 2147481000; pointer-events: none; background-repeat: repeat; }
+
+/* the cover: the page is hidden while the window is not in use, while Shift and Command are held, and when printing */
+.mpg-veil { position: fixed; inset: 0; z-index: 2147483000; background: var(--mpg-page); display: grid; place-items: center;
+            cursor: pointer; padding: 20px; }
+.mpg-veil__in { max-width: 460px; text-align: center; background: var(--mpg-sheet); border: 1px solid var(--mpg-line);
+                border-radius: 10px; padding: 22px 24px; }
+.mpg-veil__t { margin: 0 0 6px; font-weight: 700; font-size: 1.1rem; }
+.mpg-veil__s { margin: 0; color: var(--mpg-ink-2); }
+
+/* printing gives a blank sheet */
+@media print {
+  body > * { display: none !important; }
+  body::after { content: "This page cannot be printed."; display: block; padding: 40px; font: 16px/1.5 sans-serif; }
+}
+@media (max-width: 520px) {
+  .mpg-wrap { padding-top: 4vh; }
+  .mpg-card { padding: 20px 16px 18px; }
+  .mpg-bar { font-size: .78rem; padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom)); }
+  .mpg-bar .mpg-bar__hint { display: none; }
+}

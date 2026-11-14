@@ -312,7 +312,7 @@ at the tracker there is nothing to re-point, ever.
 
 | What comes back | What the card says |
 |---|---|
-| on the list, has reflected | their name, and **My assessments · *r* of *n* reflected →** — *n* counts every assessment with a real score, reflected on or not, once each; *r* the reflections they finished |
+| on the list, has reflected | their name, and **My assessments · *r* of *n* reflected →** — *n* counts the tests they could reflect on (finished, unfinished, or held because they never finished or opened the reflection), once each, never an earlier year's score done without the reflection system (11 Nov 2026); *r* the reflections they finished |
 | has an unfinished reflection | **… · *k* unfinished** — counted apart, never added in. The card still links through, because the page says what is missing and why |
 | practice in a lab or Bio English, but no reflection yet | **My assessments · your practice →** — My assessments shows their practice too |
 | on the list, nothing recorded yet | their name, and *Your assessments start at your first reflection* — no link to an empty page |

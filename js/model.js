@@ -98,8 +98,8 @@
       '<button class="mpg-btn" type="button" data-out>Use another account</button></div>');
   }
   function screenNotList(j) {
-    card(head('Private page') + '<p>This account cannot open this page. You signed in as <b>' + esc(j.email || '') + '</b>.</p>' +
-      '<p>Use your school Google account. If this is your school account, ask your teacher.</p>' +
+    card(head('Private page') + '<p><b>This page is not open for you now.</b> You signed in as <b>' + esc(j.email || '') + '</b>.</p>' +
+      '<p>Your teacher opens it for your class: then it is a card on the Biology Hub. If you used another account, use your school Google account.</p>' +
       '<div class="mpg-row"><button class="mpg-btn mpg-btn--solid" type="button" data-out>Use another account</button></div>');
   }
   function screenOver(first, ends) {

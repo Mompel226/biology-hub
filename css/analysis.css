@@ -222,8 +222,11 @@ tr[class^="r--"] td:first-child{padding-left:14px}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
 .tools{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .how{margin-top:14px;border-top:1px solid var(--rule);padding-top:12px}
-.how ul{margin:8px 0 0;padding-left:18px;color:var(--chalk-dim);font-size:13.5px}
-.how li+li{margin-top:4px}
+.how summary{cursor:pointer}
+.how__list{margin:10px 0 0;display:grid;gap:6px;max-width:860px}
+.how__row{display:grid;grid-template-columns:150px 1fr;gap:4px 14px;padding:8px 12px;border-radius:6px;background:var(--ink-1)}
+.how__row dt{font-weight:600;font-size:13px;color:var(--chalk)}
+.how__row dd{margin:0;font-size:13.5px;line-height:1.55;color:var(--chalk-dim)}
 .empty{margin-top:16px;padding:16px;border:1px dashed var(--rule-2);border-radius:4px;color:var(--chalk-dim)}
 
 /* SVG ink: text wears text colours, never the series colour */
@@ -259,6 +262,8 @@ tbody tr:hover{background:var(--row-hover)}
 .gridw .g--on,.gridw tr.g--on td{background:var(--row-hover)}
 .glab{white-space:nowrap;cursor:default}
 .ccard td small{color:var(--chalk-mute)}
+.ccard__who{margin:8px 0 0;font-size:13px;color:var(--chalk-dim)}
+.ccard__who b{color:var(--chalk);font-weight:500}
 .gs{display:inline-block;min-width:24px;padding:1px 5px;border-radius:4px;font-weight:600;cursor:default}
 .gs--good{background:var(--st-good-bg);color:var(--st-good-ink)}
 .gs--mid{background:var(--st-mid-bg);color:var(--st-mid-ink)}
@@ -296,6 +301,7 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--rule);color:v
 
 /* ---- phones: the questions become an accordion; each answer opens under its own question ---- */
 @media (max-width:820px){
+  .how__row{grid-template-columns:1fr}
   .mast{grid-template-columns:1fr}
   .acct{justify-content:flex-start}
   .lede{display:none}

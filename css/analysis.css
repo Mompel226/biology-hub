@@ -291,6 +291,8 @@ footer{margin-top:28px;padding-top:14px;border-top:1px solid var(--rule);color:v
 
 /* ---- the real page's own pieces (not in the mock-up) ---- */
 .mast .back{margin:0 0 4px}
+/* the ways back (18 Nov 2026): ← Teacher page, when the teacher page sent its address, then ← Biology Hub */
+.mast .backs{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0 0 4px}.mast .backs .back{margin:0}.back[hidden]{display:none}
 .gsi-slot{min-height:44px;display:flex;align-items:center}
 .btn[disabled]{opacity:.5;cursor:not-allowed}
 .btn.is-busy{opacity:.7}

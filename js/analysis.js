@@ -753,6 +753,16 @@
     esc: esc, hbars: hbars, vbars: vbars, stacked: stacked, dots: dots, mixBar: mixBar, subMap: subMap, spark: spark, deltaBar: deltaBar,
     tableHtml: tableHtml, balancePanelHtml: balancePanelHtml
   };
+  /* ← Teacher page (18 Nov 2026): the teacher page's 📊 Analysis link carries that page's own /exec address and tab after
+     #teacher= (the labs script gives it only to a signed-in teacher). Only an Apps Script /exec address is taken, with no
+     more than ?page=<a tab>; anything else is no way back at all. It stays in this tab's address, never in storage. */
+  function teacherBack(hash) {
+    var m = /(?:^#|&)teacher=([^&]*)/.exec(String(hash == null ? '' : hash)), u = '';
+    if (!m) return '';
+    try { u = decodeURIComponent(m[1]); } catch (e) { return ''; }
+    return /^https:\/\/script\.google\.com\/(?:a\/macros\/[A-Za-z0-9.-]{1,80}\/|macros\/)s\/[\w-]{10,200}\/exec(?:\?page=[a-z]{1,20})?$/.test(u) ? u : '';
+  }
+  api.teacherBack = teacherBack;
   root.Analysis = api;
   if (typeof module === 'object' && module && module.exports) module.exports = api;
 
@@ -764,6 +774,8 @@
   var URL_ = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(String(CFG.analysisUrl || '')) ? String(CFG.analysisUrl) : '';
   var CID = String(CFG.googleClientId || '');
   var main = doc.getElementById('main'), acct = doc.getElementById('acct'), tip = doc.getElementById('tip'), viewersEl = doc.getElementById('viewers');
+  (function () { var b = doc.getElementById('backTP'), u = teacherBack(root.location ? root.location.hash : '');
+    if (b && u) { b.setAttribute('href', u); b.hidden = false; } })();
   var IDLE_MS = 20 * 60 * 1000;
   var S = { screen: '', D: null, me: '', tab: '', k: '', c: '', q: 'cover', own: false, table: {}, bEdit: false, bSame: false, preview: null, shared: false, openCls: '', howOpen: false,
             bMsg: '', bBad: false, bv: '', readAt: 0, viewers: 0, canBounds: false, busy: false, saving: false, flash: '', lastUse: Date.now() };

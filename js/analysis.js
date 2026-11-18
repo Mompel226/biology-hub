@@ -72,6 +72,14 @@
   function mean(a) { return a.length ? a.reduce(function (x, y) { return x + y; }, 0) / a.length : null; }
   function rnd(x) { return x === null || x === undefined || isNaN(x) ? '—' : String(Math.round(x)); }
   function pl(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one + 's')); }
+  /* how many assessments each pupil has (one paper per pupil per assessment): the fewest and the most, and the pupils */
+  function perPupil(rows) {
+    var by = {}; rows.forEach(function (r) { (by[r.p] = by[r.p] || {})[r.k] = 1; });
+    var ns = Object.keys(by).map(function (p) { return Object.keys(by[p]).length; });
+    return { n: ns.length, min: ns.length ? Math.min.apply(null, ns) : 0, max: ns.length ? Math.max.apply(null, ns) : 0 };
+  }
+  function perNum(per) { return per.min === per.max ? String(per.min) : per.min + '–' + per.max; }
+  function perTxt(per) { return perNum(per) + ' assessment' + (per.max === 1 ? '' : 's') + ' each'; }
   function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
   var MONTHS = 'JanFebMarAprMayJunJulAugSepOctNovDec';
   /* day first, as the tracker stores it ("22 Sep 2026"); never new Date(text), which reads the month first */
@@ -270,6 +278,7 @@
     var out = { rows: rows, counted: counted, kinds: k, keys: keys, ids: Object.keys(idSet), own: !!own, pupils: {} };
     rows.forEach(function (r) { out.pupils[r.p] = 1; });
     out.nPupils = Object.keys(out.pupils).length;
+    out.per = perPupil(rows);   /* Daniel, 18 Nov 2026: how many assessments each pupil has, apart from the papers in all */
 
     /* the mean: the mean of each paper's own percentage (the old tab averaged raw marks across papers with different totals) */
     var pcts = counted.map(pctOf).filter(function (x) { return x !== null; });
@@ -398,12 +407,13 @@
     var cl = {};
     counted.forEach(function (r) {
       var p = pctOf(r); if (p === null) return;
-      var x = cl[r.c] || (cl[r.c] = { l: String(r.c), p: [], cb: 0, tp: {} });
-      x.p.push(p);
+      var x = cl[r.c] || (cl[r.c] = { l: String(r.c), p: [], cb: 0, tp: {}, rs: [] });
+      x.p.push(p); x.rs.push(r);
       var g = gradeOf(p, boundsFor(D, r.a, preview).pcts); if (g === 'A*' || g === 'A' || g === 'B' || g === 'C') x.cb++;
       Object.keys(r.tp || {}).forEach(function (t) { var y = x.tp[t] || (x.tp[t] = [0, 0]), z = r.tp[t] || []; y[0] += (+z[0] || 0) + (+z[2] || 0); y[1] += (+z[1] || 0) + (+z[3] || 0); });
     });
-    out.classes = Object.keys(cl).sort().map(function (c) { var x = cl[c]; return { l: x.l, v: mean(x.p), n: x.p.length, cb: x.cb / x.p.length * 100, tp: x.tp }; });
+    out.classes = Object.keys(cl).sort().map(function (c) { var x = cl[c], pp = perPupil(x.rs); return { l: x.l, v: mean(x.p), n: x.p.length, np: pp.n, per: pp, cb: x.cb / x.p.length * 100, tp: x.tp }; });
+    out.nScoredPupils = perPupil(counted.filter(function (r) { return pctOf(r) !== null; })).n;
 
     /* girls and boys, by each class's gender (📊 B vs G) */
     var genderOf = function (r) { return D.genders[normCls(r.c)] || ''; };
@@ -864,8 +874,8 @@
         classes.map(function (c) { return '<option value="' + esc(c) + '"' + (c === S.c ? ' selected' : '') + '>' + esc(c) + '</option>'; }).join('') + '</select>' +
     '</section>' + (S.flash ? '<p class="partial" role="status">' + esc(S.flash) + '</p>' : '') +
     '<div class="kinds"><span class="cov">Data from <b>' + A.cov.withData.length + ' of ' + A.cov.classes.length + '</b> ' + (A.cov.classes.length === 1 ? 'class' : 'classes') +
-      (A.cov.missing.length ? ' <span class="miss">(' + esc(A.cov.missing.join(', ')) + ': no data yet)</span>' : '') + ' · ' + pl(A.nPupils, 'pupil') + ' · ' +
-      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> marked ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + (A.kinds.partly ? ' (' + A.kinds.partly + ' with totals typed by the teacher)' : '') + '</span>' +
+      (A.cov.missing.length ? ' <span class="miss">(' + esc(A.cov.missing.join(', ')) + ': no data yet)</span>' : '') + ' · ' + pl(A.nPupils, 'pupil') + (A.nPupils ? ' (' + perTxt(A.per) + ')' : '') + ' · ' +
+      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> marked ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + ' in all' + (A.kinds.partly ? ' (' + A.kinds.partly + ' with totals typed by the teacher)' : '') + '</span>' +
       (A.kinds.self ? '<button class="sw" role="switch" data-own aria-checked="' + S.own + '"><i></i>Include ' + A.kinds.self + ' paper' + (A.kinds.self === 1 ? '' : 's') + ' with only the pupils’ own marks</button>' : '') +
       '<span class="fresh"><span>Read ' + esc(when(S.readAt)) + (D.newest ? ' · newest data ' + esc(D.newest) : '') + '</span><button class="btn btn--sm' + (S.busy ? ' is-busy' : '') + '" data-fresh' + (S.busy ? ' disabled' : '') + '>Read again</button></span>' +
     '</div><section class="panel" id="panel"></section>';
@@ -966,7 +976,7 @@
         if (!vers.length) h += '<p class="tcap">This assessment is not in the 📦 Registry, so it has no grade boundaries of its own.</p>';
         if (S.bEdit && vers.length) ed = boundsEditor(fam, vers);
       }
-      fig = '<figure class="fig">' + bandLegend('grades') + vbars(gr, { w: side ? W - 410 : W, aria: 'Number of papers at each grade' }) + '<figcaption>Figure 1. Bar chart showing the number of papers at each grade (n = ' + pl(A.nScored, 'paper') + '). ' + boundsLine(A) + '</figcaption></figure>';
+      fig = '<figure class="fig">' + bandLegend('grades') + vbars(gr, { w: side ? W - 410 : W, aria: 'Number of papers at each grade' }) + '<figcaption>Figure 1. Bar chart showing the number of papers at each grade (n = ' + pl(A.nScored, 'paper') + (A.nScoredPupils ? ' from ' + pl(A.nScoredPupils, 'pupil') : '') + '). ' + boundsLine(A) + '</figcaption></figure>';
       tab = tableHtml('Table 1. Data showing the number and percentage of papers at each grade.', ['Grade', 'Papers', '% of papers'],
         gr.map(function (g) { return ['<span class="pchip pchip--' + gradeBand(g.l).k + '">' + g.l + '</span>', g.v, A.nScored ? Math.round(g.v / A.nScored * 100) + ' %' : '—']; }), [0, 1, 1], gr.map(function (g) { return gradeBand(g.l).k; }));
       h += side ? '<div class="bwrap">' + fig + ed + '</div>' : ed + (showT ? tab : fig);
@@ -1004,7 +1014,7 @@
       }
     }
     else if (id === 'classes') {
-      var cr = A.classes.map(function (c) { return { l: 'Class ' + c.l, sub: c.n + ' paper' + (c.n === 1 ? '' : 's') + (c.n < 5 ? ' · few papers, read with care' : ''), v: c.v, col: bandCol(c.v), tip: '<b>Class ' + esc(c.l) + '</b><br>mean ' + rnd(c.v) + ' % · ' + rnd(c.cb) + ' % at C or better<br>' + c.n + ' papers' }; })
+      var cr = A.classes.map(function (c) { return { l: 'Class ' + c.l, sub: pl(c.np, 'pupil') + ' · ' + perTxt(c.per) + (c.n < 5 ? ' · few papers, read with care' : ''), v: c.v, col: bandCol(c.v), tip: '<b>Class ' + esc(c.l) + '</b><br>mean ' + rnd(c.v) + ' % · ' + rnd(c.cb) + ' % at C or better<br>' + pl(c.np, 'pupil') + ', ' + perTxt(c.per) + ': ' + pl(c.n, 'paper') + ' in all' }; })
         .concat(A.cov.missing.map(function (c) { return { l: 'Class ' + c, sub: 'no data yet', v: 0, text: '—', tip: '<b>Class ' + esc(c) + '</b><br>no marked papers yet' }; }));
       h = A.classes.length === 1 ? '<p class="answer">Only class ' + esc(A.classes[0].l) + ' has marked papers here: mean <b>' + rnd(A.classes[0].v) + ' %</b>. There is nothing to compare it with yet.' + waitNote + '</p>'
         : '<p class="answer">Class means run from <b>' + rnd(Math.min.apply(null, A.classes.map(function (c) { return c.v; }))) + ' %</b> to <b>' + rnd(Math.max.apply(null, A.classes.map(function (c) { return c.v; }))) + ' %</b>.' + waitNote + '</p>';
@@ -1017,9 +1027,10 @@
             var v = x[0] / x[1] * 100; return '<td class="h h--' + band(v).k + '">' + Math.round(v) + '</td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div><p class="tcap">Table 1. Data showing the percentage of marks scored in each topic by each class, each cell in its band (75 % or more, 50–74 %, below 50 %).</p>' : '');
-      tab = tableHtml('Table 1. Data showing each class’s mean percentage and the share at grade C or better.', ['Class', 'Papers', 'Mean %', 'C or better'],
-        A.classes.map(function (c) { return [esc(c.l), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
+      tab = tableHtml('Table 1. Data showing, for each class, its pupils, how many assessments each pupil has, the papers in all (one for each pupil in each assessment), the mean percentage and the share at grade C or better.', ['Class', 'Pupils', 'Assessments each', 'Papers in all', 'Mean %', 'C or better'],
+        A.classes.map(function (c) { return [esc(c.l), c.np, perNum(c.per), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
       h += (showT ? tab : fig) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.',
+        '“21 pupils · 1 assessment each” counts each pupil once and says how many assessments each of them has. “Papers in all” adds them up: one paper for each pupil in each assessment, so 21 pupils with 2 assessments each are 42 papers in all.',
         'In Year 11, 10A–10G are the same pupils a year earlier, so you can follow each class from Year 10 to Year 11. Each class is held only to its own year’s assessments.',
         'The line above the chart says, a year at a time, what each class has done and what it has not done yet. A class has done an assessment when at least one of its pupils has a reflection on it. A class with no reflection yet is named from the class letters the tracker has (no letter is added that the tracker has never seen).', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'Not in the old tabs.']);
     }
@@ -1118,7 +1129,7 @@
             .concat(ERR.slice(0, 4).map(function (e, i) { return { l: e.e + ' ' + e.l + ' (share of reasons)', g: g.n ? g.err[i] : null, b: b.n ? b.err[i] : null }; })), { w: W, aria: 'Girls and boys compared' }) +
           '<figcaption>Figure 1. Dot plot showing girls’ and boys’ results and four of their reasons for lost marks.</figcaption></figure>';
         tab = tableHtml('Table 1. Data showing girls’ and boys’ results side by side.', ['', 'Girls', 'Boys', 'Difference (girls − boys)'],
-          [['Papers', g.n, b.n, ''], ['Marked papers', g.nc, b.nc, ''], ['Mean score', chip(g.mean), chip(b.mean), dp(g.mean, b.mean)], ['Grade A* or A', pc(g.top), pc(b.top), dp(g.top, b.top)],
+          [['Papers in all', g.n, b.n, ''], ['Marked papers in all', g.nc, b.nc, ''], ['Mean score', chip(g.mean), chip(b.mean), dp(g.mean, b.mean)], ['Grade A* or A', pc(g.top), pc(b.top), dp(g.top, b.top)],
            ['Below grade C', pc(g.low), pc(b.low), dp(g.low, b.low)], ['English level (1–4)', f1(g.eng), f1(b.eng), d1(g.eng, b.eng)], ['Confidence (1–5)', f1(g.conf), f1(b.conf), d1(g.conf, b.conf)]], [0, 1, 1, 1]);
         h += (showT ? tab : fig);
       }
@@ -1188,9 +1199,9 @@
       } else out = [k(bt.mapped, bt.mapped === 1 ? 'paper mapped' : 'papers mapped'), k(bt.flagged, 'to look at', bt.flagged > 0)];
     }
     else if (id === 'cover') out = [k(A.cov.withData.length + ' / ' + A.cov.classes.length, 'classes with data', A.cov.missing.length > 0), k(A.nPupils, A.nPupils === 1 ? 'pupil' : 'pupils'),
-      k(A.kinds.teacher + A.kinds.partly, A.kinds.teacher + A.kinds.partly === 1 ? 'marked paper' : 'marked papers')].concat(A.kinds.self ? [k(A.kinds.self, 'with only the pupils’ own marks', true)] : []);
+      k(A.kinds.teacher + A.kinds.partly, A.kinds.teacher + A.kinds.partly === 1 ? 'marked paper in all' : 'marked papers in all')].concat(A.kinds.self ? [k(A.kinds.self, 'with only the pupils’ own marks', true)] : []);
     else if (!A.rows.length || (SCORE_Q[id] && !A.counted.length)) out = [];
-    else if (id === 'grades') out = [k(rnd(A.meanPct) + ' %', 'mean score', false, A.meanPct), k(rnd(A.cOrBetter) + ' %', 'at grade C or better'), k(A.nScored, A.nScored === 1 ? 'paper' : 'papers')];
+    else if (id === 'grades') out = [k(rnd(A.meanPct) + ' %', 'mean score', false, A.meanPct), k(rnd(A.cOrBetter) + ' %', 'at grade C or better'), k(A.nScored, A.nScored === 1 ? 'paper in all' : 'papers in all')];
     else if (id === 'topics' && A.topics.length > 1) out = [k(rnd(A.topics[0].v) + ' %', 'hardest: ' + A.topics[0].l, false, A.topics[0].v), k(rnd(A.topics[A.topics.length - 1].v) + ' %', 'easiest: ' + A.topics[A.topics.length - 1].l, false, A.topics[A.topics.length - 1].v)];
     else if (id === 'progress' && A.keys.length > 1) {
       var up = A.progress.filter(function (p) { return p.delta !== null && p.delta > 2; }).length, dn = A.progress.filter(function (p) { return p.delta !== null && p.delta < -2; }).length;

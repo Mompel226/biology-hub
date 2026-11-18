@@ -145,21 +145,55 @@
   }
 
   /* Which classes have data, assessment by assessment (Daniel's rule, 1 Oct: incomplete data is shown, never hidden).
-     The classes are the ones the tracker has seen in this year group, with the pupils seen in each. */
+     The classes are the ones the tracker has seen in this year group, with the pupils seen in each.
+     A class is held only to its own year's assessments (Daniel, 18 Nov 2026): a Year 11 tab holds 10A–10G beside
+     11A–11G, the same pupils a year apart, so 11E is never asked for a Year 10 test (they sat it as 10E), and a gap from
+     an earlier year is worded as one ("When they were in Year 10: 10E did not do …"). A cell with data always counts.
+     A class's year is in its name ("10E"); an assessment's is its 📦 Registry year group, else that of the classes that
+     reflected on it. */
+  function clsYear(c) { var m = /^(\d{1,2})(?!\d)/.exec(String(c == null ? '' : c).trim()); return m ? +m[1] : 0; }
+  function famYear(D, k, rows) {
+    var f = D.fams[k], n = {}, best = 0;
+    if (f && f.yg) return f.yg;
+    rows.forEach(function (r) { var y = r.k === k ? clsYear(r.c) : 0; if (y) { n[y] = (n[y] || 0) + 1; if (!best || n[y] > n[best]) best = y; } });
+    return best;
+  }
   function coverage(D, tab, rows, classes, keys, own) {
-    var roster = D.classes[tab] || {}, cells = {}, has = {};
-    classes.forEach(function (c) { cells[c] = {}; keys.forEach(function (k) { cells[c][k] = { roster: +roster[c] || 0, marked: 0, own: 0 }; }); });
+    var roster = D.classes[tab] || {}, cells = {}, has = {}, ky = {}, now = yearOfTab(D, tab) || 0;
+    keys.forEach(function (k) { ky[k] = famYear(D, k, rows); });
+    classes.forEach(function (c) { cells[c] = {}; keys.forEach(function (k) { cells[c][k] = { roster: +roster[c] || 0, marked: 0, own: 0, y: ky[k], off: false }; }); });
     rows.forEach(function (r) { var x = cells[r.c] && cells[r.c][r.k]; if (!x) return; if (kindOf(r.src) === 'self') x.own++; else x.marked++; });
+    classes.forEach(function (c) { var cy = clsYear(c); keys.forEach(function (k) { var x = cells[c][k]; x.off = !!(cy && x.y && cy !== x.y && !x.marked && !x.own); }); });
+    var held = classes.filter(function (c) { return keys.some(function (k) { return !cells[c][k].off; }); });
+    if (held.length) classes = held;
     classes.forEach(function (c) { has[c] = keys.some(function (k) { var x = cells[c][k]; return x.marked + (own ? x.own : 0) > 0; }); });
-    var withData = classes.filter(function (c) { return has[c]; }), gaps = [];
+    var withData = classes.filter(function (c) { return has[c]; }), missing = classes.filter(function (c) { return !has[c]; }), notes = [];
+    function yearNote(c, y, t) { var past = !!(now && y && y < now); return { y: y, past: past, t: typeof t === 'function' ? t(past) : t }; }
     withData.forEach(function (c) {
       keys.forEach(function (k) {
         var x = cells[c][k], nm = D.fams[k] ? D.fams[k].name : k;
-        if (!x.marked && !x.own) gaps.push(c + ' has not started ' + nm);
-        else if (!x.marked && !own) gaps.push(c + '’s ' + nm + ' is not marked yet');
+        if (x.off) return;
+        if (!x.marked && !x.own) notes.push(yearNote(c, clsYear(c) || x.y, function (past) { return past ? c + ' did not do ' + nm : c + ' has not done ' + nm + ' yet'; }));
+        else if (!x.marked && !own) notes.push(yearNote(c, clsYear(c) || x.y, c + '’s ' + nm + ' is not marked yet'));
       });
     });
-    return { cells: cells, classes: classes, keys: keys, has: has, withData: withData, missing: classes.filter(function (c) { return !has[c]; }), gaps: gaps, roster: roster };
+    return { cells: cells, classes: classes, keys: keys, has: has, withData: withData, missing: missing, notes: notes, now: now, roster: roster,
+             missNotes: missing.map(function (c) { return yearNote(c, clsYear(c), function (past) { return c + ' has no data here' + (past ? '' : ' yet'); }); }) };
+  }
+  /* the gaps in words, a year at a time (Daniel, 18 Nov 2026): what a class did not do when it was in an earlier year,
+     then what it has not done yet this year. `withMissing`: the classes with no data at all come first in their year. */
+  function gapText(cov, withMissing) {
+    var groups = {}, order = [];
+    (withMissing ? cov.missNotes : []).concat(cov.notes).forEach(function (n) {
+      var g = n.past ? n.y : 0;
+      if (!groups[g]) { groups[g] = []; order.push(g); }
+      groups[g].push(n.t);
+    });
+    order.sort(function (a, b) { return (a || 99) - (b || 99); });
+    var anyPast = order.some(function (g) { return g > 0; });
+    return order.map(function (g) {
+      return (g ? 'When they were in Year ' + g + ': ' : anyPast && cov.now && cov.now <= 11 ? 'Now, in Year ' + cov.now + ': ' : '') + groups[g].join('; ');
+    }).join('. ');
   }
 
   function analyse(D, rows, own, preview) {
@@ -563,7 +597,7 @@
   var api = {
     GRADES: GRADES, DEFAULT_PCTS: DEFAULT_PCTS, BOUND_GRADES: BOUND_GRADES, ERR: ERR, TIMING: TIMING, TOOLS: TOOLS,
     kindOf: kindOf, gradeOf: gradeOf, pctOf: pctOf, parseDay: parseDay, errorCounts: errorCounts, normCls: normCls,
-    prepare: prepare, yearOfTab: yearOfTab, famsOfTab: famsOfTab, gradOf: gradOf, boundsFor: boundsFor, coverage: coverage, analyse: analyse,
+    prepare: prepare, yearOfTab: yearOfTab, famsOfTab: famsOfTab, gradOf: gradOf, boundsFor: boundsFor, coverage: coverage, gapText: gapText, clsYear: clsYear, analyse: analyse,
     esc: esc, hbars: hbars, vbars: vbars, stacked: stacked, dots: dots, mixBar: mixBar, subMap: subMap, spark: spark, deltaBar: deltaBar,
     tableHtml: tableHtml, balancePanelHtml: balancePanelHtml
   };
@@ -822,8 +856,8 @@
     var waitNote = !A.kinds.self ? '' : A.own ? ' This includes ' + pl(A.kinds.self, 'paper') + ' with only the pupils’ own marks.' : ' ⏳ ' + pl(A.kinds.self, 'paper') + ' with only the pupils’ own marks ' + (A.kinds.self === 1 ? 'is' : 'are') + ' left out.';
     var countedRule = 'Counts the papers a teacher marked, and the papers where the teacher typed the totals and the pupil gave each question’s marks: both are trusted. ' +
       (A.own ? 'The switch is ON, so papers with only the pupil’s own marks are counted too.' : 'Papers with only the pupil’s own marks are left out (“⏳ not yet marked”) unless you turn on the switch above.');
-    var pbits = (A.cov.missing.length ? [A.cov.missing.join(', ') + (A.cov.missing.length === 1 ? ' has' : ' have') + ' no data here yet'] : []).concat(A.cov.gaps);
-    var partial = pbits.length && id !== 'cover' && id !== 'balance' ? '<p class="partial">Not complete: ' + esc(pbits.join('; ')) + '.</p>' : '';
+    var gaps = gapText(A.cov, true);
+    var partial = gaps && id !== 'cover' && id !== 'balance' ? '<p class="partial">Not complete. ' + esc(gaps) + '.</p>' : '';
     var emptyMsg = '';
     if (!A.rows.length && id !== 'cover' && id !== 'balance') emptyMsg = '<p class="empty">Nobody here has finished a reflection yet, so there is nothing to show. “Which classes have data yet?” shows who has.</p>';
     else if (SCORE_Q[id] && !A.counted.length) emptyMsg = '<p class="empty">No marked papers here yet.' +
@@ -833,7 +867,7 @@
       var cv = A.cov, ownTxt = A.own ? ' (their own marks count: the switch is on)' : '';
       h = '<p class="answer"><b>' + cv.withData.length + ' of ' + cv.classes.length + '</b> ' + (cv.classes.length === 1 ? 'class has' : 'classes have') + ' data' + (S.k ? ' for ' + esc(famName(S.k)) : '') + ownTxt + '.' +
         (cv.missing.length ? ' <b>' + esc(cv.missing.join(', ')) + '</b> ' + (cv.missing.length === 1 ? 'has' : 'have') + ' none yet, so every number on this page is for the other classes only.' : '') +
-        (cv.gaps.length ? ' Not complete yet: ' + esc(cv.gaps.join('; ')) + '.' : cv.missing.length || !cv.classes.length ? '' : ' Every class is in.') + '</p>';
+        (cv.notes.length ? ' Not complete yet. ' + esc(gapText(cv, false)) + '.' : cv.missing.length || !cv.classes.length ? '' : ' Every class is in.') + '</p>';
       if (!cv.keys.length) h += '<p class="empty">No assessment in this year group has a reflection yet.</p>';
       else {
         h += '<div class="legend" style="margin-top:14px"><span><i style="background:var(--s1)"></i>marked by a teacher</span><span><i style="background:var(--s2)"></i>only the pupils’ own marks</span><span><i style="background:var(--track)"></i>no reflection yet</span></div>';
@@ -842,6 +876,7 @@
           cv.classes.map(function (c) {
             return ['<b>' + esc(c) + '</b>' + (cv.has[c] ? '' : ' <span class="few">no data yet</span>'), +cv.roster[c] || '—'].concat(cv.keys.map(function (k) {
               var x = cv.cells[c][k], n = x.roster || Math.max(1, x.marked + x.own), none = Math.max(0, x.roster - x.marked - x.own);
+              if (x.off) return '<div class="cell"><small class="few">Year ' + x.y + ' only</small></div>';
               if (!x.marked && !x.own) return '<div class="cell"><div class="cell__bar"></div><small>not started</small></div>';
               return '<div class="cell"><div class="cell__bar">' + (x.marked ? '<span style="width:' + (x.marked / n * 100).toFixed(1) + '%;background:var(--s1)"></span>' : '') +
                 (x.own ? '<span style="width:' + (x.own / n * 100).toFixed(1) + '%;background:var(--s2)"></span>' : '') + '</div><small>' + x.marked + ' marked' + (x.own ? ' · ' + x.own + ' own marks' : '') + (none ? ' · ' + none + ' none' : '') + '</small></div>';
@@ -849,6 +884,8 @@
           }), [0, 1].concat(cv.keys.map(function () { return 0; })));
       }
       h += how(['The classes are the ones the tracker has seen for this year group, and the pupils seen in each, from the tracker alone. A class that has done one assessment but not the next shows as “not started”. An assessment appears once one pupil of the year group has reflected on it.',
+        'Each class is held only to its own year’s assessments. In Year 11, 10A–10G are the same pupils a year earlier: they are held to the Year 10 assessments, 11A–11G to the Year 11 ones (“Year 10 only” in the table). The year of an assessment comes from the 📦 Registry; the year of a class from its name.',
+        '“Did not do” and “has not done” mean that no pupil of the class has a reflection on it in the tracker yet.',
         'A pupil appears here once they finish a reflection. “Marked” means a teacher marked the paper, or typed its totals.',
         'Every other answer on this page says how many classes it rests on, so a number from two classes is never read as the whole year.',
         'Not in the old tabs: they could not tell a missing class from a class that does not exist.']);
@@ -916,7 +953,8 @@
         }).join('') + '</tbody></table></div><p class="tcap">Table 1. Data showing the percentage of marks scored in each topic by each class, each cell in its band (75 % or more, 50–74 %, below 50 %).</p>' : '');
       tab = tableHtml('Table 1. Data showing each class’s mean percentage and the share at grade C or better.', ['Class', 'Papers', 'Mean %', 'C or better'],
         A.classes.map(function (c) { return [esc(c.l), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
-      h += (showT ? tab : fig) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'Not in the old tabs.']);
+      h += (showT ? tab : fig) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.',
+        'In Year 11, 10A–10G are the same pupils a year earlier, so you can follow each class from Year 10 to Year 11. Each class is held only to its own year’s assessments.', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'Not in the old tabs.']);
     }
     else if (id === 'sections') {
       var sr = A.sections.map(function (s) { return { l: s.l, v: s.v, col: bandCol(s.v), tip: '<b>' + esc(s.l) + '</b><br>mean ' + rnd(s.v) + ' % (' + s.n + ' papers)' }; });
@@ -1031,7 +1069,7 @@
     if (id !== 'cover' && !A.rows.length) return 'No reflections yet';
     if (SCORE_Q[id] && !A.counted.length) return 'No marked papers yet';
     switch (id) {
-      case 'cover': return A.cov.withData.length + ' of ' + pl(A.cov.classes.length, 'class', 'classes') + (A.cov.missing.length ? ' · ' + A.cov.missing.join(', ') + ' none yet' : A.cov.gaps.length ? ' · ' + A.cov.gaps.length + ' gap' + (A.cov.gaps.length > 1 ? 's' : '') : ' · all in');
+      case 'cover': return A.cov.withData.length + ' of ' + pl(A.cov.classes.length, 'class', 'classes') + (A.cov.missing.length ? ' · ' + A.cov.missing.join(', ') + ' none yet' : A.cov.notes.length ? ' · ' + A.cov.notes.length + ' gap' + (A.cov.notes.length > 1 ? 's' : '') : ' · all in');
       case 'grades': return 'Mean ' + rnd(A.meanPct) + ' % · ' + rnd(A.cOrBetter) + ' % at C or better';
       case 'topics': return A.topics.length ? 'Hardest: ' + A.topics[0].l.replace(/^\d+ /, '') + ', ' + rnd(A.topics[0].v) + ' %' : 'No topic marks yet';
       case 'progress':

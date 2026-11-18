@@ -186,7 +186,7 @@ window.HUB_LOCAL = {
      the Assessment system for a teacher in teacher mode. Everything else goes in the row of four
      beneath, under `rowLabel`, and `below` holds the door out of NLCS (Learn R). */
   entry: {
-    crumb:'Biology Hub',
+    crumb:'Back to Biology Hub',   /* the button on each section's page (18 Nov 2026: a button, as on every site) */
     eyebrow:'NLCS Jeju · Biology',
     title:'Biology <em>Hub</em>',
     lede:'Revise the course, learn to write answers that score, and learn to write up a practical. Then four doors to what Biology at NLCS Jeju offers beyond the curriculum.',

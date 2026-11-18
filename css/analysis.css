@@ -249,6 +249,35 @@ tbody tr:hover{background:var(--row-hover)}
 .nym{color:var(--warn-ink);font-size:12.5px}
 .heat td.h{text-align:center;font-variant-numeric:tabular-nums;min-width:52px}
 .heat th.n{text-align:center}   /* the class names sit over their numbers (Daniel, 18 Nov 2026) */
+/* which class has data, from which assessment (Daniel, 18 Nov 2026): one row per assessment, one column per class */
+.grid{margin:0 2px 12px}
+.grid summary{cursor:pointer;font:500 10.5px/1.6 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-mute)}
+.gridw{margin-top:6px}
+.gridw table{width:auto;min-width:100%}
+.gridw th.g,.gridw td.g{text-align:center;padding:5px 6px;min-width:38px}
+.gridw th.g small{display:block;font:400 10px/1.2 var(--mono);color:var(--chalk-mute);text-transform:none;letter-spacing:0}
+.gridw .g--on,.gridw tr.g--on td{background:var(--row-hover)}
+.glab{white-space:nowrap;cursor:default}
+.ccard td small{color:var(--chalk-mute)}
+.gs{display:inline-block;min-width:24px;padding:1px 5px;border-radius:4px;font-weight:600;cursor:default}
+.gs--good{background:var(--st-good-bg);color:var(--st-good-ink)}
+.gs--mid{background:var(--st-mid-bg);color:var(--st-mid-ink)}
+.gs--low{background:var(--st-low-bg);color:var(--st-low-ink)}
+.gs--none,.pchip--none{background:var(--track);color:var(--chalk-dim)}
+.gs--off{color:var(--chalk-mute);font-weight:400}
+/* "How do the classes compare?": the switch, a clickable class, and its card */
+.share{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin-top:14px}
+.share__l{font-size:13px;color:var(--chalk-dim)}
+.share .tcap{flex-basis:100%;margin:2px 0 0}
+.hit[data-cls]{cursor:pointer}
+.hit[data-cls]:focus-visible{outline:2px solid var(--cyan);outline-offset:-2px}
+.lnk{padding:0;border:0;background:none;color:var(--chalk);font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.ccard{margin-top:14px;padding:12px 14px;border:1px solid var(--fig-edge);border-radius:10px;background:var(--tw-bg)}
+.ccard__head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ccard__head p{margin:0;font-size:13.5px;color:var(--chalk-dim)}
+.ccard__head b{color:var(--chalk)}
+.ccard .pchip{text-align:left;min-width:64px}
+.wrapc{white-space:normal}
 
 .tip{position:fixed;z-index:30;pointer-events:none;max-width:260px;padding:8px 10px;border:1px solid var(--rule-2);border-radius:4px;background:var(--tip-bg);color:var(--chalk);font-size:12.5px;line-height:1.45;box-shadow:0 8px 24px var(--shadow)}
 .tip b{font-weight:600}

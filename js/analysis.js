@@ -267,6 +267,67 @@
     if (!cov.classes.length || !cov.keys.length) return '';
     return (cov.notes.length || cov.missNotes.length ? 'Not complete. ' : 'Complete. ') + yearText(cov, true, true);
   }
+  /* The assessments every class of a year did (Daniel, 18 Nov 2026: a switch to compare the classes only on the
+     assessments they all have, or on all of them). A year's classes are its classes with data; each is held only to its
+     own year's assessments, so 10A–10G share Year 10 ones and 11A–11G Year 11 ones. Gives the shared assessments by year
+     and a test for a paper. */
+  function sharedKeys(cov, own) {
+    var by = {}, years = {};
+    cov.withData.forEach(function (c) { (years[clsYear(c)] = years[clsYear(c)] || []).push(c); });
+    Object.keys(years).forEach(function (y) {
+      by[y] = cov.keys.filter(function (k) { return years[y].every(function (c) { var x = cov.cells[c][k]; return !x.off && x.marked + (own ? x.own : 0) > 0; }); });
+    });
+    return { by: by, has: function (r) { var ks = by[clsYear(r.c)]; return !!ks && ks.indexOf(r.k) >= 0; } };
+  }
+  /* One class's assessments, for the card a click on a class opens (Daniel, 18 Nov 2026: "a tick mark, a cross or a wave
+     if all students have done it, most …, some … or none"). The class goes with its same-letter classes (10A and 11A are
+     the same pupils a year apart). Every assessment of the year group is listed: the ones with a reflection and the ones
+     the 📦 Registry has for it. For each, how many of the group's pupils reflected on it: ✓ all, ≈ most (half or more),
+     ~ some, ✗ none, out of the pupils the tracker has seen in the group. */
+  var STATUS = { all: { sym: '✓', w: 'all', k: 'good' }, most: { sym: '≈', w: 'most', k: 'mid' }, some: { sym: '~', w: 'some', k: 'low' }, none: { sym: '✗', w: 'none', k: 'low' } };
+  function classCard(D, tab, cls) {
+    var rows = D.rows.filter(function (r) { return r.t === tab; }), sx = clsYear(cls) && sfxOf(cls), now = yearOfTab(D, tab) || 0;
+    var inG = function (c) { return c === cls || !!(sx && clsYear(c) && sfxOf(c) === sx); };
+    var gRows = rows.filter(function (r) { return inG(r.c); }), pupils = {}, group = {};
+    gRows.forEach(function (r) { pupils[r.p] = 1; group[r.c] = 1; });
+    group[cls] = 1;
+    var N = Object.keys(pupils).length, grad = +String(tab).slice(-4), keys = famsOfTab(D, tab).map(function (f) { return f.key; }), extra = {};
+    Object.keys(D.reg).forEach(function (id) {
+      var e = D.reg[id]; if (gradOf(e.ay, +e.yg) !== grad) return;
+      var k = famKey(D, id); if (keys.indexOf(k) < 0) { keys.push(k); extra[k] = e; }
+    });
+    var items = keys.map(function (k) {
+      var f = D.fams[k], e = extra[k], y = (f ? famYear(D, k, rows) : 0) || (e ? +e.yg || 0 : 0), did = {}, marked = {};
+      gRows.forEach(function (r) { if (r.k !== k) return; did[r.p] = 1; if (kindOf(r.src) !== 'self') marked[r.p] = 1; });
+      var n = Object.keys(did).length, m = Object.keys(marked).length;
+      var st = !n || !N ? 'none' : n === N ? 'all' : n * 2 >= N ? 'most' : 'some';
+      var as = Object.keys(group).filter(function (c) { return clsYear(c) === y; })[0] || (sx && y ? y + sx : '');
+      return { k: k, name: f ? f.name : e ? String(e.name || k) : String(k), short: f ? f.short : e ? String(e.label || e.name || k) : String(k), y: y, as: as, did: n, own: n - m, status: st,
+               later: !n && !!(y && now && y >= now), day: f ? f.day : 0 };
+    }).sort(function (a, b) { return (a.y || 99) - (b.y || 99) || (a.day || 9e15) - (b.day || 9e15) || a.name.localeCompare(b.name); });
+    return { cls: cls, group: Object.keys(group).sort(function (a, b) { return a.localeCompare(b, undefined, { numeric: true }); }), N: N, per: perPupil(gRows), items: items };
+  }
+  /* Which class has data, from which assessment (Daniel, 18 Nov 2026: "all of the names of the classes, and then a tick or
+     a wave or an X … next to the initial fields"): every class of the year group (with no data too) against every
+     assessment of it, each cell its class card's ✓ ≈ ~ ✗, or "·" where the assessment is another year's (11A beside a Year
+     10 test: those pupils sat it as 10A). `reflected`: false for an assessment no pupil of the year group reflected on yet. */
+  function classGrid(D, tab, classes) {
+    var cards = {}, byK = {};
+    classes.forEach(function (c) { cards[c] = classCard(D, tab, c); byK[c] = {}; cards[c].items.forEach(function (it) { byK[c][it.k] = it; }); });
+    var first = classes.length ? cards[classes[0]].items : [];
+    var rows = first.map(function (it) {
+      var cells = {}, any = false;
+      classes.forEach(function (c) {
+        var x = byK[c][it.k], cy = clsYear(c);
+        cells[c] = cy && x.y && cy !== x.y ? { off: true, as: x.as } : { status: x.status, did: x.did, N: cards[c].N, own: x.own, later: x.later };
+        if (x.did) any = true;
+      });
+      return { k: it.k, name: it.name, short: it.short, y: it.y, later: it.later, reflected: any || !!D.fams[it.k], cells: cells };
+    });
+    /* an assessment with no class of its year here (Year 9 tests in a Year 10 tab with no 9 class): named apart, not a row of "·" */
+    var away = rows.filter(function (r) { return classes.every(function (c) { return r.cells[c].off; }); });
+    return { classes: classes, N: classes.map(function (c) { return cards[c].N; }), rows: rows.filter(function (r) { return away.indexOf(r) < 0; }), away: away };
+  }
 
   function analyse(D, rows, own, preview) {
     function counts(r) { return own || kindOf(r.src) !== 'self'; }
@@ -279,6 +340,10 @@
     rows.forEach(function (r) { out.pupils[r.p] = 1; });
     out.nPupils = Object.keys(out.pupils).length;
     out.per = perPupil(rows);   /* Daniel, 18 Nov 2026: how many assessments each pupil has, apart from the papers in all */
+    /* … and how many assessments the papers in all come from */
+    var famsOf = function (rs) { var o = {}; rs.forEach(function (r) { o[r.k] = 1; }); return Object.keys(o).length; };
+    out.famsMarked = famsOf(rows.filter(function (r) { return kindOf(r.src) !== 'self'; }));
+    out.famsScored = famsOf(counted.filter(function (r) { return pctOf(r) !== null; }));
 
     /* the mean: the mean of each paper's own percentage (the old tab averaged raw marks across papers with different totals) */
     var pcts = counted.map(pctOf).filter(function (x) { return x !== null; });
@@ -412,7 +477,7 @@
       var g = gradeOf(p, boundsFor(D, r.a, preview).pcts); if (g === 'A*' || g === 'A' || g === 'B' || g === 'C') x.cb++;
       Object.keys(r.tp || {}).forEach(function (t) { var y = x.tp[t] || (x.tp[t] = [0, 0]), z = r.tp[t] || []; y[0] += (+z[0] || 0) + (+z[2] || 0); y[1] += (+z[1] || 0) + (+z[3] || 0); });
     });
-    out.classes = Object.keys(cl).sort().map(function (c) { var x = cl[c], pp = perPupil(x.rs); return { l: x.l, v: mean(x.p), n: x.p.length, np: pp.n, per: pp, cb: x.cb / x.p.length * 100, tp: x.tp }; });
+    out.classes = Object.keys(cl).sort().map(function (c) { var x = cl[c], pp = perPupil(x.rs); return { l: x.l, v: mean(x.p), n: x.p.length, np: pp.n, per: pp, nf: famsOf(x.rs), cb: x.cb / x.p.length * 100, tp: x.tp }; });
     out.nScoredPupils = perPupil(counted.filter(function (r) { return pctOf(r) !== null; })).n;
 
     /* girls and boys, by each class's gender (📊 B vs G) */
@@ -490,7 +555,8 @@
         var vt2 = r.text !== undefined ? r.text : rnd(r.v) + (o.unit || '');
         s += '<text class="t-val" x="' + fx(valX(w + 8, vt2)) + '" y="' + (by + 12) + '">' + esc(vt2) + '</text>';
       }
-      s += '<rect class="hit" x="0" y="' + y + '" width="' + W + '" height="' + rowH + '" data-tip="' + esc(r.tip || '') + '"/>';
+      s += '<rect class="hit" x="0" y="' + y + '" width="' + W + '" height="' + rowH + '" data-tip="' + esc(r.tip || '') + '"' +
+        (r.cls ? ' data-cls="' + esc(r.cls) + '" role="button" tabindex="0" aria-label="Class ' + esc(r.cls) + ': its assessments"' : '') + '/>';
     });
     if (hasRef) {
       var rx = refX, anchor = rx > labW + plotW * 0.6 ? 'end' : 'start';
@@ -671,7 +737,7 @@
   var api = {
     GRADES: GRADES, DEFAULT_PCTS: DEFAULT_PCTS, BOUND_GRADES: BOUND_GRADES, ERR: ERR, TIMING: TIMING, TOOLS: TOOLS,
     kindOf: kindOf, gradeOf: gradeOf, pctOf: pctOf, parseDay: parseDay, errorCounts: errorCounts, normCls: normCls,
-    prepare: prepare, yearOfTab: yearOfTab, famsOfTab: famsOfTab, gradOf: gradOf, boundsFor: boundsFor, coverage: coverage, gapText: gapText, classesText: classesText, clsYear: clsYear, yearClasses: yearClasses, classRun: classRun, analyse: analyse,
+    prepare: prepare, yearOfTab: yearOfTab, famsOfTab: famsOfTab, gradOf: gradOf, boundsFor: boundsFor, coverage: coverage, gapText: gapText, classesText: classesText, sharedKeys: sharedKeys, classCard: classCard, classGrid: classGrid, clsYear: clsYear, yearClasses: yearClasses, classRun: classRun, analyse: analyse,
     esc: esc, hbars: hbars, vbars: vbars, stacked: stacked, dots: dots, mixBar: mixBar, subMap: subMap, spark: spark, deltaBar: deltaBar,
     tableHtml: tableHtml, balancePanelHtml: balancePanelHtml
   };
@@ -687,7 +753,7 @@
   var CID = String(CFG.googleClientId || '');
   var main = doc.getElementById('main'), acct = doc.getElementById('acct'), tip = doc.getElementById('tip'), viewersEl = doc.getElementById('viewers');
   var IDLE_MS = 20 * 60 * 1000;
-  var S = { screen: '', D: null, me: '', tab: '', k: '', c: '', q: 'cover', own: false, table: {}, bEdit: false, bSame: false, preview: null,
+  var S = { screen: '', D: null, me: '', tab: '', k: '', c: '', q: 'cover', own: false, table: {}, bEdit: false, bSame: false, preview: null, shared: false, openCls: '',
             bMsg: '', bBad: false, bv: '', readAt: 0, viewers: 0, canBounds: false, busy: false, saving: false, flash: '', lastUse: Date.now() };
   var LOOK = { type: 'standard', theme: 'filled_black', size: 'large', text: 'signin_with', shape: 'pill', logo_alignment: 'left', width: 240, locale: 'en-GB' };
 
@@ -875,15 +941,55 @@
     '</section>' + (S.flash ? '<p class="partial" role="status">' + esc(S.flash) + '</p>' : '') +
     '<div class="kinds"><span class="cov">Data from <b>' + A.cov.withData.length + ' of ' + A.cov.classes.length + '</b> ' + (A.cov.classes.length === 1 ? 'class' : 'classes') +
       (A.cov.missing.length ? ' <span class="miss">(' + esc(A.cov.missing.join(', ')) + ': no data yet)</span>' : '') + ' · ' + pl(A.nPupils, 'pupil') + (A.nPupils ? ' (' + perTxt(A.per) + ')' : '') + ' · ' +
-      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> marked ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + ' in all' + (A.kinds.partly ? ' (' + A.kinds.partly + ' with totals typed by the teacher)' : '') + '</span>' +
+      '<b>' + (A.kinds.teacher + A.kinds.partly) + '</b> marked ' + (A.kinds.teacher + A.kinds.partly === 1 ? 'paper' : 'papers') + ' in all' + (A.famsMarked ? ', from ' + pl(A.famsMarked, 'assessment') : '') + (A.kinds.partly ? ' (' + A.kinds.partly + ' with totals typed by the teacher)' : '') + '</span>' +
       (A.kinds.self ? '<button class="sw" role="switch" data-own aria-checked="' + S.own + '"><i></i>Include ' + A.kinds.self + ' paper' + (A.kinds.self === 1 ? '' : 's') + ' with only the pupils’ own marks</button>' : '') +
       '<span class="fresh"><span>Read ' + esc(when(S.readAt)) + (D.newest ? ' · newest data ' + esc(D.newest) : '') + '</span><button class="btn btn--sm' + (S.busy ? ' is-busy' : '') + '" data-fresh' + (S.busy ? ' disabled' : '') + '>Read again</button></span>' +
-    '</div><section class="panel" id="panel"></section>';
+    '</div>' + gridHtml(D, classes) + '<section class="panel" id="panel"></section>';
     main.innerHTML = html;
     renderPanel(doc.getElementById('panel'), A);
     if (viewersEl) viewersEl.textContent = S.viewers ? S.viewers + (S.viewers === 1 ? ' person is' : ' people are') + ' on this page’s list.' : '';
   }
 
+  /* Which class has data, from which assessment: one row per assessment, one column per class (classGrid) */
+  function gridHtml(D, classes) {
+    if (!classes.length) return '';
+    var g = classGrid(D, S.tab, classes); if (!g.rows.length) return '';
+    var away = g.away.length ? ' Also for this year group, with no class of their year here yet: ' + esc(andList(g.away.map(function (r) { return (r.y ? 'Year ' + r.y + ' ' : '') + r.name; }))) + '.' : '';
+    var head = '<tr><th>Assessment</th>' + g.classes.map(function (c, i) {
+      return '<th class="g' + (c === S.c ? ' g--on' : '') + '">' + esc(c) + '<small>' + g.N[i] + '</small></th>'; }).join('') + '</tr>';
+    var body = g.rows.map(function (r) {
+      return '<tr' + (S.k && r.k === S.k ? ' class="g--on"' : '') + '><td><span class="glab" data-tip="' + esc('<b>' + esc(r.name) + '</b>' + (r.y ? '<br>Year ' + r.y : '')) + '">' + (r.y ? 'Y' + r.y + ' · ' : '') + esc(r.short) + '</span>' + (r.reflected ? '' : ' <span class="few">' + (r.later ? 'none yet' : 'no reflection') + '</span>') + '</td>' +
+        g.classes.map(function (c) {
+          var x = r.cells[c];
+          if (x.off) return '<td class="g"><span class="gs gs--off" data-tip="' + esc('<b>' + esc(c) + ' · ' + esc(r.name) + '</b><br>Year ' + r.y + ': these pupils sat it as ' + esc(x.as || 'another class')) + '">·</span></td>';
+          var st = STATUS[x.status];
+          return '<td class="g"><span class="gs gs--' + (x.status === 'none' ? 'none' : st.k) + '" data-tip="' + esc('<b>' + esc(c) + ' · ' + esc(r.name) + '</b><br>' + st.w + (x.status === 'none' && x.later ? ' yet' : '') + ': ' + x.did + ' of ' + pl(x.N, 'pupil') + ' reflected on it' + (x.own ? ' (' + x.own + ' not marked yet)' : '')) + '">' + st.sym + '</span></td>';
+        }).join('') + '</tr>';
+    }).join('');
+    return '<details class="grid" open><summary>Which class has data, from which assessment</summary><div class="tw gridw"><table>' + '<thead>' + head + '</thead><tbody>' + body + '</tbody></table></div>' +
+      '<p class="tcap">Y10, Y11: the year of the assessment (its full name when you point at it). ✓ all its pupils reflected on it · ≈ most (half or more) · ~ some · ✗ none · “·” another year’s class (11A beside a Year 10 test: those pupils sat it as 10A). Out of the pupils the tracker has seen in each class and its class of the other year (the number under each class). A teacher who does not use the reflections has no data here.' + away + '</p></details>';
+  }
+  function sharedLine(sh) {
+    var ys = Object.keys(sh.by).sort(function (a, b) { return (+a || 99) - (+b || 99); });
+    return 'Compared on: ' + ys.map(function (y) {
+      var who = +y ? 'Year ' + y + ' classes' : 'the other classes', ks = sh.by[y];
+      return who + ', ' + (ks.length ? andList(ks.map(famName)) : 'no assessment they all did yet');
+    }).join('; ') + '.';
+  }
+  function cardHtml(cc) {
+    var others = cc.group.filter(function (c) { return c !== cc.cls; });
+    var head = '<b>Class ' + esc(cc.cls) + '</b>' + (others.length ? ' with ' + esc(andList(others)) + ', the same pupils in another year' : '') +
+      ' · ' + pl(cc.N, 'pupil') + (cc.N ? ' · ' + perTxt(cc.per) : '');
+    var body = cc.items.map(function (it) {
+      var st = STATUS[it.status];
+      return [(it.y ? 'Year ' + it.y : '—') + (it.as ? '<br><small>as ' + esc(it.as) + '</small>' : ''), '<span class="wrapc">' + esc(it.name) + '</span>',
+        '<span class="pchip pchip--' + (it.status === 'none' ? 'none' : st.k) + '">' + st.sym + ' ' + st.w + (it.status === 'none' && it.later ? ' yet' : '') + '</span>' +
+        '<br><small>' + it.did + ' of ' + cc.N + (it.own ? ', ' + it.own + ' not marked yet' : '') + '</small>'];
+    });
+    return '<section class="ccard" id="ccard" aria-label="Class ' + esc(cc.cls) + ': its assessments"><div class="ccard__head"><p>' + head + '</p><button class="btn btn--sm" data-ocls="' + esc(cc.cls) + '">Close</button></div>' +
+      tableHtml('Table 2. Data showing, for each assessment of the year group, how many of these pupils reflected on it: ✓ all, ≈ most (half or more), ~ some, ✗ none, out of the ' + pl(cc.N, 'pupil') + ' the tracker has seen in ' + esc(andList(cc.group, 'or')) + '.',
+        ['Year', 'Assessment', 'Done'], body, [0, 0, 0]) + '</section>';
+  }
   function how(items) { return '<details class="how"><summary class="eyebrow">How this is worked out</summary><ul>' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul></details>'; }
   function boundsLine(A) {
     var by = {};
@@ -926,6 +1032,13 @@
     var scopeTxt = id === 'balance' ? ygTxt + ' · ' + (S.k ? esc(famName(S.k)) : 'all its tests') + ' · the papers, not the pupils'
                  : ygTxt + (S.c ? ', class ' + esc(S.c) : '') + ' · ' + (S.k ? esc(famName(S.k)) : 'all assessments') +
                    ' · data from ' + A.cov.withData.length + ' of ' + pl(A.cov.classes.length, 'class', 'classes');
+    /* "How do the classes compare?" on the assessments every class of its year did, or on all of them (Daniel, 18 Nov 2026) */
+    var canShare = id === 'classes' && !S.k && !S.c && A.cov.keys.length > 1, shared = null;
+    if (canShare && S.shared) {
+      shared = sharedKeys(A.cov, A.own);
+      var A2 = analyse(D, A.rows.filter(shared.has), A.own, S.preview);
+      A = Object.assign({}, A, { classes: A2.classes, topics: A2.topics });
+    }
     var showT = !!S.table[id], h = '', fig = '', tab = '';
     var waitNote = !A.kinds.self ? '' : A.own ? ' This includes ' + pl(A.kinds.self, 'paper') + ' with only the pupils’ own marks.' : ' ⏳ ' + pl(A.kinds.self, 'paper') + ' with only the pupils’ own marks ' + (A.kinds.self === 1 ? 'is' : 'are') + ' left out.';
     var countedRule = 'Counts the papers a teacher marked, and the papers where the teacher typed the totals and the pupil gave each question’s marks: both are trusted. ' +
@@ -976,7 +1089,7 @@
         if (!vers.length) h += '<p class="tcap">This assessment is not in the 📦 Registry, so it has no grade boundaries of its own.</p>';
         if (S.bEdit && vers.length) ed = boundsEditor(fam, vers);
       }
-      fig = '<figure class="fig">' + bandLegend('grades') + vbars(gr, { w: side ? W - 410 : W, aria: 'Number of papers at each grade' }) + '<figcaption>Figure 1. Bar chart showing the number of papers at each grade (n = ' + pl(A.nScored, 'paper') + (A.nScoredPupils ? ' from ' + pl(A.nScoredPupils, 'pupil') : '') + '). ' + boundsLine(A) + '</figcaption></figure>';
+      fig = '<figure class="fig">' + bandLegend('grades') + vbars(gr, { w: side ? W - 410 : W, aria: 'Number of papers at each grade' }) + '<figcaption>Figure 1. Bar chart showing the number of papers at each grade (n = ' + pl(A.nScored, 'paper') + (A.nScoredPupils ? ' from ' + pl(A.nScoredPupils, 'pupil') + ' and ' + pl(A.famsScored, 'assessment') : '') + '). ' + boundsLine(A) + '</figcaption></figure>';
       tab = tableHtml('Table 1. Data showing the number and percentage of papers at each grade.', ['Grade', 'Papers', '% of papers'],
         gr.map(function (g) { return ['<span class="pchip pchip--' + gradeBand(g.l).k + '">' + g.l + '</span>', g.v, A.nScored ? Math.round(g.v / A.nScored * 100) + ' %' : '—']; }), [0, 1, 1], gr.map(function (g) { return gradeBand(g.l).k; }));
       h += side ? '<div class="bwrap">' + fig + ed + '</div>' : ed + (showT ? tab : fig);
@@ -1014,8 +1127,8 @@
       }
     }
     else if (id === 'classes') {
-      var cr = A.classes.map(function (c) { return { l: 'Class ' + c.l, sub: pl(c.np, 'pupil') + ' · ' + perTxt(c.per) + (c.n < 5 ? ' · few papers, read with care' : ''), v: c.v, col: bandCol(c.v), tip: '<b>Class ' + esc(c.l) + '</b><br>mean ' + rnd(c.v) + ' % · ' + rnd(c.cb) + ' % at C or better<br>' + pl(c.np, 'pupil') + ', ' + perTxt(c.per) + ': ' + pl(c.n, 'paper') + ' in all' }; })
-        .concat(A.cov.missing.map(function (c) { return { l: 'Class ' + c, sub: 'no data yet', v: 0, text: '—', tip: '<b>Class ' + esc(c) + '</b><br>no marked papers yet' }; }));
+      var cr = A.classes.map(function (c) { return { cls: c.l, l: 'Class ' + c.l, sub: pl(c.np, 'pupil') + ' · ' + perTxt(c.per) + ' in ' + c.l + (c.n < 5 ? ' · few papers, read with care' : ''), v: c.v, col: bandCol(c.v), tip: '<b>Class ' + esc(c.l) + '</b><br>mean ' + rnd(c.v) + ' % · ' + rnd(c.cb) + ' % at C or better<br>' + pl(c.np, 'pupil') + ', ' + perTxt(c.per) + ': ' + pl(c.n, 'paper') + ' in all, from ' + pl(c.nf, 'assessment') }; })
+        .concat(A.cov.classes.filter(function (c) { return !A.classes.some(function (x) { return x.l === c; }); }).map(function (c) { return { cls: c, l: 'Class ' + c, sub: A.cov.has[c] ? 'no shared assessment' : 'no data yet', v: 0, text: '—', tip: '<b>Class ' + esc(c) + '</b><br>' + (A.cov.has[c] ? 'none of the assessments every class of its year did' : 'no marked papers yet') }; }));
       h = A.classes.length === 1 ? '<p class="answer">Only class ' + esc(A.classes[0].l) + ' has marked papers here: mean <b>' + rnd(A.classes[0].v) + ' %</b>. There is nothing to compare it with yet.' + waitNote + '</p>'
         : '<p class="answer">Class means run from <b>' + rnd(Math.min.apply(null, A.classes.map(function (c) { return c.v; }))) + ' %</b> to <b>' + rnd(Math.max.apply(null, A.classes.map(function (c) { return c.v; }))) + ' %</b>.' + waitNote + '</p>';
       var tks = A.topics.map(function (t) { return t.k; });
@@ -1028,10 +1141,17 @@
           }).join('') + '</tr>';
         }).join('') + '</tbody></table></div><p class="tcap">Table 1. Data showing the percentage of marks scored in each topic by each class, each cell in its band (75 % or more, 50–74 %, below 50 %).</p>' : '');
       tab = tableHtml('Table 1. Data showing, for each class, its pupils, how many assessments each pupil has, the papers in all (one for each pupil in each assessment), the mean percentage and the share at grade C or better.', ['Class', 'Pupils', 'Assessments each', 'Papers in all', 'Mean %', 'C or better'],
-        A.classes.map(function (c) { return [esc(c.l), c.np, perNum(c.per), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
-      h += (showT ? tab : fig) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.',
+        A.classes.map(function (c) { return ['<button class="lnk" data-ocls="' + esc(c.l) + '" aria-expanded="' + (S.openCls === c.l) + '">' + esc(c.l) + '</button>', c.np, perNum(c.per), c.n, chip(c.v), rnd(c.cb) + ' %']; }), [0, 1, 1, 1, 1, 1], A.classes.map(function (c) { return rowBand(c.v); }));
+      var sw = canShare ? '<div class="share"><span class="share__l">Compare the classes on</span><div class="seg" role="group" aria-label="Which assessments">' +
+          '<button data-shared="0" aria-pressed="' + !S.shared + '">All their assessments</button><button data-shared="1" aria-pressed="' + S.shared + '">Only the ones every class did</button></div>' +
+          (shared ? '<p class="tcap">' + esc(sharedLine(shared)) + '</p>' : '') + '</div>' : '';
+      var card = S.openCls && A.cov.classes.indexOf(S.openCls) >= 0 ? cardHtml(classCard(D, S.tab, S.openCls)) : '';
+      /* the card opens just under the bars (above the topics), or under the table */
+      h += sw + (showT ? tab + card : fig.replace('<figcaption>Figure 1. Bar chart showing the mean percentage in each class.</figcaption></figure>', '<figcaption>Figure 1. Bar chart showing the mean percentage in each class. Click a class to see its assessments.</figcaption></figure>' + card)) + how([countedRule, 'A class’s mean is the average of its papers’ own percentages. Fewer than 5 papers: “few papers, read with care”.',
         '“21 pupils · 1 assessment each” counts each pupil once and says how many assessments each of them has. “Papers in all” adds them up: one paper for each pupil in each assessment, so 21 pupils with 2 assessments each are 42 papers in all.',
         'In Year 11, 10A–10G are the same pupils a year earlier, so you can follow each class from Year 10 to Year 11. Each class is held only to its own year’s assessments.',
+        '“All their assessments”: each class’s mean uses every paper it has, so two classes may rest on different tests. “Only the ones every class did”: each class is compared only on the assessments that every class of its year has done (10A–10G on the Year 10 ones they all did, 11A–11G on the Year 11 ones). The table of topics follows the same choice.',
+        'Click a class (or its name in the table) to see every assessment of the year group for it and its class of the other year (10A and 11A together): ✓ all its pupils reflected on it, ≈ most (half or more), ~ some, ✗ none, out of the pupils the tracker has seen in those classes.',
         'The line above the chart says, a year at a time, what each class has done and what it has not done yet. A class has done an assessment when at least one of its pupils has a reflection on it. A class with no reflection yet is named from the class letters the tracker has (no letter is added that the tracker has never seen).', 'Colours, as in the old tracker tabs: 75 % or more, 50–74 %, below 50 %.', 'Not in the old tabs.']);
     }
     else if (id === 'sections') {
@@ -1199,9 +1319,9 @@
       } else out = [k(bt.mapped, bt.mapped === 1 ? 'paper mapped' : 'papers mapped'), k(bt.flagged, 'to look at', bt.flagged > 0)];
     }
     else if (id === 'cover') out = [k(A.cov.withData.length + ' / ' + A.cov.classes.length, 'classes with data', A.cov.missing.length > 0), k(A.nPupils, A.nPupils === 1 ? 'pupil' : 'pupils'),
-      k(A.kinds.teacher + A.kinds.partly, A.kinds.teacher + A.kinds.partly === 1 ? 'marked paper in all' : 'marked papers in all')].concat(A.kinds.self ? [k(A.kinds.self, 'with only the pupils’ own marks', true)] : []);
+      k(A.kinds.teacher + A.kinds.partly, (A.kinds.teacher + A.kinds.partly === 1 ? 'marked paper in all' : 'marked papers in all') + (A.famsMarked ? ', from ' + pl(A.famsMarked, 'assessment') : ''))].concat(A.kinds.self ? [k(A.kinds.self, 'with only the pupils’ own marks', true)] : []);
     else if (!A.rows.length || (SCORE_Q[id] && !A.counted.length)) out = [];
-    else if (id === 'grades') out = [k(rnd(A.meanPct) + ' %', 'mean score', false, A.meanPct), k(rnd(A.cOrBetter) + ' %', 'at grade C or better'), k(A.nScored, A.nScored === 1 ? 'paper in all' : 'papers in all')];
+    else if (id === 'grades') out = [k(rnd(A.meanPct) + ' %', 'mean score', false, A.meanPct), k(rnd(A.cOrBetter) + ' %', 'at grade C or better'), k(A.nScored, (A.nScored === 1 ? 'paper in all' : 'papers in all') + (A.famsScored ? ', from ' + pl(A.famsScored, 'assessment') : ''))];
     else if (id === 'topics' && A.topics.length > 1) out = [k(rnd(A.topics[0].v) + ' %', 'hardest: ' + A.topics[0].l, false, A.topics[0].v), k(rnd(A.topics[A.topics.length - 1].v) + ' %', 'easiest: ' + A.topics[A.topics.length - 1].l, false, A.topics[A.topics.length - 1].v)];
     else if (id === 'progress' && A.keys.length > 1) {
       var up = A.progress.filter(function (p) { return p.delta !== null && p.delta > 2; }).length, dn = A.progress.filter(function (p) { return p.delta !== null && p.delta < -2; }).length;
@@ -1365,7 +1485,9 @@
     if (t.hasAttribute('data-again')) { ask(false); return; }
     if (!S.D) return;
     if (t.hasAttribute('data-fresh')) { ask(true); return; }
-    if (t.hasAttribute('data-tab')) { S.tab = t.getAttribute('data-tab'); S.k = ''; S.c = ''; S.preview = null; S.bEdit = false; S.bMsg = ''; S.bv = ''; return draw(); }
+    if (t.hasAttribute('data-tab')) { S.tab = t.getAttribute('data-tab'); S.k = ''; S.c = ''; S.openCls = ''; S.preview = null; S.bEdit = false; S.bMsg = ''; S.bv = ''; return draw(); }
+    if (t.hasAttribute('data-shared')) { S.shared = t.getAttribute('data-shared') === '1'; return draw(); }
+    if (t.hasAttribute('data-ocls')) { var oc = t.getAttribute('data-ocls'); S.openCls = S.openCls === oc ? '' : oc; return draw(); }
     if (t.hasAttribute('data-qstep')) {
       var flat = []; QUESTIONS.forEach(function (g) { g.items.forEach(function (it) { flat.push(it.id); }); });
       S.q = flat[(flat.indexOf(S.q) + (+t.getAttribute('data-qstep')) + flat.length) % flat.length];
@@ -1423,6 +1545,14 @@
   }
   doc.addEventListener('mousemove', showTip);
   doc.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-tip]')) showTip(e); });
+  function openFromBar(e) {
+    var b = e.target.closest && e.target.closest('rect[data-cls]'); if (!b || !S.D) return false;
+    var c = b.getAttribute('data-cls'); S.openCls = S.openCls === c ? '' : c; tip.hidden = true; draw();
+    var card = doc.getElementById('ccard'); if (card && card.scrollIntoView && S.openCls) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return true;
+  }
+  doc.addEventListener('click', openFromBar);
+  doc.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target.closest && e.target.closest('rect[data-cls]')) { e.preventDefault(); openFromBar(e); } });
   root.addEventListener('scroll', function () { tip.hidden = true; }, { passive: true });
   var lastW = root.innerWidth;
   root.addEventListener('resize', function () { if (Math.abs(root.innerWidth - lastW) > 40 && S.screen === 'analysis') { lastW = root.innerWidth; draw(); } });

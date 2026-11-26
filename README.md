@@ -2,7 +2,7 @@
 
 <h1>🧬 &nbsp;Biology Hub</h1>
 
-**The front door to everything Biology does at NLCS Jeju.**
+**The front door to every Biology website on nlcsbiology.com.**
 
 On the front row: IGCSE revision — Foundations, the human body, Plants, Life on Earth — with Bio
 English Lab (writing exam answers) and Write-Up Lab (lab reports) beside it. Beneath them, four
